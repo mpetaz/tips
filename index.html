@@ -3,10 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Tipster Pro - Betfair Edition</title>
+    <title>Sistema Tipster Pro - Firebase Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyCwAy4QfYlbxj4yBLnho3ZnO2_NaxzbVRQ",
+            authDomain: "betmines-pronostici.firebaseapp.com",
+            projectId: "betmines-pronostici",
+            storageBucket: "betmines-pronostici.firebasestorage.app",
+            messagingSenderId: "716119578109",
+            appId: "1:716119578109:web:01e8b9dad7b17c91d63594"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        window.firebaseDB = db;
+        window.firebaseCollection = collection;
+        window.firebaseGetDocs = getDocs;
+    </script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -38,7 +61,7 @@
         .stat-box-card:hover { transform: translateY(-5px); }
         .stat-box-card h3 { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; font-weight: 600; }
         .stat-box-card .stat-value { font-size: 2.5em; font-weight: bold; }
-        .btn-primary, .btn-secondary, .btn-success, .btn-back, .btn-betfair {
+        .btn-primary, .btn-secondary, .btn-success, .btn-back, .btn-betfair, .btn-firebase {
             color: white; border: none; padding: 15px 30px; font-size: 1.1em; border-radius: 10px;
             cursor: pointer; transition: all 0.3s ease; font-weight: 600; display: inline-block;
             text-align: center; margin: 5px;
@@ -63,6 +86,11 @@
             box-shadow: 0 4px 15px rgba(255, 184, 0, 0.4);
         }
         .btn-betfair:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 184, 0, 0.6); }
+        .btn-firebase {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
+        .btn-firebase:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6); }
         .btn-back {
             background: linear-gradient(135deg, #757575 0%, #616161 100%);
             box-shadow: 0 4px 15px rgba(117, 117, 117, 0.4);
@@ -110,14 +138,6 @@
         .page { display: none; }
         .page.active { display: block; }
         #chartContainer { max-width: 900px; margin: 30px auto; }
-        .priority-badge {
-            display: inline-block; padding: 5px 12px; border-radius: 20px;
-            font-size: 0.85em; font-weight: 600; margin-left: 10px;
-        }
-        .priority-1 { background: #4CAF50; color: white; }
-        .priority-2 { background: #FF9800; color: white; }
-        .priority-3 { background: #FFC107; color: black; }
-        .priority-4 { background: #9E9E9E; color: white; }
         .score-badge {
             display: inline-block; padding: 8px 15px; border-radius: 20px;
             font-size: 1em; font-weight: 700; margin-left: 10px;
@@ -147,6 +167,24 @@
             border-left: 5px solid #4CAF50; padding: 20px; margin: 15px 0;
             border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center;
+            z-index: 9999;
+        }
+        .loading-content {
+            background: white; padding: 30px; border-radius: 15px; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3; border-top: 4px solid #667eea;
+            border-radius: 50%; width: 50px; height: 50px;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -155,13 +193,17 @@
         <div id="mainPage" class="page active">
             <div class="header">
                 <h1>⚽ Sistema Tipster Pro</h1>
-                <p>Analisi intelligente con strategie Betfair avanzate</p>
+                <p>🔥 Firebase Edition - Database Automatico</p>
             </div>
+            
             <div class="card">
-                <h2 class="card-title">📊 Carica il Database Storico</h2>
-                <p style="color: #666; margin-bottom: 20px;">Carica il database per iniziare l'analisi delle performance storiche</p>
+                <h2 class="card-title">🔥 Database Firebase</h2>
+                <div class="alert-info" id="firebase-status">
+                    <strong>📡 Connessione Firebase:</strong> In attesa...
+                </div>
                 <div class="button-group">
-                    <button class="btn-primary" onclick="document.getElementById('dbFile').click()">📁 Carica Database Storico</button>
+                    <button class="btn-firebase" id="loadFirebaseBtn">🔥 Carica da Firebase</button>
+                    <button class="btn-primary" onclick="document.getElementById('dbFile').click()">📁 Carica CSV (Fallback)</button>
                     <input type="file" id="dbFile" accept=".csv" style="display: none;">
                 </div>
                 <div class="grid grid-cols-4" style="margin-top: 20px;">
@@ -171,37 +213,39 @@
                     <div class="stat-box-card"><h3>Winrate</h3><div class="stat-value" id="total-winrate">0%</div></div>
                 </div>
             </div>
+            
             <div class="card">
-                <h2 class="card-title">📅 Prepara la tua Analisi odierna</h2>
+                <h2 class="card-title">📅 Tips del Giorno</h2>
                 <div style="margin: 15px 0;">
                     <label for="date-input">1. Seleziona la Data</label>
                     <input type="date" id="date-input">
                 </div>
                 <div style="margin: 15px 0;">
-                    <label>2. Carica le Partite del Giorno (Tips Principali)</label>
-                    <button class="btn-secondary" onclick="document.getElementById('tipsFile').click()" id="loadTipsBtn" disabled>⚡ Carica Tips Principali</button>
+                    <label>2. Carica Tips Principali</label>
+                    <button class="btn-secondary" onclick="document.getElementById('tipsFile').click()" id="loadTipsBtn" disabled>⚡ Carica Tips</button>
                     <input type="file" id="tipsFile" accept=".csv" style="display: none;">
                 </div>
                 <div style="margin: 15px 0;">
-                    <label>3. Carica Tips HT Over 0.5 (Opzionale per Betfair)</label>
-                    <button class="btn-success" onclick="document.getElementById('htFile').click()" id="loadHTBtn" disabled>⏱️ Carica Tips HT</button>
+                    <label>3. Carica Tips HT Over 0.5 (Opzionale)</label>
+                    <button class="btn-success" onclick="document.getElementById('htFile').click()" id="loadHTBtn" disabled>⏱️ Carica HT</button>
                     <input type="file" id="htFile" accept=".csv" style="display: none;">
                 </div>
             </div>
+            
             <div class="card">
-                <h2 class="card-title">🔧 Analisi e Gestione</h2>
+                <h2 class="card-title">🔧 Analisi</h2>
                 <div class="button-group">
                     <button class="btn-primary" id="analyzeBtn" disabled>📊 Analisi Database</button>
-                    <button class="btn-success" id="tradingBtn" disabled>🎯 Multiple del Giorno</button>
-                    <button class="btn-betfair" id="betfairBtn" disabled>💰 Strategie Betfair</button>
-                    <button class="btn-secondary" id="checkResultsBtn" disabled>✅ Controlla Risultati</button>
+                    <button class="btn-success" id="tradingBtn" disabled>🎯 Multiple</button>
+                    <button class="btn-betfair" id="betfairBtn" disabled>💰 Betfair</button>
+                    <button class="btn-secondary" id="checkResultsBtn" disabled>✅ Risultati</button>
                 </div>
             </div>
         </div>
 
-        <!-- PAGINA ANALISI DATABASE -->
+        <!-- ALTRE PAGINE (uguali a prima) -->
         <div id="analysisPage" class="page">
-            <div class="header"><h1>📊 Analisi Database</h1><p>Top 20 Leghe per Performance Storica</p></div>
+            <div class="header"><h1>📊 Analisi Database</h1></div>
             <div class="card">
                 <button class="btn-back" onclick="goToPage('mainPage')">← Torna al Menu</button>
                 <div id="analysisContent"></div>
@@ -209,38 +253,44 @@
             </div>
         </div>
 
-        <!-- PAGINA MULTIPLE -->
         <div id="tradingPage" class="page">
-            <div class="header"><h1>🎯 Multiple del Giorno</h1><p>Tripla + Doppie basate su BetMines + Storico</p></div>
+            <div class="header"><h1>🎯 Multiple del Giorno</h1></div>
             <div class="card">
                 <button class="btn-back" onclick="goToPage('mainPage')">← Torna al Menu</button>
                 <div id="tradingContent"></div>
             </div>
         </div>
 
-        <!-- PAGINA STRATEGIE BETFAIR -->
         <div id="betfairPage" class="page">
-            <div class="header"><h1>💰 Strategie Betfair Trading</h1><p>HT Over 0.5, Lay Draw - Solo Leghe Europee</p></div>
+            <div class="header"><h1>💰 Strategie Betfair</h1></div>
             <div class="card">
                 <button class="btn-back" onclick="goToPage('mainPage')">← Torna al Menu</button>
                 <div id="betfairContent"></div>
             </div>
         </div>
 
-        <!-- PAGINA CONTROLLO RISULTATI -->
         <div id="resultsPage" class="page">
-            <div class="header"><h1>✅ Controllo Risultati</h1><p>Verifica Performance</p></div>
+            <div class="header"><h1>✅ Risultati</h1></div>
             <div class="card">
                 <button class="btn-back" onclick="goToPage('mainPage')">← Torna al Menu</button>
                 <div style="margin: 20px 0;">
-                    <label for="date-selector">Seleziona Data da Controllare</label>
+                    <label for="date-selector">Seleziona Data</label>
                     <select id="date-selector"></select>
                 </div>
                 <div id="resultsContent"></div>
             </div>
         </div>
     </div>
-    <script>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h2 style="color: #667eea; margin-bottom: 10px;">🔥 Caricamento Firebase</h2>
+            <p id="loadingText">Connessione in corso...</p>
+        </div>
+    </div>
+       <script>
     let databaseData = [];
     let tipsData = [];
     let htData = [];
@@ -251,6 +301,7 @@
     const tipsFileInput = document.getElementById('tipsFile');
     const htFileInput = document.getElementById('htFile');
     const dateInput = document.getElementById('date-input');
+    const loadFirebaseBtn = document.getElementById('loadFirebaseBtn');
     const loadTipsBtn = document.getElementById('loadTipsBtn');
     const loadHTBtn = document.getElementById('loadHTBtn');
     const analyzeBtn = document.getElementById('analyzeBtn');
@@ -304,75 +355,106 @@
         checkResultsBtn.disabled = !localStorage.getItem('tipsterDates');
     };
 
-    // FILTRO LEGHE BETFAIR (solo europee con alta liquidità e orario 14:00-23:00 CET)
     const isBetfairLeague = (lega) => {
         if (!lega) return false;
         const leagueUpper = lega.toUpperCase();
-        
-        // LEGHE EUROPEE CON ALTA LIQUIDITÀ
-        const europeanLeagues = [
-            // Italia
-            'ITA', 'SERIE A', 'SERIE B', 'SERIE C',
-            // Spagna
-            'ESP', 'LA LIGA', 'LIGA', 'SEGUNDA',
-            // Inghilterra
-            'ENG', 'PREMIER', 'CHAMPIONSHIP', 'LEAGUE ONE', 'LEAGUE TWO',
-            // Germania
-            'GER', 'BUNDESLIGA',
-            // Francia
-            'FRA', 'LIGUE 1', 'LIGUE 2',
-            // Portogallo
-            'POR', 'LIGA PORTUGAL', 'PRIMEIRA LIGA',
-            // Olanda
-            'NED', 'EREDIVISIE',
-            // Grecia
-            'GRC', 'SUPER LEAGUE',
-            // Turchia
-            'TUR', 'SUPER LIG',
-            // Svizzera
-            'SUI', 'SUPER LEAGUE',
-            // Belgio
-            'BEL', 'PRO LEAGUE',
-            // Scandinavia
-            'SWE', 'NOR', 'DEN', 'ALLSVENSKAN', 'ELITESERIEN', 'SUPERLIGA',
-            // Altri europei
-            'SCO', 'AUT', 'CZE', 'POL', 'ROU', 'UKR', 'SRB', 'CRO', 'SVK', 'SVN',
-            'SCOTLAND', 'AUSTRIA', 'CZECH', 'POLAND', 'ROMANIA', 'UKRAINE', 'SERBIA', 'CROATIA'
-        ];
-        
-        // ESCLUDI ESPLICITAMENTE LEGHE NON EUROPEE (orari notturni/bassa liquidità)
-        const excludedRegions = [
-            'BRA', 'ARG', 'CHI', 'PER', 'COL', 'URU', 'PAR', 'ECU', 'VEN', // Sud America
-            'USA', 'CAN', 'MEX', 'MLS', 'LIGA MX', // Nord America
-            'CHN', 'JPN', 'KOR', 'IND', 'THA', 'VIE', 'IDN', 'AUS', // Asia/Oceania
-            'CHINA', 'JAPAN', 'KOREA', 'K LEAGUE', 'J.LEAGUE', 'AUSTRALIA',
-            'EGY', 'MAR', 'ALG', 'TUN', 'RSA', 'EGYPT', 'MOROCCO', // Africa
-            'SA-', 'AS-', 'NA-', 'AF-', 'OC-' // Prefissi continenti
-        ];
-        
-        // Se contiene un prefisso escluso, scarta
+        const europeanLeagues = ['ITA', 'SERIE', 'ESP', 'LIGA', 'ENG', 'PREMIER', 'CHAMPIONSHIP', 'GER', 'BUNDESLIGA', 
+            'FRA', 'LIGUE', 'POR', 'LIGA PORTUGAL', 'NED', 'EREDIVISIE', 'GRC', 'TUR', 'SUI', 'BEL', 'SWE', 'NOR', 
+            'DEN', 'SCO', 'AUT', 'CZE', 'POL', 'ROU', 'UKR', 'SRB', 'CRO'];
+        const excludedRegions = ['BRA', 'ARG', 'CHI', 'PER', 'COL', 'USA', 'CAN', 'MEX', 'MLS', 'CHN', 'JPN', 'KOR', 
+            'IND', 'AUS', 'EGY', 'MAR', 'SA-', 'AS-', 'NA-', 'AF-', 'OC-'];
         for (let excluded of excludedRegions) {
-            if (leagueUpper.includes(excluded)) {
-                return false;
-            }
+            if (leagueUpper.includes(excluded)) return false;
         }
-        
-        // Se contiene una keyword europea, accetta
         for (let european of europeanLeagues) {
-            if (leagueUpper.includes(european)) {
-                return true;
-            }
+            if (leagueUpper.includes(european)) return true;
         }
-        
-        // Se inizia con EU-, probabilmente è europea
-        if (leagueUpper.startsWith('EU-')) {
-            return true;
-        }
-        
-        return false;
+        return leagueUpper.startsWith('EU-');
     };
 
-    // CARICA FILES
+    // 🔥 CARICAMENTO FIREBASE
+    loadFirebaseBtn.addEventListener('click', async () => {
+        const overlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        const statusDiv = document.getElementById('firebase-status');
+        
+        overlay.style.display = 'flex';
+        loadingText.textContent = 'Connessione a Firebase...';
+        
+        try {
+            if (!window.firebaseDB) {
+                throw new Error('Firebase non inizializzato');
+            }
+            
+            loadingText.textContent = 'Scaricamento partite...';
+            
+            const matchesCollection = window.firebaseCollection(window.firebaseDB, 'matches');
+            const snapshot = await window.firebaseGetDocs(matchesCollection);
+            
+            loadingText.textContent = `Elaborazione ${snapshot.size} partite...`;
+            
+            databaseData = [];
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                databaseData.push({
+                    data: data.data || '',
+                    lega: data.lega || '',
+                    partita: data.partita || '',
+                    risultato: data.risultato || '',
+                    probabilita: data.probabilita || '',
+                    mercato: data.mercato || '',
+                    tip: data.tip || '',
+                    quota: data.quota || '',
+                    esito: data.esito || ''
+                });
+            });
+            
+            localStorage.setItem('cachedDatabase', JSON.stringify(databaseData));
+            localStorage.setItem('cacheTimestamp', Date.now().toString());
+            
+            overlay.style.display = 'none';
+            
+            updateDatabaseStats();
+            updateButtonStates();
+            
+            statusDiv.innerHTML = `<strong>✅ Firebase Connesso!</strong><br>Caricati ${databaseData.length} match dall'archivio storico.<br><small>Cache locale salvata - prossimo caricamento sarà istantaneo!</small>`;
+            statusDiv.className = 'alert-success';
+            
+            loadFirebaseBtn.textContent = '✅ Database Caricato';
+            loadFirebaseBtn.disabled = true;
+            
+        } catch (error) {
+            overlay.style.display = 'none';
+            console.error('Errore Firebase:', error);
+            statusDiv.innerHTML = `<strong>❌ Errore Firebase</strong><br>${error.message}<br><small>Usa il pulsante "Carica CSV" come fallback.</small>`;
+            statusDiv.className = 'alert-warning';
+        }
+    });
+
+    // 🔄 CARICA DA CACHE
+    window.addEventListener('load', () => {
+        const cached = localStorage.getItem('cachedDatabase');
+        const cacheTime = localStorage.getItem('cacheTimestamp');
+        const statusDiv = document.getElementById('firebase-status');
+        
+        if (cached && cacheTime) {
+            const hoursSinceCache = (Date.now() - parseInt(cacheTime)) / (1000 * 60 * 60);
+            
+            if (hoursSinceCache < 24) {
+                databaseData = JSON.parse(cached);
+                updateDatabaseStats();
+                updateButtonStates();
+                
+                statusDiv.innerHTML = `<strong>💾 Database Caricato da Cache</strong><br>${databaseData.length} partite disponibili.<br><small>Ultima sincronizzazione: ${Math.round(hoursSinceCache)} ore fa. Clicca "Carica da Firebase" per aggiornare.</small>`;
+                statusDiv.className = 'alert-info';
+            } else {
+                statusDiv.innerHTML = `<strong>⚠️ Cache Scaduta</strong><br>Clicca "Carica da Firebase" per aggiornare il database.`;
+                statusDiv.className = 'alert-warning';
+            }
+        }
+    });
+
+    // CARICA CSV FALLBACK
     dbFileInput.addEventListener('change', e => {
         const file = e.target.files[0];
         if (!file) return;
@@ -383,7 +465,9 @@
                 databaseData = results.data;
                 updateDatabaseStats();
                 updateButtonStates();
-                alert(`✅ Database caricato: ${databaseData.length} partite`);
+                document.getElementById('firebase-status').innerHTML = `<strong>📁 Database CSV Caricato</strong><br>${databaseData.length} partite.`;
+                document.getElementById('firebase-status').className = 'alert-success';
+                alert(`✅ CSV caricato: ${databaseData.length} partite`);
             }
         });
     });
@@ -526,7 +610,7 @@
         goToPage('analysisPage');
     });
 
-    // MULTIPLE DEL GIORNO - CON QUOTE MINIME E LEGA VISIBILE
+    // MULTIPLE DEL GIORNO - COMPLETO CON 2 DOPPIE
     tradingBtn.addEventListener('click', () => {
         const filteredTips = tipsData.filter(tip => {
             const prob = parseProbabilita(getField(tip, 'Probabilità', 'probabilita'));
@@ -638,7 +722,7 @@
 
         let html = '<div class="alert-info"><strong>🎯 Strategia:</strong> Score basato su probabilità BetMines + bonus storico. Doppie con quote ≥1.20.</div>';
 
-        // TRIPLA (può avere quote ≥1.15)
+        // TRIPLA
         const triplaLeagues = [...new Set(enrichedTips.map(t => t.lega))];
         const tripla = [];
         triplaLeagues.forEach(league => {
@@ -664,9 +748,14 @@
                 </tr>`;
             });
             html += '</tbody></table></div>';
-            html += `<div class="alert-success" style="font-size: 1.1em;">
-                <strong>📊 Riepilogo:</strong> Quota ${quotaTripla.toFixed(2)} | Puntata €30 | Ritorno €${(30 * quotaTripla).toFixed(2)} | Profit €${(30 * (quotaTripla - 1)).toFixed(2)}<br><br>
-                <strong>🎯 Dettagli:</strong><br>`;
+            
+            html += '<div class="alert-success" style="font-size: 1.1em;">';
+            html += `<strong>📊 Riepilogo Tripla:</strong><br>`;
+            html += `• <strong>Quota Totale:</strong> ${quotaTripla.toFixed(2)}<br>`;
+            html += `• <strong>Puntata Consigliata:</strong> €30,00<br>`;
+            html += `• <strong>Ritorno Potenziale:</strong> €${(30 * quotaTripla).toFixed(2)}<br>`;
+            html += `• <strong>Profit Netto:</strong> €${(30 * (quotaTripla - 1)).toFixed(2)}<br><br>`;
+            html += `<strong>🎯 Perché questa tripla:</strong><br>`;
             tripla.forEach((t, idx) => {
                 html += `${idx + 1}. <strong>${t.partita}</strong> (${t.lega}): ${t.boostFactors.join(' | ')}<br>`;
             });
@@ -699,7 +788,8 @@
                 </tr>`;
             });
             html += '</tbody></table></div>';
-            html += `<div class="alert-success"><strong>Quota:</strong> ${quotaDoppia1.toFixed(2)} | <strong>Puntata:</strong> €50 | <strong>Ritorno:</strong> €${(50 * quotaDoppia1).toFixed(2)} | <strong>Profit:</strong> €${(50 * (quotaDoppia1 - 1)).toFixed(2)}</div>`;
+            html += `<div class="alert-success"><strong>Quota:</strong> ${quotaDoppia1.toFixed(2)} | <strong>Puntata:</strong> €50 | <strong>Ritorno:</strong> €${(50 * quotaDoppia1).toFixed(2)} | <strong>Profit:</strong> €${(50 * (quotaDoppia1 - 1)).toFixed(2)}<br><br>`;
+            html += `<strong>💪 Perché sicura:</strong> Entrambe hanno score ≥85/100, probabilità BetMines ≥82% e quote ≥1.20.</div>`;
         }
 
         // DOPPIA 2 (quote ≥1.20)
@@ -735,7 +825,8 @@
                 </tr>`;
             });
             html += '</tbody></table></div>';
-            html += `<div class="alert-info"><strong>Quota:</strong> ${quotaDoppia2.toFixed(2)} | <strong>Puntata:</strong> €40 | <strong>Ritorno:</strong> €${(40 * quotaDoppia2).toFixed(2)} | <strong>Profit:</strong> €${(40 * (quotaDoppia2 - 1)).toFixed(2)}</div>`;
+            html += `<div class="alert-info"><strong>Quota:</strong> ${quotaDoppia2.toFixed(2)} | <strong>Puntata:</strong> €40 | <strong>Ritorno:</strong> €${(40 * quotaDoppia2).toFixed(2)} | <strong>Profit:</strong> €${(40 * (quotaDoppia2 - 1)).toFixed(2)}<br><br>`;
+            html += `<strong>📈 Perché interessante:</strong> Buon rapporto rischio/rendimento con score 78-84/100 e quote equilibrate ≥1.20.</div>`;
         }
 
         if (tripla.length < 3 && doppia1.length < 2 && doppia2.length < 2) {
@@ -746,12 +837,13 @@
         goToPage('tradingPage');
     });
 
-    // STRATEGIE BETFAIR - SOLO LEGHE EUROPEE
+    // BETFAIR COMPLETO - HT + LAY THE DRAW
     betfairBtn.addEventListener('click', () => {
         let html = '';
         let europeanCount = 0;
         let excludedCount = 0;
 
+        // === HT OVER 0.5 ===
         if (htData.length > 0) {
             const htFiltered = htData.filter(t => {
                 const lega = getField(t, 'Lega', 'lega');
@@ -788,19 +880,37 @@
                             </div>
                             <span class="strategy-badge" style="background: #4CAF50;">HT OVER 0.5</span>
                         </div>
-                        <p><strong>Prob:</strong> ${prob}% | <strong>Quota:</strong> ${quota.toFixed(2)}</p>
+                        <p><strong>Prob:</strong> ${prob}% | <strong>Quota Prematch:</strong> ${quota.toFixed(2)}</p>
                         <div class="alert-betfair" style="margin-top: 15px; background: #E8F5E9; border-left-color: #4CAF50;">
-                            <strong>📊 Piano Trading:</strong><br>
-                            • <strong>Entrata:</strong> Subito all'inizio<br>
-                            • <strong>Target:</strong> 1° gol HT → <strong>GREEN ${((quota / 1.05 - 1) * 100).toFixed(0)}%</strong><br>
-                            • <strong>Stop Loss:</strong> 40° minuto se 0-0<br>
-                            • <strong>Profit atteso:</strong> €${(50 * (quota / 1.05 - 1)).toFixed(0)}-${(100 * (quota / 1.05 - 1)).toFixed(0)}
+                            <strong>📊 Piano di Trading:</strong><br>
+                            • <strong>Entrata:</strong> SUBITO all'inizio o entro 5° minuto<br>
+                            • <strong>Quota entrata ideale:</strong> ${(quota - 0.05).toFixed(2)}-${quota.toFixed(2)}<br>
+                            • <strong>Target:</strong> Al 1° gol HT → quota scende a ~1.05 → <strong>GREEN ${((quota / 1.05 - 1) * 100).toFixed(0)}%</strong><br>
+                            • <strong>Stop Loss:</strong> Se al 40° minuto ancora 0-0 → chiudi posizione (-50%)<br>
+                            • <strong>Stake consigliata:</strong> €50-100 (basso rischio, alta probabilità)<br>
+                            • <strong>Profit atteso:</strong> €${(50 * (quota / 1.05 - 1)).toFixed(0)}-${(100 * (quota / 1.05 - 1)).toFixed(0)} in ~20-30 minuti
                         </div>
                     </div>`;
                 });
+
+                // Multipla HT
+                if (htFiltered.length >= 3) {
+                    const topHT = htFiltered.slice(0, 3);
+                    const quotaMulti = topHT.reduce((acc, t) => acc * parseQuota(getField(t, 'Quota', 'quota')), 1);
+                    html += '<h3 style="font-size: 1.4em; margin: 20px 0 15px 0; font-weight: 600;">🚀 Multipla HT (3 partite)</h3>';
+                    html += '<div class="ht-card">';
+                    html += '<div class="table-container"><table><thead><tr><th>Partita</th><th>Lega</th><th>Prob</th><th>Quota</th></tr></thead><tbody>';
+                    topHT.forEach(t => {
+                        html += `<tr><td>${getField(t, 'Partita', 'partita')}</td><td><small>${getField(t, 'Lega', 'lega')}</small></td><td>${parseProbabilita(getField(t, 'Probabilità', 'probabilita', 'Probabilita'))}%</td><td>${parseQuota(getField(t, 'Quota', 'quota')).toFixed(2)}</td></tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                    html += `<div class="alert-success" style="margin-top: 15px;"><strong>Quota Totale:</strong> ${quotaMulti.toFixed(2)} | <strong>Puntata:</strong> €30 | <strong>Ritorno:</strong> €${(30 * quotaMulti).toFixed(2)} | <strong>Profit:</strong> €${(30 * (quotaMulti - 1)).toFixed(2)}</div>`;
+                    html += '</div>';
+                }
             }
         }
 
+        // === LAY THE DRAW ===
         if (tipsData.length > 0) {
             const layDrawCandidates = tipsData.filter(t => {
                 const lega = getField(t, 'Lega', 'lega');
@@ -823,20 +933,41 @@
             if (layDrawCandidates.length > 0) {
                 html += '<h3 style="font-size: 1.5em; margin: 30px 0 20px 0; font-weight: 600;">🎯 Lay the Draw - Leghe Europee</h3>';
                 layDrawCandidates.forEach(t => {
+                    const partita = getField(t, 'Partita', 'partita');
+                    const lega = getField(t, 'Lega', 'lega');
+                    const [home, away] = partita.split(' - ');
+                    
+                    // Analisi squadre per Lay the Draw
+                    const allHomeMatches = databaseData.filter(m => (m.partita || '').split(' - ')[0] === home);
+                    const allAwayMatches = databaseData.filter(m => (m.partita || '').split(' - ')[1] === away);
+                    const recentHome = allHomeMatches.slice(-5);
+                    const recentAway = allAwayMatches.slice(-5);
+                    
+                    let teamInfo = '';
+                    if (recentHome.length >= 3 && recentAway.length >= 3) {
+                        const homeWins = recentHome.filter(m => m.esito === 'Vinto').length;
+                        const awayWins = recentAway.filter(m => m.esito === 'Vinto').length;
+                        teamInfo = `Forma recente: Casa ${homeWins}/${recentHome.length} | Trasferta ${awayWins}/${recentAway.length}`;
+                    }
+                    
                     html += `<div class="trading-card">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                             <div>
-                                <strong style="font-size: 1.2em;">${getField(t, 'Partita', 'partita')}</strong><br>
-                                <small style="color: #666;">📍 ${getField(t, 'Lega', 'lega')}</small>
+                                <strong style="font-size: 1.2em;">${partita}</strong><br>
+                                <small style="color: #666;">📍 ${lega}</small>
                             </div>
                             <span class="strategy-badge">LAY DRAW</span>
                         </div>
+                        ${teamInfo ? `<p style="color: #666; margin-bottom: 10px;">${teamInfo}</p>` : ''}
                         <div class="alert-betfair">
-                            <strong>📊 Strategia:</strong><br>
-                            • <strong>Entrata:</strong> 10-15° minuto<br>
-                            • <strong>Lay Draw:</strong> 3.00-4.50<br>
-                            • <strong>Uscita:</strong> Al 1° gol<br>
-                            • <strong>Target:</strong> 30-50% green
+                            <strong>📊 Strategia Lay the Draw:</strong><br>
+                            • <strong>Entrata:</strong> 10-15° minuto (osserva pressing e occasioni)<br>
+                            • <strong>Quota Draw da layare:</strong> 3.00-4.50 (ideale 3.50)<br>
+                            • <strong>Uscita GREEN:</strong> Al 1° gol → quota Draw sale → chiudi posizione<br>
+                            • <strong>Stop Loss:</strong> 70° minuto se ancora 0-0 (-50% responsabilità)<br>
+                            • <strong>Target Green:</strong> 30-50% della responsabilità<br>
+                            • <strong>Stake consigliata:</strong> €100 responsabilità (profit €30-50 se gol)<br>
+                            • <strong>⚠️ Attenzione:</strong> Evita partite difensive o con troppe occasioni sprecate
                         </div>
                     </div>`;
                 });
@@ -853,7 +984,7 @@
         goToPage('betfairPage');
     });
 
-    // CONTROLLO RISULTATI
+    // RISULTATI
     checkResultsBtn.addEventListener('click', () => goToPage('resultsPage'));
     document.getElementById('date-selector').addEventListener('change', e => {
         const selectedDate = e.target.value;
