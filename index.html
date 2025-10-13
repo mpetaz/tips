@@ -393,10 +393,18 @@
             
             loadingText.textContent = `Elaborazione ${snapshot.size} partite...`;
             
-            databaseData = [];
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                databaseData.push({
+            databaseData = []
+	    snapshot.forEach((doc) => {
+    		const data = doc.data()
+    
+    		// Filtro campi obbligatori (come app Pronostici)
+    		if (!data.partita || !data.lega || !data.tip || !data.risultato || !data.mercato || !data.quota ||
+        data.partita.trim() === '' || data.lega.trim() === '' || data.tip.trim() === '' ||
+        data.risultato.trim() === '' || data.mercato.trim() === '') {
+        return; // Salta questo record
+    }
+    
+    databaseData.push({
                     data: data.data || '',
                     lega: data.lega || '',
                     partita: data.partita || '',
