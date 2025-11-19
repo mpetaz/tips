@@ -1091,7 +1091,21 @@
                 let updates = 0;
                 
                 for (const row of parsedData) {
-                    if (!requiredFields.every(f => row[f] && String(row[f]).trim() !== '')) {
+                    // VALIDAZIONE MIGLIORATA: scarta se campo mancante o "-"
+                    if (!requiredFields.every(f => {
+                        const value = String(row[f] || '').trim();
+                        return value !== '' && value !== '-';
+                    })) {
+                        incomplete++;
+                        continue;
+                    }
+                    
+                    // Parse dati
+                    const probabilita = parseInt(String(row['Probabilità']).replace('%', '').trim()) || 0;
+                    const quota = parseFloat(String(row.Quota).replace(',', '.').trim()) || 0;
+                    
+                    // VALIDAZIONE NUMERICA: scarta se prob o quota = 0
+                    if (probabilita === 0 || quota === 0) {
                         incomplete++;
                         continue;
                     }
@@ -1101,10 +1115,10 @@
                         lega: normalizeLega(String(row.Lega).trim()),
                         partita: String(row.Partita).trim(),
                         risultato: type === 'results' ? (String(row.Risultato || '').trim()) : '',
-                        probabilita: parseInt(String(row['Probabilità']).replace('%', '').trim()) || 0,
+                        probabilita: probabilita,
                         mercato: String(row.Mercato).trim(),
                         tip: String(row.Tip).trim(),
-                        quota: parseFloat(String(row.Quota).replace(',', '.').trim()) || 0
+                        quota: quota
                     };
                     
                     // Calcola esito se risultati
@@ -1167,22 +1181,51 @@
                 if (dataToUpload.length === 0) return;
                 
                 const matchesCollection = collection(db, "matches");
-                const batch = writeBatch(db);
-                
-                dataToUpload.forEach(match => {
-                    if (match.id) {
-                        // Update esistente
-                        batch.update(doc(matchesCollection, match.id), match);
-                    } else {
-                        // Nuovo
-                        const docRef = doc(matchesCollection);
-                        batch.set(docRef, match);
-                    }
-                });
+                let deletedCount = 0;
                 
                 try {
+                    // SE RISULTATI: cancella prima tutte partite stessa data SENZA risultato
+                    if (type === 'results' && dataToUpload.length > 0) {
+                        const uploadDate = dataToUpload[0].data;
+                        
+                        // Trova partite stessa data senza risultato
+                        const oldMatches = allMatches.filter(m => 
+                            m.data === uploadDate && 
+                            (!m.risultato || m.risultato.trim() === '')
+                        );
+                        
+                        if (oldMatches.length > 0) {
+                            const deleteBatch = writeBatch(db);
+                            oldMatches.forEach(m => {
+                                if (m.id) {
+                                    deleteBatch.delete(doc(matchesCollection, m.id));
+                                    deletedCount++;
+                                }
+                            });
+                            await deleteBatch.commit();
+                        }
+                    }
+                    
+                    // Carica nuove partite
+                    const batch = writeBatch(db);
+                    dataToUpload.forEach(match => {
+                        if (match.id) {
+                            // Update esistente
+                            batch.update(doc(matchesCollection, match.id), match);
+                        } else {
+                            // Nuovo
+                            const docRef = doc(matchesCollection);
+                            batch.set(docRef, match);
+                        }
+                    });
+                    
                     await batch.commit();
-                    showModal("Successo", `${dataToUpload.length} partite caricate/aggiornate!`, () => {});
+                    
+                    const successMsg = type === 'results' && deletedCount > 0
+                        ? `${dataToUpload.length} partite caricate! (${deletedCount} vecchie senza risultato eliminate)`
+                        : `${dataToUpload.length} partite caricate/aggiornate!`;
+                    
+                    showModal("Successo", successMsg, () => {});
                     
                     const previewId = type === 'tips' ? 'tips-upload-preview' : 'results-upload-preview';
                     document.getElementById(previewId).classList.add('hidden');
