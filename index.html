@@ -1,20 +1,406 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="h-full bg-gray-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Tipster Pro - Firebase Edition</title>
+    <title>⚽ Tipster Pro Unified v2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Firebase SDK -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .noUi-connect { background: #3b82f6; }
+        .noUi-handle { border-radius: 9999px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .tip-button.active { background-color: #3b82f6; color: white; border-color: #3b82f6; font-weight: 600; }
+        .sortable-header { cursor: pointer; transition: background-color 0.2s; }
+        .sortable-header:hover { background-color: #e5e7eb; }
+        .sort-icon { opacity: 0.5; transition: opacity 0.2s; }
+        .sortable-header.active .sort-icon { opacity: 1; color: #3b82f6; }
+        .favorite-star { cursor: pointer; color: #d1d5db; transition: color 0.2s, transform 0.2s; }
+        .favorite-star.is-favorite { color: #f59e0b; }
+        .favorite-star:hover { transform: scale(1.2); }
+        .team-green { color: #10b981; font-weight: 600; }
+        .team-yellow { color: #f59e0b; font-weight: 600; }
+        .team-red { color: #ef4444; font-weight: 600; }
+        .team-gray { color: #9ca3af; font-weight: 500; }
+        .team-black { color: #374151; }
+        .score-badge { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        .strategy-card { 
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .strategy-card:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .strategy-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-800">
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+        <div class="text-white text-xl font-semibold animate-pulse">Caricamento...</div>
+    </div>
+    
+    <div class="min-h-full flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
+                        <h1 class="text-xl font-bold text-gray-900">Tipster Pro v2</h1>
+                    </div>
+                    <nav class="flex space-x-2 flex-wrap">
+                        <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
+                            <i class="fa-solid fa-chart-bar mr-1"></i>Dashboard
+                        </button>
+                        <button data-page="page-oggi" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-calendar-day mr-1"></i>Oggi
+                        </button>
+                        <button data-page="page-risultati" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-check-circle mr-1"></i>Risultati
+                        </button>
+                        <button data-page="page-strategie" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-chess mr-1"></i>Strategie
+                        </button>
+                        <button data-page="page-ranking" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-trophy mr-1"></i>Ranking
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow">
+            
+            <!-- PAGINA DASHBOARD -->
+            <div id="page-dashboard" class="page active max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Sticky Stats -->
+                <div id="stats-container" class="sticky top-0 z-10 bg-gray-50/80 backdrop-blur-sm py-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8"></div>
+                
+                <!-- Filters -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-8">
+                    <div class="flex flex-col md:flex-row gap-4 mb-4 items-center">
+                        <div class="relative flex-grow w-full">
+                            <input type="text" id="search-input" placeholder="Cerca lega o squadra..." class="w-full p-2 pl-10 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        <div class="flex items-center gap-2 w-full md:w-auto">
+                            <label class="text-sm font-medium text-gray-700">Periodo:</label>
+                            <input type="date" id="filter-date-start" class="p-2 border rounded-lg">
+                            <input type="date" id="filter-date-end" class="p-2 border rounded-lg">
+                        </div>
+                    </div>
+                    
+                    <!-- Saved Filters Section -->
+                    <div class="border-t border-b border-gray-200 my-4 py-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Filtri Personalizzati</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                            <div>
+                                <label for="saved-filters-select" class="block text-xs font-medium text-gray-600">Carica una strategia</label>
+                                <div class="flex gap-2">
+                                    <select id="saved-filters-select" class="w-full p-2 border rounded-lg text-sm bg-gray-50">
+                                        <option value="">Seleziona...</option>
+                                    </select>
+                                    <button id="load-filter-btn" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-semibold text-sm">Carica</button>
+                                    <button id="delete-filter-btn" class="bg-red-500 text-white px-3 py-2 rounded-lg font-semibold text-sm"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="new-filter-name" class="block text-xs font-medium text-gray-600">Salva strategia attuale</label>
+                                <input type="text" id="new-filter-name" placeholder="Nome della strategia..." class="w-full p-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <button id="save-filter-btn" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm">Salva Strategia</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- LEFT COLUMN: Leagues -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-sm font-medium text-gray-700">Leghe</label>
+                                <div>
+                                    <button id="update-favorites-btn" class="text-xs text-green-600 hover:underline font-semibold mr-4">Aggiorna Preferiti</button>
+                                    <button id="reset-leagues-btn" class="text-xs text-blue-600 hover:underline font-semibold">Azzera Leghe</button>
+                                </div>
+                            </div>
+                            <div id="league-filters-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+                        </div>
+                        
+                        <!-- RIGHT COLUMN: Sliders & Tips -->
+                        <div class="space-y-4">
+                            <!-- Sliders -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Probabilità (%)</label>
+                                    <div id="probability-slider" class="mt-4 mx-2"></div>
+                                    <div id="probability-value" class="text-xs text-center mt-1"></div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Quota</label>
+                                    <div id="odds-slider" class="mt-4 mx-2"></div>
+                                    <div id="odds-value" class="text-xs text-center mt-1"></div>
+                                </div>
+                            </div>
+                            <!-- Tips -->
+                            <div class="pt-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-sm font-medium text-gray-700">Tips</label>
+                                    <button id="reset-tips-btn" class="text-xs text-blue-600 hover:underline font-semibold">Azzera Tips</button>
+                                </div>
+                                <div id="tip-filters-container" class="w-full p-2 border rounded-lg bg-gray-50 flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-end space-x-4">
+                        <button id="export-filtered-btn" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                            <i class="fa-solid fa-file-csv mr-2"></i>Esporta Filtrati
+                        </button>
+                        <button id="reset-filters-btn" class="bg-gray-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors">
+                            <i class="fa-solid fa-arrows-rotate mr-2"></i>Reset Tutti i Filtri
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Match List -->
+                <div id="match-list-container" class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4">Partite filtrate (<span id="filtered-count">0</span>)</h3>
+                    <div class="max-h-[60vh] overflow-y-auto custom-scrollbar">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-100 text-xs uppercase sticky top-0">
+                                <tr>
+                                    <th class="p-3 font-semibold sortable-header" data-sort="data">Data <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold sortable-header" data-sort="lega">Lega <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold sortable-header" data-sort="partita">Partita <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold sortable-header" data-sort="mercato">Mercato <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold sortable-header" data-sort="tip">Tip <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold text-center">Ris.</th>
+                                    <th class="p-3 font-semibold sortable-header text-center" data-sort="probabilita">Prob. <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold sortable-header text-center" data-sort="quota">Quota <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold sortable-header text-center" data-sort="esito">Esito <i class="fa-solid fa-sort sort-icon"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody id="match-list-body" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGINA OGGI -->
+            <div id="page-oggi" class="page max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
+                    <h2 class="text-2xl font-bold mb-4 border-b pb-2">📥 Carica Tips del Giorno</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label for="tips-date" class="block text-sm font-medium text-gray-700 mb-1">Data Partite</label>
+                            <input type="date" id="tips-date" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="tips-csv-file" class="block text-sm font-medium text-gray-700 mb-1">File CSV Tips (senza risultati)</label>
+                            <input type="file" id="tips-csv-file" accept=".csv" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                        <div id="tips-upload-preview" class="hidden bg-gray-50 p-4 rounded-lg border"></div>
+                    </div>
+                </div>
+                
+                <!-- Gestione Giornate Tips -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h2 class="text-xl font-bold mb-4">🗑️ Gestione Giornate Caricate</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="delete-tips-date" class="block text-sm font-medium text-gray-700 mb-1">Seleziona data da cancellare</label>
+                            <select id="delete-tips-date" class="w-full p-2 border rounded-lg">
+                                <option value="">Seleziona una data...</option>
+                            </select>
+                        </div>
+                        <button id="delete-tips-day-btn" class="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700">
+                            <i class="fa-solid fa-trash mr-2"></i>Cancella Giornata Selezionata
+                        </button>
+                        <div id="tips-days-info" class="text-sm text-gray-600"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGINA RISULTATI -->
+            <div id="page-risultati" class="page max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
+                    <h2 class="text-2xl font-bold mb-4 border-b pb-2">✅ Aggiorna Risultati</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label for="results-date" class="block text-sm font-medium text-gray-700 mb-1">Data Risultati</label>
+                            <input type="date" id="results-date" class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="results-csv-file" class="block text-sm font-medium text-gray-700 mb-1">File CSV Risultati (con risultati finali)</label>
+                            <input type="file" id="results-csv-file" accept=".csv" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                        </div>
+                        <div id="results-upload-preview" class="hidden bg-gray-50 p-4 rounded-lg border"></div>
+                    </div>
+                </div>
+                
+                <!-- Gestione Giornate Risultati -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h2 class="text-xl font-bold mb-4">🗑️ Gestione Giornate con Risultati</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="delete-results-date" class="block text-sm font-medium text-gray-700 mb-1">Seleziona data da cancellare</label>
+                            <select id="delete-results-date" class="w-full p-2 border rounded-lg">
+                                <option value="">Seleziona una data...</option>
+                            </select>
+                        </div>
+                        <button id="delete-results-day-btn" class="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700">
+                            <i class="fa-solid fa-trash mr-2"></i>Cancella Risultati Giornata Selezionata
+                        </button>
+                        <div id="results-days-info" class="text-sm text-gray-600"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGINA STRATEGIE -->
+            <div id="page-strategie" class="page max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
+                    <h2 class="text-2xl font-bold mb-4">🎯 Strategie Betfair</h2>
+                    <p class="text-sm text-gray-600 mb-4">Clicca su una strategia per vedere le partite matching di oggi</p>
+                    
+                    <button id="add-strategy-btn" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700 mb-4">
+                        <i class="fa-solid fa-plus mr-2"></i>Nuova Strategia Custom
+                    </button>
+                    
+                    <!-- Form Nuova Strategia -->
+                    <div id="strategy-form" class="hidden border-t pt-4 mt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium mb-1">Nome Strategia</label>
+                                <input type="text" id="strategy-name" placeholder="es: My Custom Strategy" class="w-full p-3 border rounded-lg">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Mercato</label>
+                                <select id="strategy-market" class="w-full p-3 border rounded-lg">
+                                    <option>Numero di gol</option>
+                                    <option>1X2</option>
+                                    <option>Doppia chance</option>
+                                    <option>Gol/No Gol</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Tip</label>
+                                <input type="text" id="strategy-tip" placeholder="es: +1.5" class="w-full p-3 border rounded-lg">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Quota Min-Max</label>
+                                <div id="strategy-odds-slider" class="mt-4 mx-2"></div>
+                                <div id="strategy-odds-value" class="text-xs text-center mt-1"></div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-1">WinRate Lega Min-Max (%)</label>
+                                <div id="strategy-wr-slider" class="mt-4 mx-2"></div>
+                                <div id="strategy-wr-value" class="text-xs text-center mt-1"></div>
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium mb-1">Azione Entry</label>
+                                <input type="text" id="strategy-action" placeholder="es: Back Over 2.5 @2.5-3.0 pre-match" class="w-full p-3 border rounded-lg">
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium mb-1">Exit Strategy</label>
+                                <input type="text" id="strategy-exit" placeholder="es: Green al 1° gol, cash out al 2°" class="w-full p-3 border rounded-lg">
+                            </div>
+                            
+                            <div class="md:col-span-2 flex gap-2">
+                                <button id="save-strategy-btn" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700">Salva</button>
+                                <button id="cancel-strategy-btn" class="flex-1 bg-gray-400 text-white py-3 rounded-lg font-bold hover:bg-gray-500">Annulla</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lista Strategie -->
+                <div id="strategies-list" class="space-y-4"></div>
+                
+                <!-- Match Risultati Strategia -->
+                <div id="strategy-matches-container" class="hidden mt-6 bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4">🎯 Partite Matching: <span id="strategy-name-display"></span></h3>
+                    <div id="strategy-matches-list" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- PAGINA RANKING -->
+            <div id="page-ranking" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
+                    <h2 class="text-2xl font-bold mb-4">🏆 Ranking Partite del Giorno</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Data</label>
+                            <input type="date" id="ranking-date" class="w-full p-3 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Score Min</label>
+                            <input type="number" id="ranking-score-min" value="45" class="w-full p-3 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Max Partite</label>
+                            <input type="number" id="ranking-max-matches" value="20" class="w-full p-3 border rounded-lg">
+                        </div>
+                    </div>
+                    
+                    <button id="generate-ranking-btn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:opacity-90">
+                        <i class="fa-solid fa-magic mr-2"></i>Genera Ranking
+                    </button>
+                </div>
+                
+                <!-- Risultati Ranking -->
+                <div id="ranking-results"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md mx-4">
+            <h3 id="modal-title" class="text-xl font-bold mb-4"></h3>
+            <p id="modal-message" class="mb-6"></p>
+            <div class="flex justify-end space-x-4">
+                <button id="modal-cancel" class="bg-gray-200 px-4 py-2 rounded-lg font-semibold">Annulla</button>
+                <button id="modal-confirm" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">Conferma</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, writeBatch, query, where, doc, addDoc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
         
         const firebaseConfig = {
-            apiKey: "AIzaSyCwAy4QfYlbxj4yBLnho3ZnO2_NaxzbVRQ",
+            apiKey: "AIzaSyCWay4QfY1bxj4yBLnho3Zn02_NaxzbVRQ",
             authDomain: "betmines-pronostici.firebaseapp.com",
             projectId: "betmines-pronostici",
             storageBucket: "betmines-pronostici.firebasestorage.app",
@@ -22,1002 +408,1488 @@
             appId: "1:716119578109:web:01e8b9dad7b17c91d63594"
         };
         
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        window.firebaseDB = db;
-        window.firebaseCollection = collection;
-        window.firebaseGetDocs = getDocs;
-    </script>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; padding: 20px;
-        }
-        .app-container { max-width: 1200px; margin: 0 auto; }
-        .header {
-            background: white; padding: 25px; border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 25px; text-align: center;
-        }
-        .header h1 { color: #667eea; font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
-        .header p { color: #666; font-size: 1.1em; }
-        .card {
-            background: white; border-radius: 15px; padding: 25px; margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15); transition: transform 0.3s ease;
-        }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
-        .card-title {
-            color: #333; font-size: 1.8em; margin-bottom: 20px; padding-bottom: 15px;
-            border-bottom: 3px solid #667eea; font-weight: 700;
-        }
-        .stat-box-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; padding: 20px; border-radius: 15px; text-align: center;
-            transition: transform 0.3s ease;
-        }
-        .stat-box-card:hover { transform: translateY(-5px); }
-        .stat-box-card h3 { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; font-weight: 600; }
-        .stat-box-card .stat-value { font-size: 2.5em; font-weight: bold; }
-        .btn-primary, .btn-secondary, .btn-success, .btn-back, .btn-betfair, .btn-firebase {
-            color: white; border: none; padding: 15px 30px; font-size: 1.1em; border-radius: 10px;
-            cursor: pointer; transition: all 0.3s ease; font-weight: 600; display: inline-block;
-            text-align: center; margin: 5px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
-        .btn-secondary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
-        }
-        .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6); }
-        .btn-success {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-        }
-        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6); }
-        .btn-betfair {
-            background: linear-gradient(135deg, #FFB800 0%, #FF8C00 100%);
-            box-shadow: 0 4px 15px rgba(255, 184, 0, 0.4);
-        }
-        .btn-betfair:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 184, 0, 0.6); }
-        .btn-firebase {
-            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
-            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
-        }
-        .btn-firebase:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6); }
-        .btn-back {
-            background: linear-gradient(135deg, #757575 0%, #616161 100%);
-            box-shadow: 0 4px 15px rgba(117, 117, 117, 0.4);
-        }
-        .btn-back:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(117, 117, 117, 0.6); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-        input[type="date"], input[type="file"], select {
-            width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;
-            font-size: 1em; transition: border-color 0.3s ease; margin: 10px 0;
-        }
-        input:focus, select:focus { outline: none; border-color: #667eea; }
-        .table-container { overflow-x: auto; margin: 20px 0; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
-        th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; padding: 15px; text-align: left; font-weight: 600;
-        }
-        td { padding: 12px 15px; border-bottom: 1px solid #eee; }
-        tr:hover { background: #f8f9ff; }
-        .hidden { display: none; }
-        .grid { display: grid; }
-        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
-        @media (max-width: 768px) {
-            .header h1 { font-size: 1.8em; }
-            .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        }
-        .alert-info {
-            background: #e3f2fd; color: #1976d2; padding: 15px; border-radius: 8px;
-            border-left: 4px solid #1976d2; margin: 15px 0; font-weight: 500;
-        }
-        .alert-success {
-            background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px;
-            border-left: 4px solid #2e7d32; margin: 15px 0; font-weight: 500;
-        }
-        .alert-warning {
-            background: #fff3e0; color: #e65100; padding: 15px; border-radius: 8px;
-            border-left: 4px solid #e65100; margin: 15px 0; font-weight: 500;
-        }
-        .alert-betfair {
-            background: #FFF8E1; color: #F57C00; padding: 15px; border-radius: 8px;
-            border-left: 4px solid #FFB800; margin: 15px 0; font-weight: 500;
-        }
-        label { display: block; color: #555; font-weight: 600; margin-bottom: 8px; font-size: 1.1em; }
-        .button-group { display: flex; gap: 15px; flex-wrap: wrap; margin: 20px 0; }
-        .page { display: none; }
-        .page.active { display: block; }
-        #chartContainer { max-width: 900px; margin: 30px auto; }
-        .score-badge {
-            display: inline-block; padding: 8px 15px; border-radius: 20px;
-            font-size: 1em; font-weight: 700; margin-left: 10px;
-        }
-        .score-excellent { background: #4CAF50; color: white; }
-        .score-good { background: #8BC34A; color: white; }
-        .score-medium { background: #FFC107; color: black; }
-        .score-low { background: #FF9800; color: white; }
-        .score-poor { background: #F44336; color: white; }
-        .tip-badge {
-            display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white; padding: 6px 12px; border-radius: 20px; margin: 3px;
-            font-size: 0.9em; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .tips-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
-        .trading-card {
-            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
-            border-left: 5px solid #FFB800; padding: 20px; margin: 15px 0;
-            border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-        .strategy-badge {
-            display: inline-block; background: #FFB800; color: white; padding: 5px 12px;
-            border-radius: 15px; font-size: 0.85em; font-weight: 600; margin: 3px;
-        }
-        .ht-card {
-            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
-            border-left: 5px solid #4CAF50; padding: 20px; margin: 15px 0;
-            border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-        .loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center;
-            z-index: 9999;
-        }
-        .loading-content {
-            background: white; padding: 30px; border-radius: 15px; text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        .spinner {
-            border: 4px solid #f3f3f3; border-top: 4px solid #667eea;
-            border-radius: 50%; width: 50px; height: 50px;
-            animation: spin 1s linear infinite; margin: 0 auto 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-    <div class="app-container">
-        <!-- PAGINA PRINCIPALE -->
-        <div id="mainPage" class="page active">
-            <div class="header">
-                <h1>⚽ Sistema Tipster Pro</h1>
-                <p>🔥 Firebase Edition - Database Automatico</p>
-            </div>
-            
-            <div class="card">
-                <h2 class="card-title">🔥 Database Firebase</h2>
-                <div class="alert-info" id="firebase-status">
-                    <strong>📡 Connessione Firebase:</strong> In attesa...
-                </div>
-                <div class="button-group">
-                    <button class="btn-firebase" id="loadFirebaseBtn">🔥 Carica da Firebase</button>
-                    <button class="btn-primary" onclick="document.getElementById('dbFile').click()">📁 Carica CSV (Fallback)</button>
-                    <input type="file" id="dbFile" accept=".csv" style="display: none;">
-                </div>
-                <div class="grid grid-cols-4" style="margin-top: 20px;">
-                    <div class="stat-box-card"><h3>Partite nel Database</h3><div class="stat-value" id="total-matches">0</div></div>
-                    <div class="stat-box-card"><h3>Vinte</h3><div class="stat-value" id="total-wins">0</div></div>
-                    <div class="stat-box-card"><h3>Perse</h3><div class="stat-value" id="total-losses">0</div></div>
-                    <div class="stat-box-card"><h3>Winrate</h3><div class="stat-value" id="total-winrate">0%</div></div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2 class="card-title">📅 Tips del Giorno</h2>
-                <div style="margin: 15px 0;">
-                    <label for="date-input">1. Seleziona la Data</label>
-                    <input type="date" id="date-input">
-                </div>
-                <div style="margin: 15px 0;">
-                    <label>2. Carica Tips Principali</label>
-                    <button class="btn-secondary" onclick="document.getElementById('tipsFile').click()" id="loadTipsBtn" disabled>⚡ Carica Tips</button>
-                    <input type="file" id="tipsFile" accept=".csv" style="display: none;">
-                </div>
-                <div style="margin: 15px 0;">
-                    <label>3. Carica Tips HT Over 0.5 (Opzionale)</label>
-                    <button class="btn-success" onclick="document.getElementById('htFile').click()" id="loadHTBtn" disabled>⏱️ Carica HT</button>
-                    <input type="file" id="htFile" accept=".csv" style="display: none;">
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2 class="card-title">🔧 Analisi</h2>
-                <div class="button-group">
-                    <button class="btn-primary" id="analyzeBtn" disabled>📊 Analisi Database</button>
-                    <button class="btn-success" id="tradingBtn" disabled>🎯 Multiple</button>
-                    <button class="btn-betfair" id="betfairBtn" disabled>💰 Betfair</button>
-                    <button class="btn-secondary" id="checkResultsBtn" disabled>✅ Risultati</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ALTRE PAGINE (uguali a prima) -->
-        <div id="analysisPage" class="page">
-            <div class="header"><h1>📊 Analisi Database</h1></div>
-            <div class="card">
-                <button class="btn-back" onclick="goToPage('mainPage')">← Torna al Menu</button>
-                <div id="analysisContent"></div>
-                <div id="chartContainer"><canvas id="analysisChart"></canvas></div>
-            </div>
-        </div>
-
-        <div id="tradingPage" class="page">
-            <div class="header"><h1>🎯 Multiple del Giorno</h1></div>
-            <div class="card">
-                <button class="btn-back" onclick="goToPage('mainPage')">← Torna al Menu</button>
-                <div id="tradingContent"></div>
-            </div>
-        </div>
-
-        <div id="betfairPage" class="page">
-            <div class="header"><h1>💰 Strategie Betfair</h1></div>
-            <div class="card">
-                <button class="btn-back" onclick="goToPage('mainPage')">← Torna al Menu</button>
-                <div id="betfairContent"></div>
-            </div>
-        </div>
-
-        <div id="resultsPage" class="page">
-            <div class="header"><h1>✅ Risultati</h1></div>
-            <div class="card">
-                <button class="btn-back" onclick="goToPage('mainPage')">← Torna al Menu</button>
-                <div style="margin: 20px 0;">
-                    <label for="date-selector">Seleziona Data</label>
-                    <select id="date-selector"></select>
-                </div>
-                <div id="resultsContent"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <h2 style="color: #667eea; margin-bottom: 10px;">🔥 Caricamento Firebase</h2>
-            <p id="loadingText">Connessione in corso...</p>
-        </div>
-    </div>
-       <script>
-    let databaseData = [];
-    let tipsData = [];
-    let htData = [];
-    let currentDate = '';
-    let analysisChart = null;
-
-    const dbFileInput = document.getElementById('dbFile');
-    const tipsFileInput = document.getElementById('tipsFile');
-    const htFileInput = document.getElementById('htFile');
-    const dateInput = document.getElementById('date-input');
-    const loadFirebaseBtn = document.getElementById('loadFirebaseBtn');
-    const loadTipsBtn = document.getElementById('loadTipsBtn');
-    const loadHTBtn = document.getElementById('loadHTBtn');
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    const tradingBtn = document.getElementById('tradingBtn');
-    const betfairBtn = document.getElementById('betfairBtn');
-    const checkResultsBtn = document.getElementById('checkResultsBtn');
-
-    dateInput.valueAsDate = new Date();
-    currentDate = dateInput.value;
-
-    // UTILITY FUNCTIONS
-    const parseQuota = (quota) => {
-        if (!quota) return 0;
-        return parseFloat(quota.toString().replace(',', '.'));
-    };
-
-    const parseProbabilita = (prob) => {
-        if (!prob) return 0;
-        const cleaned = prob.toString().replace('%', '').trim();
-        return parseInt(cleaned) || 0;
-    };
-
-    const getField = (obj, ...fieldNames) => {
-        for (let name of fieldNames) {
-            if (obj[name] !== undefined && obj[name] !== null && obj[name] !== '') {
-                return obj[name];
-            }
-        }
-        return '';
-    };
-
-    const formatDateItalian = (dateStr) => {
-        const [year, month, day] = dateStr.split('-');
-        const months = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 
-                       'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
-        return `${parseInt(day)}-${months[parseInt(month) - 1]}`;
-    };
-
-    const goToPage = (pageId) => {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        window.scrollTo(0, 0);
-    };
-
-    const updateButtonStates = () => {
-        loadTipsBtn.disabled = !databaseData.length || !currentDate;
-        loadHTBtn.disabled = !databaseData.length || !currentDate;
-        analyzeBtn.disabled = !databaseData.length;
-        tradingBtn.disabled = !tipsData.length || !databaseData.length;
-        betfairBtn.disabled = (!tipsData.length && !htData.length) || !databaseData.length;
-        checkResultsBtn.disabled = !localStorage.getItem('tipsterDates');
-    };
-
-    const isBetfairLeague = (lega) => {
-        if (!lega) return false;
-        const leagueUpper = lega.toUpperCase();
-        const europeanLeagues = ['ITA', 'SERIE', 'ESP', 'LIGA', 'ENG', 'PREMIER', 'CHAMPIONSHIP', 'GER', 'BUNDESLIGA', 
-            'FRA', 'LIGUE', 'POR', 'LIGA PORTUGAL', 'NED', 'EREDIVISIE', 'GRC', 'TUR', 'SUI', 'BEL', 'SWE', 'NOR', 
-            'DEN', 'SCO', 'AUT', 'CZE', 'POL', 'ROU', 'UKR', 'SRB', 'CRO'];
-        const excludedRegions = ['BRA', 'ARG', 'CHI', 'PER', 'COL', 'USA', 'CAN', 'MEX', 'MLS', 'CHN', 'JPN', 'KOR', 
-            'IND', 'AUS', 'EGY', 'MAR', 'SA-', 'AS-', 'NA-', 'AF-', 'OC-'];
-        for (let excluded of excludedRegions) {
-            if (leagueUpper.includes(excluded)) return false;
-        }
-        for (let european of europeanLeagues) {
-            if (leagueUpper.includes(european)) return true;
-        }
-        return leagueUpper.startsWith('EU-');
-    };
-
-    // 🔥 CARICAMENTO FIREBASE
-    loadFirebaseBtn.addEventListener('click', async () => {
-        const overlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        const statusDiv = document.getElementById('firebase-status');
-        
-        overlay.style.display = 'flex';
-        loadingText.textContent = 'Connessione a Firebase...';
-        
+        let db;
         try {
-            if (!window.firebaseDB) {
-                throw new Error('Firebase non inizializzato');
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+        } catch (error) {
+            console.error("Firebase Error:", error);
+            alert("Errore Firebase. Controlla console.");
+            throw error;
+        }
+        
+        // ==================== STRATEGIE PRE-CONFIGURATE ====================
+        const PRESET_STRATEGIES = [
+            {
+                name: "🔥 Over 1.5 → Over 2.5",
+                market: "Numero di gol",
+                tip: "+1.5",
+                oddsMin: 1.15,
+                oddsMax: 1.35,
+                leagueWRMin: 75,
+                leagueWRMax: 100,
+                action: "Back Over 2.5 @2.5-3.5 al 1° gol",
+                exit: "Green su 2° gol o cash out 60'",
+                preset: true
+            },
+            {
+                name: "🛡️ Lay Under 3.5 (High Scoring)",
+                market: "Numero di gol",
+                tip: "+2.5",
+                oddsMin: 1.20,
+                oddsMax: 1.50,
+                leagueWRMin: 80,
+                leagueWRMax: 100,
+                action: "Lay Under 3.5 @1.4-1.6 se 0-0 dopo 15'",
+                exit: "Green al 1° gol o max loss HT",
+                preset: true
+            },
+            {
+                name: "⚡ Value Under in Over League",
+                market: "Numero di gol",
+                tip: "-3.5",
+                oddsMin: 1.15,
+                oddsMax: 1.40,
+                leagueWRMin: 75,
+                leagueWRMax: 100,
+                action: "Back Under 2.5 @1.8-2.2 pre-match",
+                exit: "Green se 0-0 a HT, hold fino fine",
+                preset: true
+            },
+            {
+                name: "🎯 Safe 1X2 Favorites",
+                market: "1X2",
+                tip: "1",
+                oddsMin: 1.15,
+                oddsMax: 1.35,
+                leagueWRMin: 80,
+                leagueWRMax: 100,
+                action: "Back Home Win pre-match",
+                exit: "Hold o green se +2 goal vantaggio",
+                preset: true
+            },
+            {
+                name: "💎 Doppia Chance Value",
+                market: "Doppia chance",
+                tip: "1X",
+                oddsMin: 1.10,
+                oddsMax: 1.25,
+                leagueWRMin: 80,
+                leagueWRMax: 100,
+                action: "Back 1X @1.1-1.25",
+                exit: "Hold fino fine",
+                preset: true
             }
+        ];
+        
+        // ==================== GLOBAL STATE ====================
+        let allMatches = [];
+        let dataToUpload = [];
+        let filteredMatches = [];
+        let savedFilters = [];
+        let favoriteLeagues = [];
+        let stagedFavoriteLeagues = [];
+        let sortState = { column: 'data', direction: 'desc' };
+        let selectedStrategyId = null;
+        
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loadingOverlay = document.getElementById('loading-overlay');
             
-            loadingText.textContent = 'Scaricamento partite...';
+            // Sliders strategie
+            const strategyOddsSlider = document.getElementById('strategy-odds-slider');
+            const strategyWRSlider = document.getElementById('strategy-wr-slider');
             
-            const matchesCollection = window.firebaseCollection(window.firebaseDB, 'matches');
-            const snapshot = await window.firebaseGetDocs(matchesCollection);
-            
-            loadingText.textContent = `Elaborazione ${snapshot.size} partite...`;
-            
-            databaseData = []
-	    snapshot.forEach((doc) => {
-    		const data = doc.data()
-    
-    		// Filtro campi obbligatori (come app Pronostici)
-    		if (!data.partita || !data.lega || !data.tip || !data.risultato || !data.mercato || !data.quota ||
-        data.partita.trim() === '' || data.lega.trim() === '' || data.tip.trim() === '' ||
-        data.risultato.trim() === '' || data.mercato.trim() === '') {
-        return; // Salta questo record
-    }
-    
-    databaseData.push({
-                    data: data.data || '',
-                    lega: data.lega || '',
-                    partita: data.partita || '',
-                    risultato: data.risultato || '',
-                    probabilita: data.probabilita || '',
-                    mercato: data.mercato || '',
-                    tip: data.tip || '',
-                    quota: data.quota || '',
-                    esito: data.esito || ''
-                });
+            noUiSlider.create(strategyOddsSlider, {
+                start: [1.15, 1.35],
+                connect: true,
+                range: { min: 1.01, max: 5.0 },
+                step: 0.01,
+                tooltips: false
             });
             
-            localStorage.setItem('cachedDatabase', JSON.stringify(databaseData));
-            localStorage.setItem('cacheTimestamp', Date.now().toString());
+            noUiSlider.create(strategyWRSlider, {
+                start: [75, 100],
+                connect: true,
+                range: { min: 50, max: 100 },
+                step: 1,
+                tooltips: false
+            });
             
-            overlay.style.display = 'none';
+            strategyOddsSlider.noUiSlider.on('update', (values) => {
+                document.getElementById('strategy-odds-value').textContent = `${parseFloat(values[0]).toFixed(2)} - ${parseFloat(values[1]).toFixed(2)}`;
+            });
             
-            updateDatabaseStats();
-            updateButtonStates();
+            strategyWRSlider.noUiSlider.on('update', (values) => {
+                document.getElementById('strategy-wr-value').textContent = `${parseInt(values[0])}% - ${parseInt(values[1])}%`;
+            });
             
-            statusDiv.innerHTML = `<strong>✅ Firebase Connesso!</strong><br>Caricati ${databaseData.length} match dall'archivio storico.<br><small>Cache locale salvata - prossimo caricamento sarà istantaneo!</small>`;
-            statusDiv.className = 'alert-success';
+            // UI Elements
+            const pages = document.querySelectorAll('.page');
+            const navButtons = document.querySelectorAll('.nav-button');
+            const filterDateStart = document.getElementById('filter-date-start');
+            const filterDateEnd = document.getElementById('filter-date-end');
+            const leagueFiltersGrid = document.getElementById('league-filters-grid');
+            const tipFiltersContainer = document.getElementById('tip-filters-container');
+            const probabilitySliderEl = document.getElementById('probability-slider');
+            const oddsSliderEl = document.getElementById('odds-slider');
+            const searchInput = document.getElementById('search-input');
+            const sortableHeaders = document.querySelectorAll('.sortable-header');
             
-            loadFirebaseBtn.textContent = '✅ Database Caricato';
-            loadFirebaseBtn.disabled = true;
+            // Sliders
+            noUiSlider.create(probabilitySliderEl, {
+                start: [0, 100],
+                connect: true,
+                range: { min: 0, max: 100 },
+                step: 1,
+                tooltips: false
+            });
             
-        } catch (error) {
-            overlay.style.display = 'none';
-            console.error('Errore Firebase:', error);
-            statusDiv.innerHTML = `<strong>❌ Errore Firebase</strong><br>${error.message}<br><small>Usa il pulsante "Carica CSV" come fallback.</small>`;
-            statusDiv.className = 'alert-warning';
-        }
-    });
-
-    // 🔄 CARICA DA CACHE
-    window.addEventListener('load', () => {
-        const cached = localStorage.getItem('cachedDatabase');
-        const cacheTime = localStorage.getItem('cacheTimestamp');
-        const statusDiv = document.getElementById('firebase-status');
-        
-        if (cached && cacheTime) {
-            const hoursSinceCache = (Date.now() - parseInt(cacheTime)) / (1000 * 60 * 60);
+            noUiSlider.create(oddsSliderEl, {
+                start: [1.0, 10.0],
+                connect: true,
+                range: { min: 1.0, max: 10.0 },
+                step: 0.01,
+                tooltips: false
+            });
             
-            if (hoursSinceCache < 24) {
-                databaseData = JSON.parse(cached);
-                updateDatabaseStats();
-                updateButtonStates();
+            probabilitySliderEl.noUiSlider.on('update', (values) => {
+                document.getElementById('probability-value').textContent = `${parseInt(values[0])}% - ${parseInt(values[1])}%`;
+            });
+            
+            probabilitySliderEl.noUiSlider.on('set', () => {
+                applyFiltersAndRender();
+            });
+            
+            oddsSliderEl.noUiSlider.on('update', (values) => {
+                document.getElementById('odds-value').textContent = `${parseFloat(values[0]).toFixed(2)} - ${parseFloat(values[1]).toFixed(2)}`;
+            });
+            
+            oddsSliderEl.noUiSlider.on('set', () => {
+                applyFiltersAndRender();
+            });
+            
+            // Buttons
+            const resetFiltersBtn = document.getElementById('reset-filters-btn');
+            const resetLeaguesBtn = document.getElementById('reset-leagues-btn');
+            const resetTipsBtn = document.getElementById('reset-tips-btn');
+            const exportFilteredBtn = document.getElementById('export-filtered-btn');
+            const saveFilterBtn = document.getElementById('save-filter-btn');
+            const loadFilterBtn = document.getElementById('load-filter-btn');
+            const deleteFilterBtn = document.getElementById('delete-filter-btn');
+            const updateFavoritesBtn = document.getElementById('update-favorites-btn');
+            
+            // Dates
+            const today = new Date();
+            filterDateEnd.value = today.toISOString().split('T')[0];
+            const threeMonthsAgo = new Date(today);
+            threeMonthsAgo.setMonth(today.getMonth() - 3);
+            filterDateStart.value = threeMonthsAgo.toISOString().split('T')[0];
+            
+            document.getElementById('tips-date').value = today.toISOString().split('T')[0];
+            document.getElementById('results-date').value = today.toISOString().split('T')[0];
+            document.getElementById('ranking-date').value = today.toISOString().split('T')[0];
+            
+            // ==================== NAVIGATION ====================
+            function showPage(pageId) {
+                pages.forEach(p => p.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
                 
-                statusDiv.innerHTML = `<strong>💾 Database Caricato da Cache</strong><br>${databaseData.length} partite disponibili.<br><small>Ultima sincronizzazione: ${Math.round(hoursSinceCache)} ore fa. Clicca "Carica da Firebase" per aggiornare.</small>`;
-                statusDiv.className = 'alert-info';
-            } else {
-                statusDiv.innerHTML = `<strong>⚠️ Cache Scaduta</strong><br>Clicca "Carica da Firebase" per aggiornare il database.`;
-                statusDiv.className = 'alert-warning';
+                navButtons.forEach(btn => {
+                    if (btn.dataset.page === pageId) {
+                        btn.classList.remove('bg-gray-200', 'text-gray-700');
+                        btn.classList.add('bg-blue-600', 'text-white');
+                    } else {
+                        btn.classList.remove('bg-blue-600', 'text-white');
+                        btn.classList.add('bg-gray-200', 'text-gray-700');
+                    }
+                });
+                
+                if (pageId === 'page-oggi') updateTipsDaysList();
+                if (pageId === 'page-risultati') updateResultsDaysList();
+                if (pageId === 'page-strategie') loadStrategies();
             }
-        }
-    });
-
-    // CARICA CSV FALLBACK
-    dbFileInput.addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: true,
-            complete: results => {
-                databaseData = results.data;
-                updateDatabaseStats();
-                updateButtonStates();
-                document.getElementById('firebase-status').innerHTML = `<strong>📁 Database CSV Caricato</strong><br>${databaseData.length} partite.`;
-                document.getElementById('firebase-status').className = 'alert-success';
-                alert(`✅ CSV caricato: ${databaseData.length} partite`);
+            
+            navButtons.forEach(btn => btn.addEventListener('click', (e) => showPage(e.currentTarget.dataset.page)));
+            
+            // ==================== LOAD DATA ====================
+            async function loadAllMatches() {
+                try {
+                    const matchesCol = collection(db, "matches");
+                    const snapshot = await getDocs(matchesCol);
+                    allMatches = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    allMatches.sort((a, b) => new Date(b.data || '2000-01-01') - new Date(a.data || '2000-01-01'));
+                } catch (e) {
+                    console.error('Error loading matches:', e);
+                    allMatches = [];
+                }
             }
-        });
-    });
-
-    dateInput.addEventListener('change', e => {
-        currentDate = e.target.value;
-        updateButtonStates();
-    });
-
-    tipsFileInput.addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: true,
-            complete: results => {
-                tipsData = results.data;
-                saveTipsToCache(currentDate, tipsData);
-                updateButtonStates();
-                alert(`✅ Tips caricati: ${tipsData.length} partite`);
+            
+            function normalizeLega(lega) {
+                return lega.replace(/\s+/g, ' ').trim();
             }
-        });
-    });
-
-    htFileInput.addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: true,
-            complete: results => {
-                htData = results.data;
-                updateButtonStates();
-                alert(`✅ Tips HT caricati: ${htData.length} partite`);
+            
+            // ==================== FILTERS ====================
+            function setupFilters() {
+                searchInput.addEventListener('input', applyFiltersAndRender);
+                filterDateStart.addEventListener('change', applyFiltersAndRender);
+                filterDateEnd.addEventListener('change', applyFiltersAndRender);
             }
-        });
-    });
-
-    const updateDatabaseStats = () => {
-        const total = databaseData.length;
-        const wins = databaseData.filter(r => r.esito === 'Vinto').length;
-        const losses = databaseData.filter(r => r.esito === 'Perso').length;
-        const winrate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
-        document.getElementById('total-matches').textContent = total;
-        document.getElementById('total-wins').textContent = wins;
-        document.getElementById('total-losses').textContent = losses;
-        document.getElementById('total-winrate').textContent = winrate + '%';
-    };
-
-    const saveTipsToCache = (date, tips) => {
-        const dates = JSON.parse(localStorage.getItem('tipsterDates') || '[]');
-        if (!dates.includes(date)) {
-            dates.push(date);
-            localStorage.setItem('tipsterDates', JSON.stringify(dates));
-        }
-        localStorage.setItem(`tips_${date}`, JSON.stringify(tips));
-        populateDateSelector();
-    };
-
-    const populateDateSelector = () => {
-        const dates = JSON.parse(localStorage.getItem('tipsterDates') || '[]');
-        const selector = document.getElementById('date-selector');
-        selector.innerHTML = '<option value="">Seleziona una data</option>';
-        dates.forEach(d => {
-            const option = document.createElement('option');
-            option.value = d;
-            option.textContent = formatDateItalian(d);
-            selector.appendChild(option);
-        });
-    };
-
-    // ANALISI DATABASE
-    analyzeBtn.addEventListener('click', () => {
-        const leagueStats = {};
-        databaseData.forEach(match => {
-            const league = match.lega || 'Sconosciuta';
-            const tip = match.tip || 'N/D';
-            if (!leagueStats[league]) {
-                leagueStats[league] = { total: 0, wins: 0, tips: {} };
+            
+            function normalizeLega(lega) {
+                return lega.replace(/\s+/g, ' ').trim();
             }
-            leagueStats[league].total++;
-            if (match.esito === 'Vinto') leagueStats[league].wins++;
-            if (!leagueStats[league].tips[tip]) {
-                leagueStats[league].tips[tip] = { total: 0, wins: 0 };
+            
+            function categorizeLeague(leagueName) {
+                if (favoriteLeagues.includes(leagueName)) return '⭐ Preferiti';
+                if (leagueName.startsWith('EU-Champions League') || leagueName.startsWith('EU-Europa League') || leagueName.startsWith('EU-Europa Conference League')) return 'Coppe Europee';
+                if (leagueName.includes('WCQ') || leagueName.endsWith('-NAZ')) return 'Competizioni Nazionali';
+                if (/(Cup|Coppa|Copa|Beker|Taça)/i.test(leagueName)) return 'Coppe Nazionali';
+                
+                const continentMatch = leagueName.match(/^(AS|AF|NA|SA|OC)-/);
+                if (continentMatch) return 'Resto del Mondo';
+                
+                const europeanPrefixes = ['EU-'];
+                if (europeanPrefixes.some(prefix => leagueName.startsWith(prefix))) return 'Europa';
+                
+                return 'Non Classificati';
             }
-            leagueStats[league].tips[tip].total++;
-            if (match.esito === 'Vinto') leagueStats[league].tips[tip].wins++;
-        });
-
-        const qualifyingLeagues = [];
-        Object.entries(leagueStats).forEach(([league, stats]) => {
-            if (stats.total >= 20) {
-                const winrate = (stats.wins / stats.total * 100);
-                if (winrate > 85) {
-                    const qualifyingTips = [];
-                    Object.entries(stats.tips).forEach(([tip, tipStats]) => {
-                        const tipWinrate = (tipStats.wins / tipStats.total * 100);
-                        if (tipWinrate > 85) {
-                            qualifyingTips.push({ text: `${tip}: ${tipStats.wins}/${tipStats.total} (${tipWinrate.toFixed(1)}%)` });
+            
+            function populateFilters() {
+                // Leagues categorizzate
+                const leagues = [...new Set(allMatches.map(m => m.lega))];
+                const categorized = leagues.reduce((acc, league) => {
+                    const category = categorizeLeague(league);
+                    if (!acc[category]) acc[category] = [];
+                    acc[category].push(league);
+                    return acc;
+                }, {});
+                
+                const categoryOrder = ['⭐ Preferiti', 'Europa', 'Resto del Mondo', 'Coppe Europee', 'Competizioni Nazionali', 'Coppe Nazionali', 'Non Classificati'];
+                leagueFiltersGrid.innerHTML = '';
+                
+                categoryOrder.forEach(category => {
+                    if (!categorized[category] || categorized[category].length === 0) return;
+                    
+                    const box = document.createElement('div');
+                    box.className = 'league-category-box bg-gray-50 border rounded-lg p-2 flex flex-col h-56';
+                    
+                    const leaguesInCategory = categorized[category].sort().map(league => `
+                        <div class="flex items-center justify-between p-1 rounded hover:bg-blue-50 group">
+                            <label class="flex items-center space-x-2 cursor-pointer flex-grow truncate">
+                                <input type="checkbox" value="${league}" class="league-checkbox form-checkbox h-4 w-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700 truncate" title="${league}">${league}</span>
+                            </label>
+                            <i class="fa-solid fa-star favorite-star ${stagedFavoriteLeagues.includes(league) ? 'is-favorite' : ''}" data-league="${league}"></i>
+                        </div>`).join('');
+                    
+                    box.innerHTML = `
+                        <h4 class="font-semibold text-xs uppercase text-gray-500 mb-1 sticky top-0 bg-gray-50 py-1">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="category-select-all form-checkbox h-4 w-4 rounded text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span>${category}</span>
+                            </label>
+                        </h4>
+                        <div class="flex-grow custom-scrollbar overflow-y-auto space-y-1 pl-2">${leaguesInCategory}</div>`;
+                    
+                    leagueFiltersGrid.appendChild(box);
+                });
+                
+                leagueFiltersGrid.querySelectorAll('.league-checkbox').forEach(cb => {
+                    cb.addEventListener('change', applyFiltersAndRender);
+                });
+                
+                leagueFiltersGrid.querySelectorAll('.category-select-all').forEach(masterCb => {
+                    masterCb.addEventListener('change', (e) => {
+                        const isChecked = e.target.checked;
+                        const categoryDiv = e.target.closest('.league-category-box');
+                        categoryDiv.querySelectorAll('.league-checkbox').forEach(leagueCb => {
+                            leagueCb.checked = isChecked;
+                        });
+                        applyFiltersAndRender();
+                    });
+                });
+                
+                leagueFiltersGrid.querySelectorAll('.favorite-star').forEach(star => {
+                    star.addEventListener('click', handleFavoriteToggle);
+                });
+                
+                // Predefined Tips by Market
+                const predefinedTips = {
+                    '1X2': ['1', 'X', '2'],
+                    'Doppia Chance': ['1X', '12', 'X2'],
+                    'Under/Over': ['-1.5', '+1.5', '-2.5', '+2.5', '-3.5', '+3.5'],
+                    'Gol/No Gol': ['Sì', 'No']
+                };
+                
+                tipFiltersContainer.innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-4">${Object.entries(predefinedTips).map(([market, tips]) => {
+                    const tipButtons = tips.map(tip => `
+                        <button data-tip="${tip}" class="tip-button w-full px-2 py-1 text-xs rounded-full border border-gray-300 bg-white hover:bg-gray-100 transition-colors">${tip}</button>
+                    `).join('');
+                    return `
+                        <div>
+                            <h4 class="font-semibold text-xs uppercase text-gray-500 mb-2">${market}</h4>
+                            <div class="flex flex-wrap gap-2">${tipButtons}</div>
+                        </div>
+                    `;
+                }).join('')}</div>`;
+                
+                tipFiltersContainer.querySelectorAll('.tip-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        btn.classList.toggle('active');
+                        applyFiltersAndRender();
+                    });
+                });
+            }
+            
+            function applyFiltersAndRender() {
+                const selectedLeagues = Array.from(leagueFiltersGrid.querySelectorAll('input.league-checkbox:checked')).map(cb => cb.value);
+                const selectedTips = Array.from(tipFiltersContainer.querySelectorAll('.tip-button.active')).map(btn => btn.dataset.tip);
+                const [probMin, probMax] = probabilitySliderEl.noUiSlider.get().map(v => parseInt(v));
+                const [oddsMin, oddsMax] = oddsSliderEl.noUiSlider.get().map(v => parseFloat(v));
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const dateStart = filterDateStart.value ? new Date(filterDateStart.value) : null;
+                const dateEnd = filterDateEnd.value ? new Date(filterDateEnd.value) : null;
+                
+                filteredMatches = allMatches.filter(m => {
+                    if (selectedLeagues.length > 0 && !selectedLeagues.includes(m.lega)) return false;
+                    if (selectedTips.length > 0 && !selectedTips.includes(m.tip)) return false;
+                    if (m.probabilita < probMin || m.probabilita > probMax) return false;
+                    if (m.quota < oddsMin || m.quota > oddsMax) return false;
+                    
+                    if (searchTerm) {
+                        const matchText = `${m.lega} ${m.partita}`.toLowerCase();
+                        if (!matchText.includes(searchTerm)) return false;
+                    }
+                    
+                    if (dateStart || dateEnd) {
+                        const matchDate = new Date(m.data || '2000-01-01');
+                        if (dateStart && matchDate < dateStart) return false;
+                        if (dateEnd && matchDate > dateEnd) return false;
+                    }
+                    
+                    return true;
+                });
+                
+                sortAndRenderMatches();
+                updateStatsDisplay(filteredMatches);
+            }
+            
+            function updateStatsDisplay(matches) {
+                // SOLO partite con esito (vinte o perse)
+                const matchesWithOutcome = matches.filter(m => m.esito === 'Vinto' || m.esito === 'Perso');
+                const won = matchesWithOutcome.filter(m => m.esito === 'Vinto').length;
+                const lost = matchesWithOutcome.filter(m => m.esito === 'Perso').length;
+                const winRate = matchesWithOutcome.length > 0 ? (won / matchesWithOutcome.length) * 100 : 0;
+                const totalStake = matchesWithOutcome.length;
+                const profit = matchesWithOutcome.reduce((acc, m) => acc + (m.esito === 'Vinto' ? m.quota - 1 : -1), 0);
+                const roi = totalStake > 0 ? (profit / totalStake * 100) : 0;
+                
+                const statsContainer = document.getElementById('stats-container');
+                statsContainer.innerHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold text-blue-600">${matchesWithOutcome.length}</div><div class="text-xs text-gray-600">Totale</div></div>
+                    <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold text-green-600">${won}</div><div class="text-xs text-gray-600">Vinte</div></div>
+                    <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold text-red-600">${lost}</div><div class="text-xs text-gray-600">Perse</div></div>
+                    <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold ${winRate >= 70 ? 'text-green-600' : 'text-red-600'}">${winRate.toFixed(1)}%</div><div class="text-xs text-gray-600">Winrate</div></div>
+                    <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold ${roi >= 0 ? 'text-green-600' : 'text-red-600'}">${roi.toFixed(1)}%</div><div class="text-xs text-gray-600">ROI</div></div>
+                `;
+            }
+            
+            function sortAndRenderMatches() {
+                const { column, direction } = sortState;
+                const sorted = [...filteredMatches].sort((a, b) => {
+                    const valA = a[column];
+                    const valB = b[column];
+                    let comparison = 0;
+                    if (typeof valA === 'string') comparison = valA.localeCompare(valB);
+                    else comparison = valA - valB;
+                    return direction === 'asc' ? comparison : -comparison;
+                });
+                renderMatchList(sorted);
+                updateSortIcons();
+            }
+            
+            function renderMatchList(matches) {
+                const tbody = document.getElementById('match-list-body');
+                document.getElementById('filtered-count').textContent = matches.length;
+                
+                const displayMatches = matches.slice(0, 200);
+                
+                tbody.innerHTML = displayMatches.map(m => {
+                    const esitoClass = m.esito === 'Vinto' ? 'text-green-600 font-bold' : m.esito === 'Perso' ? 'text-red-600 font-bold' : '';
+                    return `
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 text-xs">${m.data}</td>
+                            <td class="p-3 text-xs">${m.lega}</td>
+                            <td class="p-3 text-xs font-medium">${m.partita}</td>
+                            <td class="p-3 text-xs">${m.mercato}</td>
+                            <td class="p-3 text-xs font-semibold">${m.tip}</td>
+                            <td class="p-3 text-xs text-center">${m.risultato || '-'}</td>
+                            <td class="p-3 text-xs text-center">${m.probabilita}%</td>
+                            <td class="p-3 text-xs text-center font-bold">${m.quota}</td>
+                            <td class="p-3 text-xs text-center ${esitoClass}">${m.esito || '-'}</td>
+                        </tr>
+                    `;
+                }).join('');
+                
+                if (matches.length > 200) {
+                    tbody.innerHTML += `<tr><td colspan="9" class="p-3 text-center text-sm text-gray-500">Mostrati primi 200 di ${matches.length}</td></tr>`;
+                }
+            }
+            
+            function updateSortIcons() {
+                document.querySelectorAll('.sortable-header').forEach(header => {
+                    const icon = header.querySelector('.sort-icon');
+                    if (header.dataset.sort === sortState.column) {
+                        header.classList.add('active');
+                        if (sortState.direction === 'asc') {
+                            icon.classList.remove('fa-sort', 'fa-sort-down');
+                            icon.classList.add('fa-sort-up');
+                        } else {
+                            icon.classList.remove('fa-sort', 'fa-sort-up');
+                            icon.classList.add('fa-sort-down');
+                        }
+                    } else {
+                        header.classList.remove('active');
+                        icon.classList.remove('fa-sort-up', 'fa-sort-down');
+                        icon.classList.add('fa-sort');
+                    }
+                });
+            }
+            
+            sortableHeaders.forEach(header => header.addEventListener('click', (e) => {
+                const newColumn = e.currentTarget.dataset.sort;
+                if (sortState.column === newColumn) {
+                    sortState.direction = sortState.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortState.column = newColumn;
+                    sortState.direction = ['data', 'probabilita', 'quota'].includes(newColumn) ? 'desc' : 'asc';
+                }
+                sortAndRenderMatches();
+            }));
+            
+            // ==================== FAVORITES ====================
+            const loadFavorites = async () => {
+                try {
+                    const favDocRef = doc(db, "preferences", "favoriteLeagues");
+                    const docSnap = await getDoc(favDocRef);
+                    if (docSnap.exists()) {
+                        favoriteLeagues = docSnap.data().leagues || [];
+                        stagedFavoriteLeagues = [...favoriteLeagues];
+                    }
+                } catch(e) { console.error("Error:", e); }
+            };
+            
+            const handleUpdateFavorites = async () => {
+                favoriteLeagues = [...stagedFavoriteLeagues];
+                try {
+                    await setDoc(doc(db, "preferences", "favoriteLeagues"), { leagues: favoriteLeagues });
+                    populateFilters();
+                    applyFiltersAndRender();
+                    showModal("Successo", "Preferiti aggiornati!", () => {});
+                } catch (e) {
+                    showModal("Errore", `Errore: ${e.message}`, () => {});
+                }
+            };
+            
+            const handleFavoriteToggle = (e) => {
+                const leagueName = e.target.dataset.league;
+                if (stagedFavoriteLeagues.includes(leagueName)) {
+                    stagedFavoriteLeagues = stagedFavoriteLeagues.filter(l => l !== leagueName);
+                } else {
+                    stagedFavoriteLeagues.push(leagueName);
+                }
+                e.target.classList.toggle('is-favorite');
+            };
+            
+            updateFavoritesBtn.addEventListener('click', handleUpdateFavorites);
+            
+            // ==================== SAVED FILTERS ====================
+            const loadSavedFilters = async () => {
+                const presetsCollection = collection(db, "presets");
+                const snapshot = await getDocs(presetsCollection);
+                savedFilters = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const select = document.getElementById('saved-filters-select');
+                select.innerHTML = '<option value="">Seleziona...</option>' + savedFilters.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+            };
+            
+            const handleSaveFilter = async () => {
+                const filterName = document.getElementById('new-filter-name').value.trim();
+                if (!filterName) {
+                    showModal("Errore", "Inserisci nome strategia.", () => {});
+                    return;
+                }
+                const filterState = {
+                    leagues: Array.from(leagueFiltersGrid.querySelectorAll('input.league-checkbox:checked')).map(cb => cb.value),
+                    tips: Array.from(tipFiltersContainer.querySelectorAll('.tip-button.active')).map(btn => btn.dataset.tip),
+                    prob: probabilitySliderEl.noUiSlider.get(),
+                    odds: oddsSliderEl.noUiSlider.get(),
+                    startDate: filterDateStart.value,
+                    endDate: filterDateEnd.value
+                };
+                try {
+                    await addDoc(collection(db, "presets"), { name: filterName, state: filterState });
+                    showModal("Successo", `Strategia "${filterName}" salvata!`, () => {});
+                    document.getElementById('new-filter-name').value = '';
+                    await loadSavedFilters();
+                } catch(e) {
+                    showModal("Errore", `Errore: ${e.message}`, () => {});
+                }
+            };
+            
+            const handleLoadFilter = () => {
+                const selectedId = document.getElementById('saved-filters-select').value;
+                if (!selectedId) return;
+                const selectedFilter = savedFilters.find(f => f.id === selectedId);
+                if (!selectedFilter) return;
+                
+                leagueFiltersGrid.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                tipFiltersContainer.querySelectorAll('.tip-button').forEach(btn => btn.classList.remove('active'));
+                
+                selectedFilter.state.leagues.forEach(league => {
+                    const cb = leagueFiltersGrid.querySelector(`input.league-checkbox[value="${league}"]`);
+                    if (cb) cb.checked = true;
+                });
+                selectedFilter.state.tips.forEach(tip => {
+                    const btn = tipFiltersContainer.querySelector(`.tip-button[data-tip="${tip}"]`);
+                    if (btn) btn.classList.add('active');
+                });
+                
+                probabilitySliderEl.noUiSlider.set(selectedFilter.state.prob);
+                oddsSliderEl.noUiSlider.set(selectedFilter.state.odds);
+                filterDateStart.value = selectedFilter.state.startDate;
+                filterDateEnd.value = selectedFilter.state.endDate;
+                
+                applyFiltersAndRender();
+            };
+            
+            const handleDeleteFilter = async () => {
+                const selectedId = document.getElementById('saved-filters-select').value;
+                if (!selectedId) return;
+                if (!confirm('Eliminare questa strategia?')) return;
+                try {
+                    await deleteDoc(doc(db, "presets", selectedId));
+                    showModal("Successo", "Strategia eliminata!", () => {});
+                    await loadSavedFilters();
+                } catch(e) {
+                    showModal("Errore", `Errore: ${e.message}`, () => {});
+                }
+            };
+            
+            saveFilterBtn.addEventListener('click', handleSaveFilter);
+            loadFilterBtn.addEventListener('click', handleLoadFilter);
+            deleteFilterBtn.addEventListener('click', handleDeleteFilter);
+            
+            // ==================== RESET FILTERS ====================
+            resetLeaguesBtn.addEventListener('click', () => {
+                leagueFiltersGrid.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                applyFiltersAndRender();
+            });
+            
+            resetTipsBtn.addEventListener('click', () => {
+                tipFiltersContainer.querySelectorAll('.tip-button').forEach(btn => btn.classList.remove('active'));
+                applyFiltersAndRender();
+            });
+            
+            resetFiltersBtn.addEventListener('click', () => {
+                filterDateStart.value = '';
+                filterDateEnd.value = '';
+                searchInput.value = '';
+                resetLeaguesBtn.click();
+                resetTipsBtn.click();
+                const probRange = probabilitySliderEl.noUiSlider.options.range;
+                const oddsRange = oddsSliderEl.noUiSlider.options.range;
+                probabilitySliderEl.noUiSlider.set([probRange.min, probRange.max]);
+                oddsSliderEl.noUiSlider.set([oddsRange.min, oddsRange.max]);
+                applyFiltersAndRender();
+            });
+            
+            // ==================== EXPORT ====================
+            exportFilteredBtn.addEventListener('click', () => {
+                if (filteredMatches.length === 0) {
+                    showModal("Errore", "Nessun dato da esportare.", () => {});
+                    return;
+                }
+                const headers = ['data', 'lega', 'partita', 'risultato', 'probabilita', 'mercato', 'tip', 'quota', 'esito'];
+                const csv = Papa.unparse(filteredMatches.map(d => ({...d, quota: String(d.quota).replace('.',',')})), { columns: headers });
+                const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = 'tipster_filtrati.csv';
+                link.click();
+            });
+            
+            // ==================== UPLOAD TIPS ====================
+            document.getElementById('tips-csv-file').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const parsed = parseCSV(event.target.result);
+                    const matchDate = document.getElementById('tips-date').value;
+                    if (!matchDate) {
+                        alert('Seleziona data!');
+                        return;
+                    }
+                    processAndPreviewCSV(parsed, matchDate, 'tips');
+                };
+                reader.readAsText(file);
+            });
+            
+            // ==================== UPLOAD RISULTATI ====================
+            document.getElementById('results-csv-file').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const parsed = parseCSV(event.target.result);
+                    const matchDate = document.getElementById('results-date').value;
+                    if (!matchDate) {
+                        alert('Seleziona data!');
+                        return;
+                    }
+                    processAndPreviewCSV(parsed, matchDate, 'results');
+                };
+                reader.readAsText(file);
+            });
+            
+            function parseCSV(text) {
+                const lines = text.split('\n');
+                const headers = lines[0].split(',').map(h => h.trim().replace(/['"]/g, ''));
+                const data = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const values = lines[i].split(',').map(v => v.trim().replace(/['"]/g, ''));
+                    const row = {};
+                    headers.forEach((h, idx) => row[h] = values[idx]);
+                    data.push(row);
+                }
+                return data;
+            }
+            
+            function processAndPreviewCSV(parsedData, matchDate, type) {
+                const requiredFields = ['Lega', 'Partita', 'Probabilità', 'Mercato', 'Tip', 'Quota'];
+                let potentialMatches = [];
+                let incomplete = 0;
+                let duplicates = 0;
+                let updates = 0;
+                
+                for (const row of parsedData) {
+                    if (!requiredFields.every(f => row[f] && String(row[f]).trim() !== '')) {
+                        incomplete++;
+                        continue;
+                    }
+                    
+                    const matchData = {
+                        data: matchDate,
+                        lega: normalizeLega(String(row.Lega).trim()),
+                        partita: String(row.Partita).trim(),
+                        risultato: type === 'results' ? (String(row.Risultato || '').trim()) : '',
+                        probabilita: parseInt(String(row['Probabilità']).replace('%', '').trim()) || 0,
+                        mercato: String(row.Mercato).trim(),
+                        tip: String(row.Tip).trim(),
+                        quota: parseFloat(String(row.Quota).replace(',', '.').trim()) || 0
+                    };
+                    
+                    // Calcola esito se risultati
+                    if (type === 'results' && matchData.risultato) {
+                        matchData.esito = calculateOutcome(matchData);
+                    }
+                    
+                    // CONTROLLO DUPLICATI
+                    const exists = allMatches.find(m => 
+                        m.data === matchData.data &&
+                        m.partita === matchData.partita &&
+                        m.tip === matchData.tip
+                    );
+                    
+                    if (exists) {
+                        if (type === 'results' && matchData.risultato) {
+                            // Se partita esiste GIÀ CON risultato → duplicato vero
+                            if (exists.risultato && exists.risultato.trim() !== '') {
+                                duplicates++;
+                            } else {
+                                // Partita esiste senza risultato → UPDATE
+                                matchData.id = exists.id;
+                                updates++;
+                                potentialMatches.push(matchData);
+                            }
+                        } else {
+                            // Duplicato vero (tips duplicati o altro)
+                            duplicates++;
+                        }
+                    } else {
+                        // Nuova partita
+                        potentialMatches.push(matchData);
+                    }
+                }
+                
+                dataToUpload = potentialMatches;
+                const previewId = type === 'tips' ? 'tips-upload-preview' : 'results-upload-preview';
+                const uploadPreview = document.getElementById(previewId);
+                
+                uploadPreview.classList.remove('hidden');
+                uploadPreview.innerHTML = `
+                    <p><strong>Riepilogo:</strong></p>
+                    <ul class="list-disc list-inside text-sm mt-2">
+                        <li>Partite totali file: ${parsedData.length}</li>
+                        <li>Scartate (incomplete): ${incomplete}</li>
+                        ${type === 'results' ? `<li class="text-green-600">Da aggiornare (esistenti): ${updates}</li>` : ''}
+                        ${duplicates > 0 ? `<li class="text-orange-600">Duplicate (ignorate): ${duplicates}</li>` : ''}
+                        <li class="font-bold text-blue-600">Da caricare (nuove): ${dataToUpload.length - updates}</li>
+                        <li class="font-bold text-purple-600">Totale operazioni: ${dataToUpload.length}</li>
+                    </ul>
+                    <button id="confirm-${type}-upload-btn" class="mt-4 w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700">
+                        Conferma e Carica
+                    </button>
+                `;
+                
+                document.getElementById(`confirm-${type}-upload-btn`).addEventListener('click', () => handleUploadConfirmed(type));
+            }
+            
+            async function handleUploadConfirmed(type) {
+                if (dataToUpload.length === 0) return;
+                
+                const matchesCollection = collection(db, "matches");
+                const batch = writeBatch(db);
+                
+                dataToUpload.forEach(match => {
+                    if (match.id) {
+                        // Update esistente
+                        batch.update(doc(matchesCollection, match.id), match);
+                    } else {
+                        // Nuovo
+                        const docRef = doc(matchesCollection);
+                        batch.set(docRef, match);
+                    }
+                });
+                
+                try {
+                    await batch.commit();
+                    showModal("Successo", `${dataToUpload.length} partite caricate/aggiornate!`, () => {});
+                    
+                    const previewId = type === 'tips' ? 'tips-upload-preview' : 'results-upload-preview';
+                    document.getElementById(previewId).classList.add('hidden');
+                    
+                    if (type === 'tips') document.getElementById('tips-csv-file').value = '';
+                    else document.getElementById('results-csv-file').value = '';
+                    
+                    await loadAllMatches();
+                    populateFilters();
+                    applyFiltersAndRender();
+                    
+                    if (type === 'tips') updateTipsDaysList();
+                    else updateResultsDaysList();
+                } catch(e) {
+                    showModal("Errore", `Errore: ${e.message}`, () => {});
+                }
+            }
+            
+            function calculateOutcome(match) {
+                const { mercato, tip, risultato } = match;
+                if (!risultato || !mercato || !tip) return '';
+                const scores = risultato.split('-').map(s => parseInt(s.trim()));
+                if (scores.length !== 2 || isNaN(scores[0]) || isNaN(scores[1])) return '';
+                
+                const [homeScore, awayScore] = scores;
+                const totalGoals = homeScore + awayScore;
+                const normalizedTip = tip.toUpperCase().replace(/\s/g, '');
+                
+                try {
+                    switch (mercato.toLowerCase().trim()) {
+                        case '1x2':
+                            if (normalizedTip === '1' && homeScore > awayScore) return 'Vinto';
+                            if (normalizedTip === 'X' && homeScore === awayScore) return 'Vinto';
+                            if (normalizedTip === '2' && homeScore < awayScore) return 'Vinto';
+                            return 'Perso';
+                        case 'doppia chance':
+                            if (normalizedTip === '1X' && homeScore >= awayScore) return 'Vinto';
+                            if (normalizedTip === 'X2' && homeScore <= awayScore) return 'Vinto';
+                            if (normalizedTip === '12' && homeScore !== awayScore) return 'Vinto';
+                            return 'Perso';
+                        case 'numero di gol':
+                            const goalValue = parseFloat(normalizedTip.replace(/[+-]/, '').trim());
+                            if (normalizedTip.startsWith('+') && totalGoals > goalValue) return 'Vinto';
+                            if (normalizedTip.startsWith('-') && totalGoals < goalValue) return 'Vinto';
+                            return 'Perso';
+                        case 'gol/no gol':
+                            if ((normalizedTip === 'GOL' || normalizedTip === 'SI' || normalizedTip === 'SÌ') && (homeScore > 0 && awayScore > 0)) return 'Vinto';
+                            if ((normalizedTip === 'NOGOL' || normalizedTip === 'NO') && (homeScore === 0 || awayScore === 0)) return 'Vinto';
+                            return 'Perso';
+                        default: return '';
+                    }
+                } catch (e) {
+                    console.error('Error:', e);
+                    return '';
+                }
+            }
+            
+            // ==================== CANCELLAZIONE GIORNATE ====================
+            function updateTipsDaysList() {
+                const tipsDates = [...new Set(allMatches.filter(m => !m.risultato).map(m => m.data))].sort().reverse();
+                const select = document.getElementById('delete-tips-date');
+                select.innerHTML = '<option value="">Seleziona una data...</option>' + 
+                    tipsDates.map(d => {
+                        const count = allMatches.filter(m => m.data === d && !m.risultato).length;
+                        return `<option value="${d}">${d} (${count} partite)</option>`;
+                    }).join('');
+                
+                document.getElementById('tips-days-info').textContent = `Giornate disponibili: ${tipsDates.length}`;
+            }
+            
+            function updateResultsDaysList() {
+                const resultsDates = [...new Set(allMatches.filter(m => m.risultato).map(m => m.data))].sort().reverse();
+                const select = document.getElementById('delete-results-date');
+                select.innerHTML = '<option value="">Seleziona una data...</option>' + 
+                    resultsDates.map(d => {
+                        const count = allMatches.filter(m => m.data === d && m.risultato).length;
+                        return `<option value="${d}">${d} (${count} risultati)</option>`;
+                    }).join('');
+                
+                document.getElementById('results-days-info').textContent = `Giornate con risultati: ${resultsDates.length}`;
+            }
+            
+            document.getElementById('delete-tips-day-btn').addEventListener('click', async () => {
+                const selectedDate = document.getElementById('delete-tips-date').value;
+                if (!selectedDate) {
+                    showModal("Errore", "Seleziona una data!", () => {});
+                    return;
+                }
+                
+                const toDelete = allMatches.filter(m => m.data === selectedDate && !m.risultato);
+                
+                showModal(
+                    "Conferma Cancellazione",
+                    `Eliminare ${toDelete.length} partite del ${selectedDate} senza risultati?`,
+                    async () => {
+                        const batch = writeBatch(db);
+                        toDelete.forEach(m => {
+                            batch.delete(doc(db, "matches", m.id));
+                        });
+                        
+                        try {
+                            await batch.commit();
+                            showModal("Successo", `${toDelete.length} partite eliminate!`, () => {});
+                            await loadAllMatches();
+                            populateFilters();
+                            applyFiltersAndRender();
+                            updateTipsDaysList();
+                        } catch(e) {
+                            showModal("Errore", `Errore: ${e.message}`, () => {});
+                        }
+                    }
+                );
+            });
+            
+            document.getElementById('delete-results-day-btn').addEventListener('click', async () => {
+                const selectedDate = document.getElementById('delete-results-date').value;
+                if (!selectedDate) {
+                    showModal("Errore", "Seleziona una data!", () => {});
+                    return;
+                }
+                
+                const toDelete = allMatches.filter(m => m.data === selectedDate && m.risultato);
+                
+                showModal(
+                    "Conferma Cancellazione",
+                    `Eliminare ${toDelete.length} risultati del ${selectedDate}? Le partite torneranno senza risultato.`,
+                    async () => {
+                        const batch = writeBatch(db);
+                        toDelete.forEach(m => {
+                            batch.update(doc(db, "matches", m.id), { risultato: '', esito: '' });
+                        });
+                        
+                        try {
+                            await batch.commit();
+                            showModal("Successo", `${toDelete.length} risultati eliminati!`, () => {});
+                            await loadAllMatches();
+                            populateFilters();
+                            applyFiltersAndRender();
+                            updateResultsDaysList();
+                        } catch(e) {
+                            showModal("Errore", `Errore: ${e.message}`, () => {});
+                        }
+                    }
+                );
+            });
+            
+            // ==================== STRATEGIE BETFAIR ====================
+            document.getElementById('add-strategy-btn').addEventListener('click', () => {
+                document.getElementById('strategy-form').classList.remove('hidden');
+            });
+            
+            document.getElementById('cancel-strategy-btn').addEventListener('click', () => {
+                document.getElementById('strategy-form').classList.add('hidden');
+                clearStrategyForm();
+            });
+            
+            function clearStrategyForm() {
+                document.getElementById('strategy-name').value = '';
+                document.getElementById('strategy-tip').value = '';
+                strategyOddsSlider.noUiSlider.set([1.15, 1.35]);
+                strategyWRSlider.noUiSlider.set([75, 100]);
+                document.getElementById('strategy-action').value = '';
+                document.getElementById('strategy-exit').value = '';
+            }
+            
+            document.getElementById('save-strategy-btn').addEventListener('click', async () => {
+                const oddsRange = strategyOddsSlider.noUiSlider.get();
+                const wrRange = strategyWRSlider.noUiSlider.get();
+                
+                const strategy = {
+                    name: document.getElementById('strategy-name').value.trim(),
+                    market: document.getElementById('strategy-market').value,
+                    tip: document.getElementById('strategy-tip').value.trim(),
+                    oddsMin: parseFloat(oddsRange[0]),
+                    oddsMax: parseFloat(oddsRange[1]),
+                    leagueWRMin: parseInt(wrRange[0]),
+                    leagueWRMax: parseInt(wrRange[1]),
+                    action: document.getElementById('strategy-action').value.trim(),
+                    exit: document.getElementById('strategy-exit').value.trim(),
+                    preset: false
+                };
+                
+                if (!strategy.name || !strategy.tip) {
+                    showModal("Errore", "Nome e Tip obbligatori!", () => {});
+                    return;
+                }
+                
+                try {
+                    await addDoc(collection(db, "betfair-strategies"), strategy);
+                    showModal("Successo", "Strategia salvata!", () => {});
+                    document.getElementById('strategy-form').classList.add('hidden');
+                    clearStrategyForm();
+                    await loadStrategies();
+                } catch(e) {
+                    showModal("Errore", `Errore: ${e.message}`, () => {});
+                }
+            });
+            
+            async function loadStrategies() {
+                try {
+                    const strategiesCol = collection(db, "betfair-strategies");
+                    const snapshot = await getDocs(strategiesCol);
+                    const userStrategies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    
+                    const allStrategies = [...PRESET_STRATEGIES, ...userStrategies];
+                    
+                    const container = document.getElementById('strategies-list');
+                    if (allStrategies.length === 0) {
+                        container.innerHTML = '<div class="text-center text-gray-500 py-8">Nessuna strategia disponibile</div>';
+                        return;
+                    }
+                    
+                    container.innerHTML = allStrategies.map(s => `
+                        <div class="strategy-card bg-white rounded-xl shadow p-6 border-l-4 ${s.preset ? 'border-purple-500' : 'border-blue-500'} ${selectedStrategyId === s.id ? 'selected' : ''}" 
+                             data-strategy-id="${s.id || s.name}" 
+                             onclick="window.selectStrategy('${s.id || s.name}')">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="text-xl font-bold">${s.name}</h3>
+                                    ${s.preset ? '<span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">Preset</span>' : '<span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Custom</span>'}
+                                </div>
+                                ${!s.preset ? `<button onclick="event.stopPropagation(); window.deleteStrategy('${s.id}')" class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            </div>
+                            <div class="text-sm space-y-1">
+                                <div><strong>Filtro:</strong> ${s.market} | ${s.tip} | Quota ${s.oddsMin.toFixed(2)}-${s.oddsMax.toFixed(2)} | WR lega ${s.leagueWRMin}-${s.leagueWRMax}%</div>
+                                <div><strong>Azione:</strong> ${s.action}</div>
+                                <div><strong>Exit:</strong> ${s.exit}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } catch(e) {
+                    console.error('Error:', e);
+                }
+            }
+            
+            window.selectStrategy = async function(strategyId) {
+                selectedStrategyId = strategyId;
+                
+                // Find strategy
+                const strategiesCol = collection(db, "betfair-strategies");
+                const snapshot = await getDocs(strategiesCol);
+                const userStrategies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const allStrategies = [...PRESET_STRATEGIES, ...userStrategies];
+                const strategy = allStrategies.find(s => (s.id || s.name) === strategyId);
+                
+                if (!strategy) return;
+                
+                // Update UI
+                document.querySelectorAll('.strategy-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                const selectedCard = document.querySelector(`[data-strategy-id="${strategyId}"]`);
+                if (selectedCard) selectedCard.classList.add('selected');
+                
+                // Get today's date
+                const today = new Date().toISOString().split('T')[0];
+                
+                // Get league performance
+                const leaguePerformance = analyzeLeaguePerformance(allMatches);
+                
+                // Find matching games
+                const todayMatches = allMatches.filter(m => m.data === today && !m.risultato);
+                
+                const matching = todayMatches.filter(m => {
+                    const leagueWR = (leaguePerformance[m.lega.toLowerCase()]?.tips[strategy.tip]?.successRate || 0);
+                    return m.mercato === strategy.market &&
+                           m.tip === strategy.tip &&
+                           m.quota >= strategy.oddsMin &&
+                           m.quota <= strategy.oddsMax &&
+                           leagueWR >= strategy.leagueWRMin &&
+                           leagueWR <= strategy.leagueWRMax;
+                });
+                
+                // Show results
+                const container = document.getElementById('strategy-matches-container');
+                const nameDisplay = document.getElementById('strategy-name-display');
+                const listContainer = document.getElementById('strategy-matches-list');
+                
+                nameDisplay.textContent = strategy.name;
+                container.classList.remove('hidden');
+                
+                if (matching.length === 0) {
+                    listContainer.innerHTML = '<div class="text-center text-gray-500 py-4">Nessuna partita matching per oggi</div>';
+                    return;
+                }
+                
+                // Calculate scores and render
+                const scored = matching.map(m => {
+                    const score = calculateScore(m, new Set([m.lega.toLowerCase()]), new Set([m.tip]), leaguePerformance, allMatches);
+                    return { ...m, score: score.totalScore };
+                }).sort((a, b) => b.score - a.score);
+                
+                listContainer.innerHTML = scored.map((m, idx) => {
+                    const [team1, team2] = m.partita.split(' - ');
+                    const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
+                    const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
+                    
+                    return `
+                        <div class="border rounded-lg p-4 hover:bg-gray-50">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <div class="font-bold text-lg">
+                                        ${idx + 1}. 
+                                        <span class="team-${team1Stats.color}">${team1}</span>
+                                        - 
+                                        <span class="team-${team2Stats.color}">${team2}</span>
+                                    </div>
+                                    <div class="text-sm text-gray-600">${m.lega}</div>
+                                    <div class="text-sm mt-1">
+                                        <span class="bg-blue-100 px-2 py-1 rounded text-xs">${m.tip}</span>
+                                        <span class="ml-2">@${m.quota}</span>
+                                        <span class="ml-2 text-gray-500">${m.probabilita}%</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="score-badge">${m.score}</span>
+                                    <div class="text-xs text-gray-500 mt-1">${team1Stats.stats} | ${team2Stats.stats}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            };
+            
+            window.deleteStrategy = async function(id) {
+                if (!confirm('Eliminare questa strategia?')) return;
+                try {
+                    await deleteDoc(doc(db, "betfair-strategies", id));
+                    showModal("Successo", "Strategia eliminata!", () => {});
+                    await loadStrategies();
+                    if (selectedStrategyId === id) {
+                        selectedStrategyId = null;
+                        document.getElementById('strategy-matches-container').classList.add('hidden');
+                    }
+                } catch(e) {
+                    showModal("Errore", `Errore: ${e.message}`, () => {});
+                }
+            };
+            
+            // ==================== RANKING ====================
+            document.getElementById('generate-ranking-btn').addEventListener('click', async () => {
+                const rankingDate = document.getElementById('ranking-date').value;
+                const scoreMin = parseInt(document.getElementById('ranking-score-min').value);
+                const maxMatches = parseInt(document.getElementById('ranking-max-matches').value);
+                
+                if (!rankingDate) {
+                    alert('Seleziona data!');
+                    return;
+                }
+                
+                const resultsContainer = document.getElementById('ranking-results');
+                resultsContainer.innerHTML = '<div class="bg-white p-6 rounded-xl shadow text-center"><div class="animate-pulse text-lg">🔄 Generazione ranking...</div></div>';
+                
+                try {
+                    const strategiesCol = collection(db, "betfair-strategies");
+                    const strategiesSnapshot = await getDocs(strategiesCol);
+                    const userStrategies = strategiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    const strategies = [...PRESET_STRATEGIES, ...userStrategies];
+                    
+                    if (strategies.length === 0) {
+                        resultsContainer.innerHTML = '<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessuna strategia disponibile!</div>';
+                        return;
+                    }
+                    
+                    const todayMatches = allMatches.filter(m => m.data === rankingDate && !m.risultato);
+                    
+                    if (todayMatches.length === 0) {
+                        resultsContainer.innerHTML = '<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessuna partita per quella data!</div>';
+                        return;
+                    }
+                    
+                    const leaguePerformance = analyzeLeaguePerformance(allMatches);
+                    
+                    let allRankedMatches = [];
+                    
+                    strategies.forEach(strategy => {
+                        const matching = todayMatches.filter(m => {
+                            const leagueWR = (leaguePerformance[m.lega.toLowerCase()]?.tips[strategy.tip]?.successRate || 0);
+                            return m.mercato === strategy.market &&
+                                   m.tip === strategy.tip &&
+                                   m.quota >= strategy.oddsMin &&
+                                   m.quota <= strategy.oddsMax &&
+                                   leagueWR >= strategy.leagueWRMin &&
+                                   leagueWR <= strategy.leagueWRMax;
+                        });
+                        
+                        matching.forEach(m => {
+                            const score = calculateScore(m, new Set([m.lega.toLowerCase()]), new Set([m.tip]), leaguePerformance, allMatches);
+                            allRankedMatches.push({
+                                ...m,
+                                strategy: strategy.name,
+                                score: score.totalScore,
+                                action: strategy.action,
+                                exit: strategy.exit
+                            });
+                        });
+                    });
+                    
+                    const uniqueMatches = [];
+                    const seen = new Set();
+                    allRankedMatches.forEach(m => {
+                        const key = `${m.partita}-${m.tip}`;
+                        if (!seen.has(key)) {
+                            seen.add(key);
+                            uniqueMatches.push(m);
                         }
                     });
-                    qualifyingLeagues.push({ league, winrate: winrate.toFixed(1), volume: stats.total, qualifyingTips });
-                }
-            }
-        });
-
-        qualifyingLeagues.sort((a, b) => parseFloat(b.winrate) - parseFloat(a.winrate));
-        const top20 = qualifyingLeagues.slice(0, 20);
-
-        let html = '<h3 style="font-size: 1.5em; margin: 20px 0; font-weight: 600;">🏆 Top 20 Leghe Qualificate</h3>';
-        html += '<div class="table-container"><table><thead><tr><th>Lega</th><th>Successo (%)</th><th>Volume</th><th>Tips Qualifying</th></tr></thead><tbody>';
-        top20.forEach(l => {
-            let tipsHtml = '';
-            if (l.qualifyingTips.length > 0) {
-                tipsHtml = '<div class="tips-container">';
-                l.qualifyingTips.forEach(t => { tipsHtml += `<span class="tip-badge">${t.text}</span>`; });
-                tipsHtml += '</div>';
-            } else {
-                tipsHtml = '<span style="color: #999;">Nessuna</span>';
-            }
-            html += `<tr><td><strong>${l.league}</strong></td><td>${l.winrate}%</td><td>${l.volume}</td><td>${tipsHtml}</td></tr>`;
-        });
-        html += '</tbody></table></div>';
-        document.getElementById('analysisContent').innerHTML = html;
-
-        if (analysisChart) analysisChart.destroy();
-        const ctx = document.getElementById('analysisChart').getContext('2d');
-        analysisChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: top20.map(l => l.league),
-                datasets: [{ label: 'Winrate (%)', data: top20.map(l => parseFloat(l.winrate)), backgroundColor: 'rgba(102, 126, 234, 0.8)', borderColor: 'rgba(102, 126, 234, 1)', borderWidth: 2 }]
-            },
-            options: {
-                indexAxis: 'y', responsive: true,
-                plugins: { legend: { display: false }, title: { display: true, text: 'Top 20 Leghe per Winrate', font: { size: 18, weight: 'bold' } } },
-                scales: { x: { beginAtZero: true, max: 100, title: { display: true, text: 'Winrate (%)' } } }
-            }
-        });
-        goToPage('analysisPage');
-    });
-
-    // MULTIPLE DEL GIORNO - COMPLETO CON 2 DOPPIE
-    tradingBtn.addEventListener('click', () => {
-        const filteredTips = tipsData.filter(tip => {
-            const prob = parseProbabilita(getField(tip, 'Probabilità', 'probabilita'));
-            const quota = parseQuota(getField(tip, 'Quota', 'quota'));
-            return prob >= 75 && quota >= 1.15 && quota <= 1.40;
-        });
-
-        if (filteredTips.length === 0) {
-            document.getElementById('tradingContent').innerHTML = `<div class="alert-warning"><strong>⚠️ Nessuna partita trovata</strong></div>`;
-            goToPage('tradingPage');
-            return;
-        }
-
-        const enrichedTips = filteredTips.map(tip => {
-            const league = getField(tip, 'Lega', 'lega');
-            const tipType = getField(tip, 'Tip', 'tip');
-            const partitaValue = getField(tip, 'Partita', 'partita');
-            const [home, away] = partitaValue.split(' - ');
-            
-            const probBetMines = parseProbabilita(getField(tip, 'Probabilità', 'probabilita'));
-            const quota = parseQuota(getField(tip, 'Quota', 'quota'));
-            
-            let finalScore = probBetMines;
-            let boostFactors = [];
-            
-            const leagueHistory = databaseData.filter(m => m.lega === league && m.tip === tipType);
-            if (leagueHistory.length >= 5) {
-                const leagueWins = leagueHistory.filter(m => m.esito === 'Vinto').length;
-                const leagueWinrate = (leagueWins / leagueHistory.length * 100);
-                
-                if (leagueWinrate >= 90) {
-                    finalScore += 10;
-                    boostFactors.push(`✅ Storico lega: ${leagueWinrate.toFixed(0)}% (${leagueWins}/${leagueHistory.length})`);
-                } else if (leagueWinrate >= 80) {
-                    finalScore += 5;
-                    boostFactors.push(`✓ Storico lega: ${leagueWinrate.toFixed(0)}% (${leagueWins}/${leagueHistory.length})`);
-                } else if (leagueWinrate >= 70) {
-                    finalScore += 2;
-                    boostFactors.push(`Storico lega: ${leagueWinrate.toFixed(0)}% (${leagueWins}/${leagueHistory.length})`);
-                }
-            }
-            
-            if (tipType && (tipType.includes('1.5') || tipType.includes('2.5') || tipType.includes('3.5'))) {
-                const allHomeMatches = databaseData.filter(m => (m.partita || '').split(' - ')[0] === home);
-                const allAwayMatches = databaseData.filter(m => (m.partita || '').split(' - ')[1] === away);
-                
-                if (allHomeMatches.length >= 5 && allAwayMatches.length >= 5) {
-                    const homeGoals = allHomeMatches.map(m => {
-                        const res = (m.risultato || '').split(' - ');
-                        return parseInt(res[0] || 0);
-                    });
-                    const avgHome = homeGoals.reduce((a, b) => a + b, 0) / homeGoals.length;
                     
-                    const awayGoalsConceded = allAwayMatches.map(m => {
-                        const res = (m.risultato || '').split(' - ');
-                        return parseInt(res[0] || 0);
-                    });
-                    const avgAwayConceded = awayGoalsConceded.reduce((a, b) => a + b, 0) / awayGoalsConceded.length;
+                    uniqueMatches.sort((a, b) => b.score - a.score);
                     
-                    let supportBonus = 0;
-                    if (tipType.includes('+1.5') && avgHome >= 1.5 && avgAwayConceded >= 1.3) {
-                        supportBonus = 5;
-                        boostFactors.push(`✅ Gol favorevoli: Casa ${avgHome.toFixed(1)} | Trasf. ${avgAwayConceded.toFixed(1)}`);
-                    } else if (tipType.includes('+2.5') && avgHome >= 2.0 && avgAwayConceded >= 1.8) {
-                        supportBonus = 5;
-                        boostFactors.push(`✅ Gol favorevoli: Casa ${avgHome.toFixed(1)} | Trasf. ${avgAwayConceded.toFixed(1)}`);
-                    } else if (tipType.includes('-3.5') && avgHome <= 2.0 && avgAwayConceded <= 2.0) {
-                        supportBonus = 5;
-                        boostFactors.push(`✅ Gol favorevoli: Casa ${avgHome.toFixed(1)} | Trasf. ${avgAwayConceded.toFixed(1)}`);
-                    }
-                    finalScore += supportBonus;
-                }
-            }
-            
-            const allHomeMatches = databaseData.filter(m => (m.partita || '').split(' - ')[0] === home);
-            const allAwayMatches = databaseData.filter(m => (m.partita || '').split(' - ')[1] === away);
-            const recentHome = allHomeMatches.slice(-5);
-            const recentAway = allAwayMatches.slice(-5);
-            
-            if (recentHome.length >= 3 && recentAway.length >= 3) {
-                const homeWins = recentHome.filter(m => m.esito === 'Vinto').length;
-                const awayWins = recentAway.filter(m => m.esito === 'Vinto').length;
-                const formaMedia = ((homeWins / recentHome.length) + (awayWins / recentAway.length)) / 2 * 100;
-                
-                if (formaMedia >= 70) {
-                    finalScore += 3;
-                    boostFactors.push(`Forma: Casa ${homeWins}/${recentHome.length} | Trasf. ${awayWins}/${recentAway.length}`);
-                }
-            }
-            
-            finalScore = Math.min(finalScore, 100);
-            
-            if (boostFactors.length === 0) {
-                boostFactors.push('📊 Basato su probabilità BetMines');
-            }
-            
-            return {
-                partita: partitaValue,
-                lega: league,
-                tip: tipType,
-                probabilita: probBetMines,
-                quota: quota,
-                finalScore: finalScore,
-                boostFactors: boostFactors
-            };
-        });
-
-        enrichedTips.sort((a, b) => b.finalScore - a.finalScore);
-
-        let html = '<div class="alert-info"><strong>🎯 Strategia:</strong> Score basato su probabilità BetMines + bonus storico. Doppie con quote ≥1.20.</div>';
-
-        // TRIPLA
-        const triplaLeagues = [...new Set(enrichedTips.map(t => t.lega))];
-        const tripla = [];
-        triplaLeagues.forEach(league => {
-            if (tripla.length < 3) {
-                const best = enrichedTips.find(t => t.lega === league && t.finalScore >= 78 && t.quota >= 1.15 && !tripla.includes(t));
-                if (best) tripla.push(best);
-            }
-        });
-
-        if (tripla.length === 3) {
-            const quotaTripla = tripla.reduce((acc, t) => acc * t.quota, 1);
-            html += '<h3 style="font-size: 1.6em; margin: 30px 0 20px 0; font-weight: 600;">🔥 TRIPLA PREMIUM</h3>';
-            html += '<div class="table-container"><table><thead><tr><th>Partita</th><th>Lega</th><th>Tip</th><th>Prob</th><th>Score</th><th>Quota</th></tr></thead><tbody>';
-            tripla.forEach((t, idx) => {
-                let scoreClass = t.finalScore >= 90 ? 'score-excellent' : t.finalScore >= 85 ? 'score-good' : t.finalScore >= 80 ? 'score-medium' : 'score-low';
-                html += `<tr>
-                    <td><strong>${idx + 1}. ${t.partita}</strong></td>
-                    <td><small style="color: #666;">${t.lega}</small></td>
-                    <td><strong>${t.tip}</strong></td>
-                    <td>${t.probabilita}%</td>
-                    <td><span class="score-badge ${scoreClass}">${t.finalScore.toFixed(0)}/100</span></td>
-                    <td><strong>${t.quota.toFixed(2)}</strong></td>
-                </tr>`;
-            });
-            html += '</tbody></table></div>';
-            
-            html += '<div class="alert-success" style="font-size: 1.1em;">';
-            html += `<strong>📊 Riepilogo Tripla:</strong><br>`;
-            html += `• <strong>Quota Totale:</strong> ${quotaTripla.toFixed(2)}<br>`;
-            html += `• <strong>Puntata Consigliata:</strong> €30,00<br>`;
-            html += `• <strong>Ritorno Potenziale:</strong> €${(30 * quotaTripla).toFixed(2)}<br>`;
-            html += `• <strong>Profit Netto:</strong> €${(30 * (quotaTripla - 1)).toFixed(2)}<br><br>`;
-            html += `<strong>🎯 Perché questa tripla:</strong><br>`;
-            tripla.forEach((t, idx) => {
-                html += `${idx + 1}. <strong>${t.partita}</strong> (${t.lega}): ${t.boostFactors.join(' | ')}<br>`;
-            });
-            html += '</div>';
-        }
-
-        // DOPPIA 1 (quote ≥1.20)
-        const doppia1Candidates = enrichedTips.filter(t => t.finalScore >= 85 && t.probabilita >= 82 && t.quota >= 1.20);
-        let doppia1 = [];
-        if (doppia1Candidates.length >= 2) {
-            const leagues1 = [...new Set(doppia1Candidates.map(t => t.lega))];
-            leagues1.slice(0, 2).forEach(league => {
-                const best = doppia1Candidates.find(t => t.lega === league);
-                if (best && doppia1.length < 2) doppia1.push(best);
-            });
-        }
-
-        if (doppia1.length === 2) {
-            const quotaDoppia1 = doppia1.reduce((acc, t) => acc * t.quota, 1);
-            html += '<h3 style="font-size: 1.5em; margin: 30px 0 20px 0; font-weight: 600;">🛡️ DOPPIA 1: Massima Sicurezza (Quote ≥1.20)</h3>';
-            html += '<div class="table-container"><table><thead><tr><th>Partita</th><th>Lega</th><th>Tip</th><th>Prob</th><th>Score</th><th>Quota</th></tr></thead><tbody>';
-            doppia1.forEach((t, idx) => {
-                html += `<tr>
-                    <td><strong>${idx + 1}. ${t.partita}</strong></td>
-                    <td><small style="color: #666;">${t.lega}</small></td>
-                    <td>${t.tip}</td>
-                    <td>${t.probabilita}%</td>
-                    <td><span class="score-badge score-excellent">${t.finalScore.toFixed(0)}/100</span></td>
-                    <td><strong>${t.quota.toFixed(2)}</strong></td>
-                </tr>`;
-            });
-            html += '</tbody></table></div>';
-            html += `<div class="alert-success"><strong>Quota:</strong> ${quotaDoppia1.toFixed(2)} | <strong>Puntata:</strong> €50 | <strong>Ritorno:</strong> €${(50 * quotaDoppia1).toFixed(2)} | <strong>Profit:</strong> €${(50 * (quotaDoppia1 - 1)).toFixed(2)}<br><br>`;
-            html += `<strong>💪 Perché sicura:</strong> Entrambe hanno score ≥85/100, probabilità BetMines ≥82% e quote ≥1.20.</div>`;
-        }
-
-        // DOPPIA 2 (quote ≥1.20)
-        const doppia2Candidates = enrichedTips.filter(t => 
-            t.finalScore >= 78 && 
-            t.finalScore < 85 && 
-            t.quota >= 1.20 &&
-            !doppia1.includes(t) && 
-            !tripla.includes(t)
-        );
-        let doppia2 = [];
-        if (doppia2Candidates.length >= 2) {
-            const leagues2 = [...new Set(doppia2Candidates.map(t => t.lega))];
-            leagues2.slice(0, 2).forEach(league => {
-                const best = doppia2Candidates.find(t => t.lega === league);
-                if (best && doppia2.length < 2) doppia2.push(best);
-            });
-        }
-
-        if (doppia2.length === 2) {
-            const quotaDoppia2 = doppia2.reduce((acc, t) => acc * t.quota, 1);
-            html += '<h3 style="font-size: 1.5em; margin: 30px 0 20px 0; font-weight: 600;">⚖️ DOPPIA 2: Quota Equilibrata (Quote ≥1.20)</h3>';
-            html += '<div class="table-container"><table><thead><tr><th>Partita</th><th>Lega</th><th>Tip</th><th>Prob</th><th>Score</th><th>Quota</th></tr></thead><tbody>';
-            doppia2.forEach((t, idx) => {
-                let scoreClass = t.finalScore >= 82 ? 'score-good' : 'score-medium';
-                html += `<tr>
-                    <td><strong>${idx + 1}. ${t.partita}</strong></td>
-                    <td><small style="color: #666;">${t.lega}</small></td>
-                    <td>${t.tip}</td>
-                    <td>${t.probabilita}%</td>
-                    <td><span class="score-badge ${scoreClass}">${t.finalScore.toFixed(0)}/100</span></td>
-                    <td><strong>${t.quota.toFixed(2)}</strong></td>
-                </tr>`;
-            });
-            html += '</tbody></table></div>';
-            html += `<div class="alert-info"><strong>Quota:</strong> ${quotaDoppia2.toFixed(2)} | <strong>Puntata:</strong> €40 | <strong>Ritorno:</strong> €${(40 * quotaDoppia2).toFixed(2)} | <strong>Profit:</strong> €${(40 * (quotaDoppia2 - 1)).toFixed(2)}<br><br>`;
-            html += `<strong>📈 Perché interessante:</strong> Buon rapporto rischio/rendimento con score 78-84/100 e quote equilibrate ≥1.20.</div>`;
-        }
-
-        if (tripla.length < 3 && doppia1.length < 2 && doppia2.length < 2) {
-            html += '<div class="alert-warning"><strong>⚠️ Poche partite qualificate</strong><br>Doppie richiedono quote ≥1.20. Prova ad abbassare filtro probabilità.</div>';
-        }
-
-        document.getElementById('tradingContent').innerHTML = html;
-        goToPage('tradingPage');
-    });
-
-    // BETFAIR COMPLETO - HT + LAY THE DRAW
-    betfairBtn.addEventListener('click', () => {
-        let html = '';
-        let europeanCount = 0;
-        let excludedCount = 0;
-
-        // === HT OVER 0.5 ===
-        if (htData.length > 0) {
-            const htFiltered = htData.filter(t => {
-                const lega = getField(t, 'Lega', 'lega');
-                const prob = parseProbabilita(getField(t, 'Probabilità', 'probabilita', 'Probabilita'));
-                const quota = parseQuota(getField(t, 'Quota', 'quota'));
-                
-                if (!isBetfairLeague(lega)) {
-                    excludedCount++;
-                    return false;
-                }
-                
-                if (prob >= 75 && quota >= 1.20 && quota <= 1.50) {
-                    europeanCount++;
-                    return true;
-                }
-                return false;
-            }).slice(0, 5);
-
-            if (htFiltered.length > 0) {
-                html += '<h3 style="font-size: 1.5em; margin: 30px 0 20px 0; font-weight: 600;">⏱️ HT Over 0.5 - Leghe Europee (Alta Liquidità)</h3>';
-                html += '<div class="alert-success"><strong>💎 Solo campionati europei</strong> giocati tra 14:00-23:00 CET con alta liquidità su Betfair Italia.</div>';
-                
-                htFiltered.forEach(t => {
-                    const prob = parseProbabilita(getField(t, 'Probabilità', 'probabilita', 'Probabilita'));
-                    const quota = parseQuota(getField(t, 'Quota', 'quota'));
-                    const partita = getField(t, 'Partita', 'partita');
-                    const lega = getField(t, 'Lega', 'lega');
+                    const filtered = uniqueMatches.filter(m => m.score >= scoreMin).slice(0, maxMatches);
                     
-                    html += `<div class="ht-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <div>
-                                <strong style="font-size: 1.3em;">${partita}</strong><br>
-                                <small style="color: #666;">📍 ${lega}</small>
-                            </div>
-                            <span class="strategy-badge" style="background: #4CAF50;">HT OVER 0.5</span>
-                        </div>
-                        <p><strong>Prob:</strong> ${prob}% | <strong>Quota Prematch:</strong> ${quota.toFixed(2)}</p>
-                        <div class="alert-betfair" style="margin-top: 15px; background: #E8F5E9; border-left-color: #4CAF50;">
-                            <strong>📊 Piano di Trading:</strong><br>
-                            • <strong>Entrata:</strong> SUBITO all'inizio o entro 5° minuto<br>
-                            • <strong>Quota entrata ideale:</strong> ${(quota - 0.05).toFixed(2)}-${quota.toFixed(2)}<br>
-                            • <strong>Target:</strong> Al 1° gol HT → quota scende a ~1.05 → <strong>GREEN ${((quota / 1.05 - 1) * 100).toFixed(0)}%</strong><br>
-                            • <strong>Stop Loss:</strong> Se al 40° minuto ancora 0-0 → chiudi posizione (-50%)<br>
-                            • <strong>Stake consigliata:</strong> €50-100 (basso rischio, alta probabilità)<br>
-                            • <strong>Profit atteso:</strong> €${(50 * (quota / 1.05 - 1)).toFixed(0)}-${(100 * (quota / 1.05 - 1)).toFixed(0)} in ~20-30 minuti
-                        </div>
-                    </div>`;
-                });
-
-                // Multipla HT
-                if (htFiltered.length >= 3) {
-                    const topHT = htFiltered.slice(0, 3);
-                    const quotaMulti = topHT.reduce((acc, t) => acc * parseQuota(getField(t, 'Quota', 'quota')), 1);
-                    html += '<h3 style="font-size: 1.4em; margin: 20px 0 15px 0; font-weight: 600;">🚀 Multipla HT (3 partite)</h3>';
-                    html += '<div class="ht-card">';
-                    html += '<div class="table-container"><table><thead><tr><th>Partita</th><th>Lega</th><th>Prob</th><th>Quota</th></tr></thead><tbody>';
-                    topHT.forEach(t => {
-                        html += `<tr><td>${getField(t, 'Partita', 'partita')}</td><td><small>${getField(t, 'Lega', 'lega')}</small></td><td>${parseProbabilita(getField(t, 'Probabilità', 'probabilita', 'Probabilita'))}%</td><td>${parseQuota(getField(t, 'Quota', 'quota')).toFixed(2)}</td></tr>`;
-                    });
-                    html += '</tbody></table></div>';
-                    html += `<div class="alert-success" style="margin-top: 15px;"><strong>Quota Totale:</strong> ${quotaMulti.toFixed(2)} | <strong>Puntata:</strong> €30 | <strong>Ritorno:</strong> €${(30 * quotaMulti).toFixed(2)} | <strong>Profit:</strong> €${(30 * (quotaMulti - 1)).toFixed(2)}</div>`;
-                    html += '</div>';
-                }
-            }
-        }
-
-        // === LAY THE DRAW ===
-        if (tipsData.length > 0) {
-            const layDrawCandidates = tipsData.filter(t => {
-                const lega = getField(t, 'Lega', 'lega');
-                const tip = getField(t, 'Tip', 'tip');
-                const prob = parseProbabilita(getField(t, 'Probabilità', 'probabilita'));
-                const quota = parseQuota(getField(t, 'Quota', 'quota'));
-                
-                if (!isBetfairLeague(lega)) {
-                    excludedCount++;
-                    return false;
-                }
-                
-                if (tip === '12' && prob >= 75 && quota >= 1.20 && quota <= 1.35) {
-                    europeanCount++;
-                    return true;
-                }
-                return false;
-            }).slice(0, 3);
-
-            if (layDrawCandidates.length > 0) {
-                html += '<h3 style="font-size: 1.5em; margin: 30px 0 20px 0; font-weight: 600;">🎯 Lay the Draw - Leghe Europee</h3>';
-                layDrawCandidates.forEach(t => {
-                    const partita = getField(t, 'Partita', 'partita');
-                    const lega = getField(t, 'Lega', 'lega');
-                    const [home, away] = partita.split(' - ');
-                    
-                    // Analisi squadre per Lay the Draw
-                    const allHomeMatches = databaseData.filter(m => (m.partita || '').split(' - ')[0] === home);
-                    const allAwayMatches = databaseData.filter(m => (m.partita || '').split(' - ')[1] === away);
-                    const recentHome = allHomeMatches.slice(-5);
-                    const recentAway = allAwayMatches.slice(-5);
-                    
-                    let teamInfo = '';
-                    if (recentHome.length >= 3 && recentAway.length >= 3) {
-                        const homeWins = recentHome.filter(m => m.esito === 'Vinto').length;
-                        const awayWins = recentAway.filter(m => m.esito === 'Vinto').length;
-                        teamInfo = `Forma recente: Casa ${homeWins}/${recentHome.length} | Trasferta ${awayWins}/${recentAway.length}`;
+                    if (filtered.length === 0) {
+                        resultsContainer.innerHTML = `<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessun match supera score ${scoreMin}</div>`;
+                        return;
                     }
                     
-                    html += `<div class="trading-card">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                            <div>
-                                <strong style="font-size: 1.2em;">${partita}</strong><br>
-                                <small style="color: #666;">📍 ${lega}</small>
+                    resultsContainer.innerHTML = `
+                        <div class="bg-white p-6 rounded-xl shadow">
+                            <h3 class="text-2xl font-bold mb-4">🏆 Ranking ${rankingDate}</h3>
+                            <div class="text-sm text-gray-600 mb-4">✅ ${filtered.length} partite selezionate (Score ≥ ${scoreMin})</div>
+                            <div class="space-y-3">
+                                ${filtered.map((m, idx) => {
+                                    const [team1, team2] = m.partita.split(' - ');
+                                    const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
+                                    const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
+                                    
+                                    return `
+                                        <div class="border rounded-lg p-4 hover:bg-gray-50">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <div class="flex-1">
+                                                    <div class="font-bold text-lg">
+                                                        ${idx + 1}. 
+                                                        <span class="team-${team1Stats.color}">${team1}</span>
+                                                        - 
+                                                        <span class="team-${team2Stats.color}">${team2}</span>
+                                                    </div>
+                                                    <div class="text-sm text-gray-600">${m.lega}</div>
+                                                    <div class="text-sm mt-1">
+                                                        <span class="bg-blue-100 px-2 py-1 rounded text-xs">${m.tip}</span>
+                                                        <span class="ml-2">@${m.quota}</span>
+                                                        <span class="ml-2 text-gray-500">${m.probabilita}%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <span class="score-badge">${m.score}</span>
+                                                    <div class="text-xs text-gray-500 mt-1">${team1Stats.stats} | ${team2Stats.stats}</div>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs mt-2 pt-2 border-t">
+                                                <div><strong>Strategia:</strong> ${m.strategy}</div>
+                                                <div class="text-purple-600"><strong>Azione:</strong> ${m.action}</div>
+                                                <div class="text-purple-600"><strong>Exit:</strong> ${m.exit}</div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
-                            <span class="strategy-badge">LAY DRAW</span>
                         </div>
-                        ${teamInfo ? `<p style="color: #666; margin-bottom: 10px;">${teamInfo}</p>` : ''}
-                        <div class="alert-betfair">
-                            <strong>📊 Strategia Lay the Draw:</strong><br>
-                            • <strong>Entrata:</strong> 10-15° minuto (osserva pressing e occasioni)<br>
-                            • <strong>Quota Draw da layare:</strong> 3.00-4.50 (ideale 3.50)<br>
-                            • <strong>Uscita GREEN:</strong> Al 1° gol → quota Draw sale → chiudi posizione<br>
-                            • <strong>Stop Loss:</strong> 70° minuto se ancora 0-0 (-50% responsabilità)<br>
-                            • <strong>Target Green:</strong> 30-50% della responsabilità<br>
-                            • <strong>Stake consigliata:</strong> €100 responsabilità (profit €30-50 se gol)<br>
-                            • <strong>⚠️ Attenzione:</strong> Evita partite difensive o con troppe occasioni sprecate
-                        </div>
-                    </div>`;
-                });
+                    `;
+                } catch(e) {
+                    console.error('Error:', e);
+                    resultsContainer.innerHTML = `<div class="bg-red-50 p-6 rounded-xl text-center">❌ Errore: ${e.message}</div>`;
+                }
+            });
+            
+            // ==================== RANKING FUNCTIONS ====================
+            function calculateScore(partita, legheSet, tipsSet, leaguePerformance = {}, dbCompleto = null) {
+                let legaScore = 0, tipScore = 0, probScore = 0, quotaValid = true;
+                
+                const lega = (partita.lega || '').toLowerCase().trim();
+                if (legheSet.has(lega)) legaScore = 20;
+                else if (lega.startsWith('eu-')) legaScore = 5;
+                
+                let tipNorm = (partita.tip || '').trim().toUpperCase();
+                if (tipsSet.has(tipNorm)) tipScore = 20;
+                
+                let confidenceFactor = 1.0;
+                let recencyFactor = 1.0;
+                
+                if (dbCompleto && dbCompleto.length > 0) {
+                    const leagueMatches = dbCompleto.filter(m => (m.lega || '').toLowerCase().trim() === lega);
+                    const sampleSize = leagueMatches.length;
+                    confidenceFactor = Math.min(1.0, 0.5 + (sampleSize / 1000));
+                    
+                    const threeMonthsAgo = new Date();
+                    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+                    const recentMatches = leagueMatches.filter(m => {
+                        const matchDate = new Date(m.data || '2000-01-01');
+                        return matchDate >= threeMonthsAgo;
+                    });
+                    if (recentMatches.length >= 10) recencyFactor = 1.2;
+                }
+                
+                if (leaguePerformance[lega]) {
+                    const leagueStats = leaguePerformance[lega];
+                    
+                    if (tipNorm.startsWith('+') && parseFloat(leagueStats.over25Percentage) > 60) {
+                        const overPerc = parseFloat(leagueStats.over25Percentage);
+                        legaScore += Math.min(20, Math.max(0, (overPerc - 60) / 2));
+                    }
+                    
+                    if (tipNorm.startsWith('-') && parseFloat(leagueStats.under25Percentage) > 60) {
+                        const underPerc = parseFloat(leagueStats.under25Percentage);
+                        legaScore += Math.min(20, Math.max(0, (underPerc - 60) / 2));
+                    }
+                    
+                    if (leagueStats.tips[tipNorm]) {
+                        const tipSuccessRate = parseFloat(leagueStats.tips[tipNorm].successRate);
+                        if (tipSuccessRate > 70) {
+                            tipScore += Math.min(25, Math.max(0, (tipSuccessRate - 70) / 1.5));
+                        } else if (tipSuccessRate > 55) {
+                            tipScore += Math.min(15, Math.max(0, (tipSuccessRate - 55) / 2));
+                        }
+                    }
+                }
+                
+                const quota = parseFloat(partita.quota || 0);
+                if (quota < 1.20) quotaValid = false;
+                
+                const prob = parseFloat((partita.probabilita || 0));
+                if (prob <= 65) probScore = 0;
+                else if (prob <= 77) probScore = 5;
+                else probScore = 15 + Math.min(20, (prob - 78));
+                
+                legaScore = Math.round(legaScore * confidenceFactor * recencyFactor);
+                tipScore = Math.round(tipScore * confidenceFactor);
+                
+                const quotaPenalty = quota < 1.15 ? 0.8 : 1.0;
+                const totalScore = Math.round((legaScore + tipScore + probScore) * quotaPenalty);
+                
+                return { 
+                    legaScore, 
+                    tipScore, 
+                    probScore: Math.round(probScore), 
+                    totalScore,
+                    quotaValid
+                };
             }
-        }
-
-        if (html === '') {
-            html = '<div class="alert-warning"><strong>⚠️ Nessuna partita europea trovata</strong><br>Carica file HT/Tips. Partite escluse (campionati extra-UE/notturni): ' + excludedCount + '</div>';
-        } else {
-            html = `<div class="alert-info"><strong>🌍 Filtro Betfair Attivo:</strong> Selezionate ${europeanCount} partite europee su ${europeanCount + excludedCount} totali. Escluse ${excludedCount} partite (orari notturni/bassa liquidità).</div>` + html;
-        }
-
-        document.getElementById('betfairContent').innerHTML = html;
-        goToPage('betfairPage');
-    });
-
-    // RISULTATI
-    checkResultsBtn.addEventListener('click', () => goToPage('resultsPage'));
-    document.getElementById('date-selector').addEventListener('change', e => {
-        const selectedDate = e.target.value;
-        if (!selectedDate) return;
-        const checkedResults = databaseData.filter(m => m.data === selectedDate);
-        const wins = checkedResults.filter(r => r.esito === 'Vinto').length;
-        const losses = checkedResults.filter(r => r.esito === 'Perso').length;
-        const winrate = wins + losses > 0 ? ((wins / (wins + losses)) * 100).toFixed(1) : 0;
-        let html = `<h3 style="font-size: 1.5em; margin: 20px 0; text-align: center; font-weight: 600;">Risultati ${formatDateItalian(selectedDate)}</h3>`;
-        html += `<div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 30px;">
-            <div style="padding: 20px; background: #e8f5e9; color: #2e7d32; border-radius: 10px; text-align: center;"><strong style="display: block; font-size: 1.2em;">Vinte</strong><span style="font-size: 2em; font-weight: bold;">${wins}</span></div>
-            <div style="padding: 20px; background: #ffebee; color: #c62828; border-radius: 10px; text-align: center;"><strong style="display: block; font-size: 1.2em;">Perse</strong><span style="font-size: 2em; font-weight: bold;">${losses}</span></div>
-            <div style="padding: 20px; background: #e3f2fd; color: #1565c0; border-radius: 10px; text-align: center;"><strong style="display: block; font-size: 1.2em;">Winrate</strong><span style="font-size: 2em; font-weight: bold;">${winrate}%</span></div>
-        </div>`;
-        html += '<div class="table-container"><table><thead><tr><th>Partita</th><th>Tip</th><th>Quota</th><th>Esito</th></tr></thead><tbody>';
-        checkedResults.forEach(r => {
-            const color = r.esito === 'Vinto' ? 'color: #2e7d32; font-weight: 600;' : 'color: #c62828; font-weight: 600;';
-            html += `<tr><td>${r.partita}</td><td>${r.tip}</td><td>${r.quota}</td><td style="${color}">${r.esito}</td></tr>`;
+            
+            function analyzeLeaguePerformance(dbCompleto) {
+                if (!dbCompleto || dbCompleto.length === 0) return {};
+                
+                const leagueStats = {};
+                
+                dbCompleto.forEach(match => {
+                    const lega = (match.lega || '').toLowerCase().trim();
+                    if (!lega) return;
+                    
+                    if (!leagueStats[lega]) {
+                        leagueStats[lega] = {
+                            totalMatches: 0,
+                            over25Count: 0,
+                            under25Count: 0,
+                            tips: {}
+                        };
+                    }
+                    
+                    leagueStats[lega].totalMatches++;
+                    
+                    const risultato = match.risultato || '';
+                    const golMatch = risultato.match(/(\d+)\s*-\s*(\d+)/);
+                    
+                    let golTotali = 0;
+                    if (golMatch) {
+                        const golCasa = parseInt(golMatch[1]);
+                        const golTrasferta = parseInt(golMatch[2]);
+                        golTotali = golCasa + golTrasferta;
+                        
+                        if (golTotali > 2.5) leagueStats[lega].over25Count++;
+                        else leagueStats[lega].under25Count++;
+                    }
+                    
+                    const tip = (match.tip || '').trim();
+                    if (tip) {
+                        if (!leagueStats[lega].tips[tip]) {
+                            leagueStats[lega].tips[tip] = { total: 0, success: 0 };
+                        }
+                        
+                        leagueStats[lega].tips[tip].total++;
+                        
+                        let success = false;
+                        if (golMatch && golTotali > 0) {
+                            if (tip.startsWith('+')) {
+                                const soglia = parseFloat(tip.substring(1));
+                                success = golTotali > soglia;
+                            } else if (tip.startsWith('-')) {
+                                const soglia = parseFloat(tip.substring(1));
+                                success = golTotali < soglia;
+                            }
+                        }
+                        
+                        if (success) leagueStats[lega].tips[tip].success++;
+                    }
+                });
+                
+                Object.keys(leagueStats).forEach(lega => {
+                    const stats = leagueStats[lega];
+                    stats.over25Percentage = (stats.over25Count / stats.totalMatches * 100).toFixed(0);
+                    stats.under25Percentage = (stats.under25Count / stats.totalMatches * 100).toFixed(0);
+                    
+                    Object.keys(stats.tips).forEach(tip => {
+                        const tipStats = stats.tips[tip];
+                        tipStats.successRate = (tipStats.success / tipStats.total * 100).toFixed(0);
+                    });
+                });
+                
+                return leagueStats;
+            }
+            
+            function analyzeTeamStats(teamName, isHome, tip, dbCompleto) {
+                if (!dbCompleto || dbCompleto.length === 0) {
+                    return { color: 'black', stats: '', count: 0, total: 0 };
+                }
+                
+                const teamNorm = teamName.toLowerCase().trim();
+                const mercato = dbCompleto.find(m => m.tip === tip)?.mercato || '';
+                
+                // NUOVA LOGICA: Diversa per tipo mercato
+                let relevantMatches = [];
+                
+                if (mercato.toLowerCase().includes('numero di gol')) {
+                    // Per OVER/UNDER: guarda TUTTI i match della squadra (non solo casa/trasferta)
+                    // Conta se la squadra è coinvolta in match con molti/pochi gol
+                    const allTeamMatches = dbCompleto.filter(row => {
+                        const team1 = (row.partita || '').split(' - ')[0]?.toLowerCase().trim() || '';
+                        const team2 = (row.partita || '').split(' - ').slice(1).join(' - ')?.toLowerCase().trim() || '';
+                        return (team1 === teamNorm || team2 === teamNorm);
+                    });
+                    
+                    allTeamMatches.sort((a, b) => new Date(b.data || '2000-01-01') - new Date(a.data || '2000-01-01'));
+                    relevantMatches = allTeamMatches.slice(0, 15); // Ultimi 15 match totali
+                    
+                } else {
+                    // Per 1X2/Doppia Chance: guarda casa/trasferta separatamente
+                    let locationMatches = dbCompleto.filter(row => {
+                        const team1 = (row.partita || '').split(' - ')[0]?.toLowerCase().trim() || '';
+                        const team2 = (row.partita || '').split(' - ').slice(1).join(' - ')?.toLowerCase().trim() || '';
+                        
+                        if (isHome) return team1 === teamNorm;
+                        else return team2 === teamNorm;
+                    });
+                    
+                    locationMatches.sort((a, b) => new Date(b.data || '2000-01-01') - new Date(a.data || '2000-01-01'));
+                    relevantMatches = locationMatches.filter(m => m.tip === tip).slice(0, 15);
+                }
+                
+                if (relevantMatches.length < 10) {
+                    return { color: 'gray', stats: `(${relevantMatches.length})`, count: 0, total: relevantMatches.length };
+                }
+                
+                let successCount = 0;
+                relevantMatches.forEach(match => {
+                    const risultato = match.risultato || '';
+                    const golMatch = risultato.match(/(\d+)\s*-\s*(\d+)/);
+                    
+                    if (!golMatch) return;
+                    
+                    const golCasa = parseInt(golMatch[1]);
+                    const golTrasferta = parseInt(golMatch[2]);
+                    const golTotali = golCasa + golTrasferta;
+                    
+                    let success = false;
+                    if (tip.startsWith('+')) {
+                        const soglia = parseFloat(tip.substring(1));
+                        success = golTotali > soglia;
+                    } else if (tip.startsWith('-')) {
+                        const soglia = parseFloat(tip.substring(1));
+                        success = golTotali < soglia;
+                    }
+                    
+                    if (success) successCount++;
+                });
+                
+                const percentage = (successCount / relevantMatches.length) * 100;
+                
+                let color = 'black';
+                if (relevantMatches.length >= 10) {
+                    if (percentage > 70) color = 'green';
+                    else if (percentage >= 50) color = 'yellow';
+                    else color = 'red';
+                }
+                
+                return {
+                    color: color,
+                    stats: `(${successCount}/${relevantMatches.length})`,
+                    count: successCount,
+                    total: relevantMatches.length
+                };
+            }
+            
+            // ==================== MODAL ====================
+            function showModal(title, message, onConfirm) {
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-message').textContent = message;
+                const modal = document.getElementById('modal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                document.getElementById('modal-confirm').onclick = () => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    onConfirm();
+                };
+                
+                document.getElementById('modal-cancel').onclick = () => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                };
+            }
+            
+            // ==================== INIT APP ====================
+            await loadAllMatches();
+            await loadFavorites();
+            setupFilters();
+            populateFilters();
+            applyFiltersAndRender();
+            await loadSavedFilters();
+            await loadStrategies();
+            showPage('page-dashboard');
+            
+            loadingOverlay.classList.add('hidden');
         });
-        html += '</tbody></table></div>';
-        document.getElementById('resultsContent').innerHTML = html;
-    });
-
-    updateButtonStates();
-    populateDateSelector();
     </script>
 </body>
 </html>
