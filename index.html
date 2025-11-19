@@ -353,26 +353,36 @@
 
             <!-- PAGINA RANKING -->
             <div id="page-ranking" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Filtri Ranking -->
                 <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
                     <h2 class="text-2xl font-bold mb-4">🏆 Ranking Partite del Giorno</h2>
+                    <p class="text-sm text-gray-600 mb-6">Seleziona un filtro salvato e genera il ranking delle migliori partite</p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <!-- Prima riga -->
                         <div>
-                            <label class="block text-sm font-medium mb-1">Data</label>
+                            <label class="block text-sm font-medium mb-1">Data Partite</label>
                             <input type="date" id="ranking-date" class="w-full p-3 border rounded-lg">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Score Min</label>
+                            <label class="block text-sm font-medium mb-1">Filtro Strategia</label>
+                            <select id="ranking-filter-select" class="w-full p-3 border rounded-lg bg-white">
+                                <option value="">Nessun filtro (tutte le partite)</option>
+                            </select>
+                        </div>
+                        <!-- Seconda riga -->
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Score Minimo</label>
                             <input type="number" id="ranking-score-min" value="45" class="w-full p-3 border rounded-lg">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Max Partite</label>
+                            <label class="block text-sm font-medium mb-1">Max Partite da Mostrare</label>
                             <input type="number" id="ranking-max-matches" value="20" class="w-full p-3 border rounded-lg">
                         </div>
                     </div>
                     
                     <button id="generate-ranking-btn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:opacity-90">
-                        <i class="fa-solid fa-magic mr-2"></i>Genera Ranking
+                        <i class="fa-solid fa-magic mr-2"></i>Applica e Genera Ranking
                     </button>
                 </div>
                 
@@ -536,7 +546,7 @@
             const searchInput = document.getElementById('search-input');
             const sortableHeaders = document.querySelectorAll('.sortable-header');
             
-            // Sliders
+            // Sliders Dashboard
             noUiSlider.create(probabilitySliderEl, {
                 start: [0, 100],
                 connect: true,
@@ -909,8 +919,14 @@
                 const presetsCollection = collection(db, "presets");
                 const snapshot = await getDocs(presetsCollection);
                 savedFilters = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Popola dropdown Dashboard
                 const select = document.getElementById('saved-filters-select');
                 select.innerHTML = '<option value="">Seleziona...</option>' + savedFilters.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+                
+                // Popola dropdown Ranking
+                const rankingSelect = document.getElementById('ranking-filter-select');
+                rankingSelect.innerHTML = '<option value="">Nessun filtro (tutte le partite)</option>' + savedFilters.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
             };
             
             const handleSaveFilter = async () => {
@@ -1511,6 +1527,7 @@
                 const rankingDate = document.getElementById('ranking-date').value;
                 const scoreMin = parseInt(document.getElementById('ranking-score-min').value);
                 const maxMatches = parseInt(document.getElementById('ranking-max-matches').value);
+                const selectedFilterId = document.getElementById('ranking-filter-select').value;
                 
                 if (!rankingDate) {
                     alert('Seleziona data!');
@@ -1531,10 +1548,48 @@
                         return;
                     }
                     
-                    const todayMatches = allMatches.filter(m => m.data === rankingDate && !m.risultato);
+                    // Partite del giorno senza risultato
+                    let todayMatches = allMatches.filter(m => m.data === rankingDate && !m.risultato);
+                    
+                    // APPLICA FILTRO SE SELEZIONATO
+                    let filterName = "Tutte le partite";
+                    if (selectedFilterId) {
+                        const selectedFilter = savedFilters.find(f => f.id === selectedFilterId);
+                        if (selectedFilter) {
+                            filterName = selectedFilter.name;
+                            const filterState = selectedFilter.state;
+                            
+                            // Applica filtri
+                            todayMatches = todayMatches.filter(m => {
+                                // Filtro leghe
+                                if (filterState.leagues && filterState.leagues.length > 0) {
+                                    if (!filterState.leagues.includes(m.lega)) return false;
+                                }
+                                
+                                // Filtro tips
+                                if (filterState.tips && filterState.tips.length > 0) {
+                                    if (!filterState.tips.includes(m.tip)) return false;
+                                }
+                                
+                                // Filtro probabilità
+                                if (filterState.prob) {
+                                    const [minProb, maxProb] = filterState.prob.map(v => parseInt(v));
+                                    if (m.probabilita < minProb || m.probabilita > maxProb) return false;
+                                }
+                                
+                                // Filtro odds
+                                if (filterState.odds) {
+                                    const [minOdds, maxOdds] = filterState.odds.map(v => parseFloat(v));
+                                    if (m.quota < minOdds || m.quota > maxOdds) return false;
+                                }
+                                
+                                return true;
+                            });
+                        }
+                    }
                     
                     if (todayMatches.length === 0) {
-                        resultsContainer.innerHTML = '<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessuna partita per quella data!</div>';
+                        resultsContainer.innerHTML = '<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessuna partita per quella data con i filtri selezionati!</div>';
                         return;
                     }
                     
@@ -1580,14 +1635,15 @@
                     const filtered = uniqueMatches.filter(m => m.score >= scoreMin).slice(0, maxMatches);
                     
                     if (filtered.length === 0) {
-                        resultsContainer.innerHTML = `<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessun match supera score ${scoreMin}</div>`;
+                        resultsContainer.innerHTML = `<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessun match supera score ${scoreMin} con filtri selezionati</div>`;
                         return;
                     }
                     
                     resultsContainer.innerHTML = `
                         <div class="bg-white p-6 rounded-xl shadow">
-                            <h3 class="text-2xl font-bold mb-4">🏆 Ranking ${rankingDate}</h3>
-                            <div class="text-sm text-gray-600 mb-4">✅ ${filtered.length} partite selezionate (Score ≥ ${scoreMin})</div>
+                            <h3 class="text-2xl font-bold mb-2">🏆 Ranking ${rankingDate}</h3>
+                            <div class="text-sm text-gray-600 mb-1">📊 Filtro applicato: <span class="font-semibold text-purple-600">${filterName}</span></div>
+                            <div class="text-sm text-gray-600 mb-4">✅ ${filtered.length} partite selezionate su ${todayMatches.length} filtrate (Score ≥ ${scoreMin})</div>
                             <div class="space-y-3">
                                 ${filtered.map((m, idx) => {
                                     const [team1, team2] = m.partita.split(' - ');
