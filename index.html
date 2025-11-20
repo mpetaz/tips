@@ -147,19 +147,30 @@
                         
                         <!-- RIGHT COLUMN: Sliders & Tips -->
                         <div class="space-y-4">
-                            <!-- Sliders -->
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Probabilità (%)</label>
-                                    <div id="probability-slider" class="mt-4 mx-2"></div>
-                                    <div id="probability-value" class="text-xs text-center mt-1"></div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Quota</label>
-                                    <div id="odds-slider" class="mt-4 mx-2"></div>
-                                    <div id="odds-value" class="text-xs text-center mt-1"></div>
+                            <!-- Probabilità Slider + Inputs -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Probabilità (%)</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="number" id="prob-min-input" min="0" max="100" value="0" class="w-20 p-2 border rounded-lg text-sm text-center font-semibold">
+                                    <div class="flex-1">
+                                        <div id="probability-slider" class="mx-2"></div>
+                                    </div>
+                                    <input type="number" id="prob-max-input" min="0" max="100" value="100" class="w-20 p-2 border rounded-lg text-sm text-center font-semibold">
                                 </div>
                             </div>
+                            
+                            <!-- Quota Slider + Inputs -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Quota</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="number" id="odds-min-input" min="1.0" max="10.0" step="0.01" value="1.0" class="w-20 p-2 border rounded-lg text-sm text-center font-semibold">
+                                    <div class="flex-1">
+                                        <div id="odds-slider" class="mx-2"></div>
+                                    </div>
+                                    <input type="number" id="odds-max-input" min="1.0" max="10.0" step="0.01" value="10.0" class="w-20 p-2 border rounded-lg text-sm text-center font-semibold">
+                                </div>
+                            </div>
+                            
                             <!-- Tips -->
                             <div class="pt-2">
                                 <div class="flex justify-between items-center mb-1">
@@ -380,6 +391,10 @@
             const tipFiltersContainer = document.getElementById('tip-filters-container');
             const probabilitySliderEl = document.getElementById('probability-slider');
             const oddsSliderEl = document.getElementById('odds-slider');
+            const probMinInput = document.getElementById('prob-min-input');
+            const probMaxInput = document.getElementById('prob-max-input');
+            const oddsMinInput = document.getElementById('odds-min-input');
+            const oddsMaxInput = document.getElementById('odds-max-input');
             const searchInput = document.getElementById('search-input');
             const sortableHeaders = document.querySelectorAll('.sortable-header');
             
@@ -400,20 +415,62 @@
                 tooltips: false
             });
             
+            // Sincronizzazione SLIDER → INPUT (Probabilità)
             probabilitySliderEl.noUiSlider.on('update', (values) => {
-                document.getElementById('probability-value').textContent = `${parseInt(values[0])}% - ${parseInt(values[1])}%`;
+                probMinInput.value = parseInt(values[0]);
+                probMaxInput.value = parseInt(values[1]);
             });
             
             probabilitySliderEl.noUiSlider.on('set', () => {
                 applyFiltersAndRender();
             });
             
+            // Sincronizzazione INPUT → SLIDER (Probabilità)
+            probMinInput.addEventListener('change', () => {
+                const min = parseInt(probMinInput.value) || 0;
+                const max = parseInt(probMaxInput.value) || 100;
+                if (min <= max) {
+                    probabilitySliderEl.noUiSlider.set([min, max]);
+                    applyFiltersAndRender();
+                }
+            });
+            
+            probMaxInput.addEventListener('change', () => {
+                const min = parseInt(probMinInput.value) || 0;
+                const max = parseInt(probMaxInput.value) || 100;
+                if (min <= max) {
+                    probabilitySliderEl.noUiSlider.set([min, max]);
+                    applyFiltersAndRender();
+                }
+            });
+            
+            // Sincronizzazione SLIDER → INPUT (Quota)
             oddsSliderEl.noUiSlider.on('update', (values) => {
-                document.getElementById('odds-value').textContent = `${parseFloat(values[0]).toFixed(2)} - ${parseFloat(values[1]).toFixed(2)}`;
+                oddsMinInput.value = parseFloat(values[0]).toFixed(2);
+                oddsMaxInput.value = parseFloat(values[1]).toFixed(2);
             });
             
             oddsSliderEl.noUiSlider.on('set', () => {
                 applyFiltersAndRender();
+            });
+            
+            // Sincronizzazione INPUT → SLIDER (Quota)
+            oddsMinInput.addEventListener('change', () => {
+                const min = parseFloat(oddsMinInput.value) || 1.0;
+                const max = parseFloat(oddsMaxInput.value) || 10.0;
+                if (min <= max) {
+                    oddsSliderEl.noUiSlider.set([min, max]);
+                    applyFiltersAndRender();
+                }
+            });
+            
+            oddsMaxInput.addEventListener('change', () => {
+                const min = parseFloat(oddsMinInput.value) || 1.0;
+                const max = parseFloat(oddsMaxInput.value) || 10.0;
+                if (min <= max) {
+                    oddsSliderEl.noUiSlider.set([min, max]);
+                    applyFiltersAndRender();
+                }
             });
             
             // Buttons
