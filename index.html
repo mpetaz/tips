@@ -78,9 +78,6 @@
                         <button data-page="page-risultati" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
                             <i class="fa-solid fa-check-circle mr-1"></i>Risultati
                         </button>
-                        <button data-page="page-strategie" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
-                            <i class="fa-solid fa-chess mr-1"></i>Strategie
-                        </button>
                         <button data-page="page-ranking" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
                             <i class="fa-solid fa-trophy mr-1"></i>Ranking
                         </button>
@@ -279,77 +276,6 @@
             </div>
 
             <!-- PAGINA STRATEGIE -->
-            <div id="page-strategie" class="page max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
-                    <h2 class="text-2xl font-bold mb-4">🎯 Strategie Betfair</h2>
-                    <p class="text-sm text-gray-600 mb-4">Clicca su una strategia per vedere le partite matching di oggi</p>
-                    
-                    <button id="add-strategy-btn" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700 mb-4">
-                        <i class="fa-solid fa-plus mr-2"></i>Nuova Strategia Custom
-                    </button>
-                    
-                    <!-- Form Nuova Strategia -->
-                    <div id="strategy-form" class="hidden border-t pt-4 mt-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium mb-1">Nome Strategia</label>
-                                <input type="text" id="strategy-name" placeholder="es: My Custom Strategy" class="w-full p-3 border rounded-lg">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Mercato</label>
-                                <select id="strategy-market" class="w-full p-3 border rounded-lg">
-                                    <option>Numero di gol</option>
-                                    <option>1X2</option>
-                                    <option>Doppia chance</option>
-                                    <option>Gol/No Gol</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Tip</label>
-                                <input type="text" id="strategy-tip" placeholder="es: +1.5" class="w-full p-3 border rounded-lg">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium mb-1">Quota Min-Max</label>
-                                <div id="strategy-odds-slider" class="mt-4 mx-2"></div>
-                                <div id="strategy-odds-value" class="text-xs text-center mt-1"></div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium mb-1">WinRate Lega Min-Max (%)</label>
-                                <div id="strategy-wr-slider" class="mt-4 mx-2"></div>
-                                <div id="strategy-wr-value" class="text-xs text-center mt-1"></div>
-                            </div>
-                            
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium mb-1">Azione Entry</label>
-                                <input type="text" id="strategy-action" placeholder="es: Back Over 2.5 @2.5-3.0 pre-match" class="w-full p-3 border rounded-lg">
-                            </div>
-                            
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium mb-1">Exit Strategy</label>
-                                <input type="text" id="strategy-exit" placeholder="es: Green al 1° gol, cash out al 2°" class="w-full p-3 border rounded-lg">
-                            </div>
-                            
-                            <div class="md:col-span-2 flex gap-2">
-                                <button id="save-strategy-btn" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700">Salva</button>
-                                <button id="cancel-strategy-btn" class="flex-1 bg-gray-400 text-white py-3 rounded-lg font-bold hover:bg-gray-500">Annulla</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Lista Strategie -->
-                <div id="strategies-list" class="space-y-4"></div>
-                
-                <!-- Match Risultati Strategia -->
-                <div id="strategy-matches-container" class="hidden mt-6 bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-                    <h3 class="text-xl font-bold mb-4">🎯 Partite Matching: <span id="strategy-name-display"></span></h3>
-                    <div id="strategy-matches-list" class="space-y-3"></div>
-                </div>
-            </div>
 
             <!-- PAGINA RANKING -->
             <div id="page-ranking" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -429,68 +355,6 @@
         }
         
         // ==================== STRATEGIE PRE-CONFIGURATE ====================
-        const PRESET_STRATEGIES = [
-            {
-                name: "🔥 Over 1.5 → Over 2.5",
-                market: "Numero di gol",
-                tip: "+1.5",
-                oddsMin: 1.15,
-                oddsMax: 1.35,
-                leagueWRMin: 75,
-                leagueWRMax: 100,
-                action: "Back Over 2.5 @2.5-3.5 al 1° gol",
-                exit: "Green su 2° gol o cash out 60'",
-                preset: true
-            },
-            {
-                name: "🛡️ Lay Under 3.5 (High Scoring)",
-                market: "Numero di gol",
-                tip: "+2.5",
-                oddsMin: 1.20,
-                oddsMax: 1.50,
-                leagueWRMin: 80,
-                leagueWRMax: 100,
-                action: "Lay Under 3.5 @1.4-1.6 se 0-0 dopo 15'",
-                exit: "Green al 1° gol o max loss HT",
-                preset: true
-            },
-            {
-                name: "⚡ Value Under in Over League",
-                market: "Numero di gol",
-                tip: "-3.5",
-                oddsMin: 1.15,
-                oddsMax: 1.40,
-                leagueWRMin: 75,
-                leagueWRMax: 100,
-                action: "Back Under 2.5 @1.8-2.2 pre-match",
-                exit: "Green se 0-0 a HT, hold fino fine",
-                preset: true
-            },
-            {
-                name: "🎯 Safe 1X2 Favorites",
-                market: "1X2",
-                tip: "1",
-                oddsMin: 1.15,
-                oddsMax: 1.35,
-                leagueWRMin: 80,
-                leagueWRMax: 100,
-                action: "Back Home Win pre-match",
-                exit: "Hold o green se +2 goal vantaggio",
-                preset: true
-            },
-            {
-                name: "💎 Doppia Chance Value",
-                market: "Doppia chance",
-                tip: "1X",
-                oddsMin: 1.10,
-                oddsMax: 1.25,
-                leagueWRMin: 80,
-                leagueWRMax: 100,
-                action: "Back 1X @1.1-1.25",
-                exit: "Hold fino fine",
-                preset: true
-            }
-        ];
         
         // ==================== GLOBAL STATE ====================
         let allMatches = [];
@@ -500,39 +364,12 @@
         let favoriteLeagues = [];
         let stagedFavoriteLeagues = [];
         let sortState = { column: 'data', direction: 'desc' };
-        let selectedStrategyId = null;
+        let lastGeneratedRanking = null; // Per tracking ML
         
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', async () => {
             const loadingOverlay = document.getElementById('loading-overlay');
             
-            // Sliders strategie
-            const strategyOddsSlider = document.getElementById('strategy-odds-slider');
-            const strategyWRSlider = document.getElementById('strategy-wr-slider');
-            
-            noUiSlider.create(strategyOddsSlider, {
-                start: [1.15, 1.35],
-                connect: true,
-                range: { min: 1.01, max: 5.0 },
-                step: 0.01,
-                tooltips: false
-            });
-            
-            noUiSlider.create(strategyWRSlider, {
-                start: [75, 100],
-                connect: true,
-                range: { min: 50, max: 100 },
-                step: 1,
-                tooltips: false
-            });
-            
-            strategyOddsSlider.noUiSlider.on('update', (values) => {
-                document.getElementById('strategy-odds-value').textContent = `${parseFloat(values[0]).toFixed(2)} - ${parseFloat(values[1]).toFixed(2)}`;
-            });
-            
-            strategyWRSlider.noUiSlider.on('update', (values) => {
-                document.getElementById('strategy-wr-value').textContent = `${parseInt(values[0])}% - ${parseInt(values[1])}%`;
-            });
             
             // UI Elements
             const pages = document.querySelectorAll('.page');
@@ -617,7 +454,6 @@
                 
                 if (pageId === 'page-oggi') updateTipsDaysList();
                 if (pageId === 'page-risultati') updateResultsDaysList();
-                if (pageId === 'page-strategie') loadStrategies();
             }
             
             navButtons.forEach(btn => btn.addEventListener('click', (e) => showPage(e.currentTarget.dataset.page)));
@@ -1221,9 +1057,29 @@
                     
                     await batch.commit();
                     
-                    const successMsg = type === 'results' && deletedCount > 0
+                    // SE RISULTATI: aggiorna ranking salvati con esiti
+                    let performanceReport = null;
+                    if (type === 'results' && dataToUpload.length > 0) {
+                        const uploadDate = dataToUpload[0].data;
+                        performanceReport = await updateRankingResults(uploadDate, dataToUpload);
+                    }
+                    
+                    let successMsg = type === 'results' && deletedCount > 0
                         ? `${dataToUpload.length} partite caricate! (${deletedCount} vecchie senza risultato eliminate)`
                         : `${dataToUpload.length} partite caricate/aggiornate!`;
+                    
+                    // Aggiungi report performance se disponibile
+                    if (performanceReport && performanceReport.updated > 0) {
+                        successMsg += `\n\n📊 TRACKING ML AGGIORNATO:\n`;
+                        successMsg += `✅ ${performanceReport.updated} partite aggiornate nei ranking salvati\n\n`;
+                        
+                        Object.keys(performanceReport.performance).forEach(filterName => {
+                            const perf = performanceReport.performance[filterName];
+                            const emoji = perf.winrate >= 70 ? '🔥' : perf.winrate >= 60 ? '✅' : '⚠️';
+                            successMsg += `${emoji} ${filterName}:\n`;
+                            successMsg += `   ${perf.vinte}/${perf.totale} vinte (${perf.winrate}%)\n`;
+                        });
+                    }
                     
                     showModal("Successo", successMsg, () => {});
                     
@@ -1372,199 +1228,6 @@
                 );
             });
             
-            // ==================== STRATEGIE BETFAIR ====================
-            document.getElementById('add-strategy-btn').addEventListener('click', () => {
-                document.getElementById('strategy-form').classList.remove('hidden');
-            });
-            
-            document.getElementById('cancel-strategy-btn').addEventListener('click', () => {
-                document.getElementById('strategy-form').classList.add('hidden');
-                clearStrategyForm();
-            });
-            
-            function clearStrategyForm() {
-                document.getElementById('strategy-name').value = '';
-                document.getElementById('strategy-tip').value = '';
-                strategyOddsSlider.noUiSlider.set([1.15, 1.35]);
-                strategyWRSlider.noUiSlider.set([75, 100]);
-                document.getElementById('strategy-action').value = '';
-                document.getElementById('strategy-exit').value = '';
-            }
-            
-            document.getElementById('save-strategy-btn').addEventListener('click', async () => {
-                const oddsRange = strategyOddsSlider.noUiSlider.get();
-                const wrRange = strategyWRSlider.noUiSlider.get();
-                
-                const strategy = {
-                    name: document.getElementById('strategy-name').value.trim(),
-                    market: document.getElementById('strategy-market').value,
-                    tip: document.getElementById('strategy-tip').value.trim(),
-                    oddsMin: parseFloat(oddsRange[0]),
-                    oddsMax: parseFloat(oddsRange[1]),
-                    leagueWRMin: parseInt(wrRange[0]),
-                    leagueWRMax: parseInt(wrRange[1]),
-                    action: document.getElementById('strategy-action').value.trim(),
-                    exit: document.getElementById('strategy-exit').value.trim(),
-                    preset: false
-                };
-                
-                if (!strategy.name || !strategy.tip) {
-                    showModal("Errore", "Nome e Tip obbligatori!", () => {});
-                    return;
-                }
-                
-                try {
-                    await addDoc(collection(db, "betfair-strategies"), strategy);
-                    showModal("Successo", "Strategia salvata!", () => {});
-                    document.getElementById('strategy-form').classList.add('hidden');
-                    clearStrategyForm();
-                    await loadStrategies();
-                } catch(e) {
-                    showModal("Errore", `Errore: ${e.message}`, () => {});
-                }
-            });
-            
-            async function loadStrategies() {
-                try {
-                    const strategiesCol = collection(db, "betfair-strategies");
-                    const snapshot = await getDocs(strategiesCol);
-                    const userStrategies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    
-                    const allStrategies = [...PRESET_STRATEGIES, ...userStrategies];
-                    
-                    const container = document.getElementById('strategies-list');
-                    if (allStrategies.length === 0) {
-                        container.innerHTML = '<div class="text-center text-gray-500 py-8">Nessuna strategia disponibile</div>';
-                        return;
-                    }
-                    
-                    container.innerHTML = allStrategies.map(s => `
-                        <div class="strategy-card bg-white rounded-xl shadow p-6 border-l-4 ${s.preset ? 'border-purple-500' : 'border-blue-500'} ${selectedStrategyId === s.id ? 'selected' : ''}" 
-                             data-strategy-id="${s.id || s.name}" 
-                             onclick="window.selectStrategy('${s.id || s.name}')">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <h3 class="text-xl font-bold">${s.name}</h3>
-                                    ${s.preset ? '<span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">Preset</span>' : '<span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Custom</span>'}
-                                </div>
-                                ${!s.preset ? `<button onclick="event.stopPropagation(); window.deleteStrategy('${s.id}')" class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i></button>` : ''}
-                            </div>
-                            <div class="text-sm space-y-1">
-                                <div><strong>Filtro:</strong> ${s.market} | ${s.tip} | Quota ${s.oddsMin.toFixed(2)}-${s.oddsMax.toFixed(2)} | WR lega ${s.leagueWRMin}-${s.leagueWRMax}%</div>
-                                <div><strong>Azione:</strong> ${s.action}</div>
-                                <div><strong>Exit:</strong> ${s.exit}</div>
-                            </div>
-                        </div>
-                    `).join('');
-                } catch(e) {
-                    console.error('Error:', e);
-                }
-            }
-            
-            window.selectStrategy = async function(strategyId) {
-                selectedStrategyId = strategyId;
-                
-                // Find strategy
-                const strategiesCol = collection(db, "betfair-strategies");
-                const snapshot = await getDocs(strategiesCol);
-                const userStrategies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                const allStrategies = [...PRESET_STRATEGIES, ...userStrategies];
-                const strategy = allStrategies.find(s => (s.id || s.name) === strategyId);
-                
-                if (!strategy) return;
-                
-                // Update UI
-                document.querySelectorAll('.strategy-card').forEach(card => {
-                    card.classList.remove('selected');
-                });
-                const selectedCard = document.querySelector(`[data-strategy-id="${strategyId}"]`);
-                if (selectedCard) selectedCard.classList.add('selected');
-                
-                // Get today's date
-                const today = new Date().toISOString().split('T')[0];
-                
-                // Get league performance
-                const leaguePerformance = analyzeLeaguePerformance(allMatches);
-                
-                // Find matching games
-                const todayMatches = allMatches.filter(m => m.data === today && !m.risultato);
-                
-                const matching = todayMatches.filter(m => {
-                    const leagueWR = (leaguePerformance[m.lega.toLowerCase()]?.tips[strategy.tip]?.successRate || 0);
-                    return m.mercato === strategy.market &&
-                           m.tip === strategy.tip &&
-                           m.quota >= strategy.oddsMin &&
-                           m.quota <= strategy.oddsMax &&
-                           leagueWR >= strategy.leagueWRMin &&
-                           leagueWR <= strategy.leagueWRMax;
-                });
-                
-                // Show results
-                const container = document.getElementById('strategy-matches-container');
-                const nameDisplay = document.getElementById('strategy-name-display');
-                const listContainer = document.getElementById('strategy-matches-list');
-                
-                nameDisplay.textContent = strategy.name;
-                container.classList.remove('hidden');
-                
-                if (matching.length === 0) {
-                    listContainer.innerHTML = '<div class="text-center text-gray-500 py-4">Nessuna partita matching per oggi</div>';
-                    return;
-                }
-                
-                // Calculate scores and render
-                const scored = matching.map(m => {
-                    const score = calculateScore(m, new Set([m.lega.toLowerCase()]), new Set([m.tip]), leaguePerformance, allMatches);
-                    return { ...m, score: score.totalScore };
-                }).sort((a, b) => b.score - a.score);
-                
-                listContainer.innerHTML = scored.map((m, idx) => {
-                    const [team1, team2] = m.partita.split(' - ');
-                    const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
-                    const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
-                    
-                    return `
-                        <div class="border rounded-lg p-4 hover:bg-gray-50">
-                            <div class="flex justify-between items-start">
-                                <div class="flex-1">
-                                    <div class="font-bold text-lg">
-                                        ${idx + 1}. 
-                                        <span class="team-${team1Stats.color}">${team1}</span>
-                                        - 
-                                        <span class="team-${team2Stats.color}">${team2}</span>
-                                    </div>
-                                    <div class="text-sm text-gray-600">${m.lega}</div>
-                                    <div class="text-sm mt-1">
-                                        <span class="bg-blue-100 px-2 py-1 rounded text-xs">${m.tip}</span>
-                                        <span class="ml-2">@${m.quota}</span>
-                                        <span class="ml-2 text-gray-500">${m.probabilita}%</span>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <span class="score-badge">${m.score}</span>
-                                    <div class="text-xs text-gray-500 mt-1">${team1Stats.stats} | ${team2Stats.stats}</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            };
-            
-            window.deleteStrategy = async function(id) {
-                if (!confirm('Eliminare questa strategia?')) return;
-                try {
-                    await deleteDoc(doc(db, "betfair-strategies", id));
-                    showModal("Successo", "Strategia eliminata!", () => {});
-                    await loadStrategies();
-                    if (selectedStrategyId === id) {
-                        selectedStrategyId = null;
-                        document.getElementById('strategy-matches-container').classList.add('hidden');
-                    }
-                } catch(e) {
-                    showModal("Errore", `Errore: ${e.message}`, () => {});
-                }
-            };
-            
             // ==================== RANKING ====================
             document.getElementById('generate-ranking-btn').addEventListener('click', async () => {
                 const rankingDate = document.getElementById('ranking-date').value;
@@ -1581,16 +1244,6 @@
                 resultsContainer.innerHTML = '<div class="bg-white p-6 rounded-xl shadow text-center"><div class="animate-pulse text-lg">🔄 Generazione ranking...</div></div>';
                 
                 try {
-                    const strategiesCol = collection(db, "betfair-strategies");
-                    const strategiesSnapshot = await getDocs(strategiesCol);
-                    const userStrategies = strategiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    const strategies = [...PRESET_STRATEGIES, ...userStrategies];
-                    
-                    if (strategies.length === 0) {
-                        resultsContainer.innerHTML = '<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessuna strategia disponibile!</div>';
-                        return;
-                    }
-                    
                     // Partite del giorno senza risultato
                     let todayMatches = allMatches.filter(m => m.data === rankingDate && !m.risultato);
                     
@@ -1638,99 +1291,230 @@
                     
                     const leaguePerformance = analyzeLeaguePerformance(allMatches);
                     
-                    let allRankedMatches = [];
+                    // Calcola score per tutte le partite
+                    const rankedMatches = todayMatches.map(m => {
+                        const score = calculateScore(m, new Set([m.lega.toLowerCase()]), new Set([m.tip]), leaguePerformance, allMatches);
+                        return {
+                            ...m,
+                            score: score.totalScore
+                        };
+                    }).filter(m => m.score >= scoreMin);
                     
-                    strategies.forEach(strategy => {
-                        const matching = todayMatches.filter(m => {
-                            const leagueWR = (leaguePerformance[m.lega.toLowerCase()]?.tips[strategy.tip]?.successRate || 0);
-                            return m.mercato === strategy.market &&
-                                   m.tip === strategy.tip &&
-                                   m.quota >= strategy.oddsMin &&
-                                   m.quota <= strategy.oddsMax &&
-                                   leagueWR >= strategy.leagueWRMin &&
-                                   leagueWR <= strategy.leagueWRMax;
-                        });
-                        
-                        matching.forEach(m => {
-                            const score = calculateScore(m, new Set([m.lega.toLowerCase()]), new Set([m.tip]), leaguePerformance, allMatches);
-                            allRankedMatches.push({
-                                ...m,
-                                strategy: strategy.name,
-                                score: score.totalScore,
-                                action: strategy.action,
-                                exit: strategy.exit
-                            });
-                        });
-                    });
-                    
-                    const uniqueMatches = [];
-                    const seen = new Set();
-                    allRankedMatches.forEach(m => {
-                        const key = `${m.partita}-${m.tip}`;
-                        if (!seen.has(key)) {
-                            seen.add(key);
-                            uniqueMatches.push(m);
-                        }
-                    });
-                    
-                    uniqueMatches.sort((a, b) => b.score - a.score);
-                    
-                    const filtered = uniqueMatches.filter(m => m.score >= scoreMin).slice(0, maxMatches);
-                    
-                    if (filtered.length === 0) {
+                    if (rankedMatches.length === 0) {
                         resultsContainer.innerHTML = `<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessun match supera score ${scoreMin} con filtri selezionati</div>`;
                         return;
                     }
                     
-                    resultsContainer.innerHTML = `
-                        <div class="bg-white p-6 rounded-xl shadow">
-                            <h3 class="text-2xl font-bold mb-2">🏆 Ranking ${rankingDate}</h3>
-                            <div class="text-sm text-gray-600 mb-1">📊 Filtro applicato: <span class="font-semibold text-purple-600">${filterName}</span></div>
-                            <div class="text-sm text-gray-600 mb-4">✅ ${filtered.length} partite selezionate su ${todayMatches.length} filtrate (Score ≥ ${scoreMin})</div>
-                            <div class="space-y-3">
-                                ${filtered.map((m, idx) => {
-                                    const [team1, team2] = m.partita.split(' - ');
-                                    const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
-                                    const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
-                                    
-                                    return `
-                                        <div class="border rounded-lg p-4 hover:bg-gray-50">
-                                            <div class="flex justify-between items-start mb-2">
-                                                <div class="flex-1">
-                                                    <div class="font-bold text-lg">
-                                                        ${idx + 1}. 
-                                                        <span class="team-${team1Stats.color}">${team1}</span>
-                                                        - 
-                                                        <span class="team-${team2Stats.color}">${team2}</span>
+                    // Raggruppa per tip
+                    const byTip = {};
+                    rankedMatches.forEach(m => {
+                        if (!byTip[m.tip]) byTip[m.tip] = [];
+                        byTip[m.tip].push(m);
+                    });
+                    
+                    // Ordina ogni gruppo per score
+                    Object.keys(byTip).forEach(tip => {
+                        byTip[tip].sort((a, b) => b.score - a.score);
+                        byTip[tip] = byTip[tip].slice(0, maxMatches);
+                    });
+                    
+                    // Render ranking per tip
+                    const tipBlocks = Object.keys(byTip).sort().map(tip => {
+                        const matches = byTip[tip];
+                        
+                        return `
+                            <div class="bg-white p-6 rounded-xl shadow mb-6">
+                                <h3 class="text-2xl font-bold mb-3">📊 ${tip}</h3>
+                                <div class="text-sm text-gray-600 mb-4">
+                                    ${matches.length} partite (max ${maxMatches} per tip)
+                                </div>
+                                <div class="space-y-3">
+                                    ${matches.map((m, idx) => {
+                                        const [team1, team2] = m.partita.split(' - ');
+                                        const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
+                                        const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
+                                        
+                                        return `
+                                            <div class="border rounded-lg p-4 hover:bg-gray-50">
+                                                <div class="flex justify-between items-start">
+                                                    <div class="flex-1">
+                                                        <div class="font-bold text-lg">
+                                                            ${idx + 1}. 
+                                                            <span class="team-${team1Stats.color}">${team1}</span>
+                                                            - 
+                                                            <span class="team-${team2Stats.color}">${team2}</span>
+                                                        </div>
+                                                        <div class="text-sm text-gray-600">${m.lega}</div>
+                                                        <div class="text-sm mt-1">
+                                                            <span class="bg-blue-100 px-2 py-1 rounded text-xs">${m.mercato}</span>
+                                                            <span class="ml-2">@${m.quota.toFixed(2)}</span>
+                                                            <span class="ml-2 text-gray-500">${m.probabilita}%</span>
+                                                        </div>
                                                     </div>
-                                                    <div class="text-sm text-gray-600">${m.lega}</div>
-                                                    <div class="text-sm mt-1">
-                                                        <span class="bg-blue-100 px-2 py-1 rounded text-xs">${m.tip}</span>
-                                                        <span class="ml-2">@${m.quota}</span>
-                                                        <span class="ml-2 text-gray-500">${m.probabilita}%</span>
+                                                    <div class="text-right">
+                                                        <span class="score-badge">${m.score}</span>
+                                                        <div class="text-xs text-gray-500 mt-1">${team1Stats.stats} | ${team2Stats.stats}</div>
                                                     </div>
                                                 </div>
-                                                <div class="text-right">
-                                                    <span class="score-badge">${m.score}</span>
-                                                    <div class="text-xs text-gray-500 mt-1">${team1Stats.stats} | ${team2Stats.stats}</div>
-                                                </div>
                                             </div>
-                                            <div class="text-xs mt-2 pt-2 border-t">
-                                                <div><strong>Strategia:</strong> ${m.strategy}</div>
-                                                <div class="text-purple-600"><strong>Azione:</strong> ${m.action}</div>
-                                                <div class="text-purple-600"><strong>Exit:</strong> ${m.exit}</div>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
+                                        `;
+                                    }).join('')}
+                                </div>
                             </div>
+                        `;
+                    }).join('');
+                    
+                    // SALVA DATI PER TRACKING
+                    lastGeneratedRanking = {
+                        timestamp: new Date().toISOString(),
+                        data_partite: rankingDate,
+                        filtro_nome: filterName,
+                        filtro_id: selectedFilterId || null,
+                        partite_by_tip: {},
+                        stats: {
+                            totale_partite: rankedMatches.length,
+                            score_minimo: scoreMin,
+                            tips_count: Object.keys(byTip).length
+                        }
+                    };
+                    
+                    // Organizza partite per tip
+                    Object.keys(byTip).forEach(tip => {
+                        lastGeneratedRanking.partite_by_tip[tip] = byTip[tip].map(m => ({
+                            partita: m.partita,
+                            lega: m.lega,
+                            tip: m.tip,
+                            mercato: m.mercato,
+                            quota: m.quota,
+                            probabilita: m.probabilita,
+                            score: m.score,
+                            esito: null // Verrà aggiornato quando carichi risultati
+                        }));
+                    });
+                    
+                    resultsContainer.innerHTML = `
+                        <div class="mb-6 bg-gradient-to-r from-purple-500 to-blue-500 text-white p-6 rounded-xl shadow">
+                            <h2 class="text-3xl font-bold mb-2">🏆 Ranking ${rankingDate}</h2>
+                            <div class="text-lg mb-1">📊 Filtro: <span class="font-bold">${filterName}</span></div>
+                            <div class="text-sm opacity-90 mb-3">
+                                ✅ ${rankedMatches.length} partite totali su ${todayMatches.length} filtrate • 
+                                Score minimo: ${scoreMin} • 
+                                ${Object.keys(byTip).length} tip diverse
+                            </div>
+                            <button id="save-ranking-btn" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md">
+                                <i class="fa-solid fa-save mr-2"></i>Salva Ranking per Tracking ML
+                            </button>
                         </div>
+                        ${tipBlocks}
                     `;
+                    
+                    // Event listener per salva ranking
+                    document.getElementById('save-ranking-btn').addEventListener('click', saveRankingForTracking);
                 } catch(e) {
                     console.error('Error:', e);
                     resultsContainer.innerHTML = `<div class="bg-red-50 p-6 rounded-xl text-center">❌ Errore: ${e.message}</div>`;
                 }
             });
+            
+            // ==================== RANKING TRACKING & ML ====================
+            async function saveRankingForTracking() {
+                if (!lastGeneratedRanking) {
+                    showModal("Errore", "Nessun ranking da salvare!", () => {});
+                    return;
+                }
+                
+                try {
+                    const rankingHistoryCol = collection(db, "ranking_history");
+                    await addDoc(rankingHistoryCol, lastGeneratedRanking);
+                    
+                    showModal("✅ Salvato!", `Ranking salvato per tracking ML!\nData: ${lastGeneratedRanking.data_partite}\nPartite: ${lastGeneratedRanking.stats.totale_partite}`, () => {});
+                    
+                    // Disabilita bottone dopo salvataggio
+                    const btn = document.getElementById('save-ranking-btn');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50', 'cursor-not-allowed');
+                        btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Ranking Salvato';
+                    }
+                } catch(e) {
+                    showModal("Errore", `Errore salvataggio: ${e.message}`, () => {});
+                }
+            }
+            
+            async function updateRankingResults(uploadedDate, uploadedMatches) {
+                try {
+                    const rankingHistoryCol = collection(db, "ranking_history");
+                    const q = query(rankingHistoryCol, where("data_partite", "==", uploadedDate));
+                    const snapshot = await getDocs(q);
+                    
+                    if (snapshot.empty) {
+                        return null; // Nessun ranking salvato per quella data
+                    }
+                    
+                    let totalUpdated = 0;
+                    const performanceByFilter = {};
+                    
+                    for (const docSnap of snapshot.docs) {
+                        const ranking = docSnap.data();
+                        let updated = false;
+                        
+                        // Per ogni tip nel ranking
+                        Object.keys(ranking.partite_by_tip).forEach(tip => {
+                            ranking.partite_by_tip[tip].forEach(partitaRanking => {
+                                // Trova match corrispondente nei risultati caricati
+                                const match = uploadedMatches.find(m => 
+                                    m.partita === partitaRanking.partita && 
+                                    m.tip === partitaRanking.tip &&
+                                    m.risultato
+                                );
+                                
+                                if (match && match.esito) {
+                                    partitaRanking.esito = match.esito;
+                                    partitaRanking.risultato = match.risultato;
+                                    updated = true;
+                                    totalUpdated++;
+                                }
+                            });
+                        });
+                        
+                        if (updated) {
+                            // Calcola performance
+                            let totalMatches = 0;
+                            let wonMatches = 0;
+                            
+                            Object.keys(ranking.partite_by_tip).forEach(tip => {
+                                ranking.partite_by_tip[tip].forEach(p => {
+                                    if (p.esito) {
+                                        totalMatches++;
+                                        if (p.esito === 'Vinto') wonMatches++;
+                                    }
+                                });
+                            });
+                            
+                            const winrate = totalMatches > 0 ? Math.round((wonMatches / totalMatches) * 100) : 0;
+                            ranking.performance = {
+                                totale: totalMatches,
+                                vinte: wonMatches,
+                                perse: totalMatches - wonMatches,
+                                winrate: winrate
+                            };
+                            
+                            // Aggiorna su Firestore
+                            await setDoc(doc(db, "ranking_history", docSnap.id), ranking);
+                            
+                            performanceByFilter[ranking.filtro_nome] = ranking.performance;
+                        }
+                    }
+                    
+                    return {
+                        updated: totalUpdated,
+                        performance: performanceByFilter
+                    };
+                } catch(e) {
+                    console.error("Error updating ranking results:", e);
+                    return null;
+                }
+            }
             
             // ==================== RANKING FUNCTIONS ====================
             function calculateScore(partita, legheSet, tipsSet, leaguePerformance = {}, dbCompleto = null) {
@@ -1984,7 +1768,6 @@
             populateFilters();
             applyFiltersAndRender();
             await loadSavedFilters();
-            await loadStrategies();
             showPage('page-dashboard');
             
             loadingOverlay.classList.add('hidden');
