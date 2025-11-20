@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Tipster Pro Unified v2</title>
+    <title>⚽ Mpetaz Tips</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
@@ -40,23 +40,15 @@
             border-radius: 12px;
             font-weight: bold;
         }
-        .strategy-card { 
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .strategy-card:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .strategy-card.selected {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
     </style>
 </head>
 <body class="h-full text-gray-800">
-    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
-        <div class="text-white text-xl font-semibold animate-pulse">Caricamento...</div>
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50">
+        <div class="text-center max-w-md px-4">
+            <div id="loading-spinner" class="text-white text-xl font-semibold animate-pulse mb-2">Inizializzazione...</div>
+            <div id="auth-status" class="text-blue-200 text-sm font-mono bg-gray-800 p-2 rounded border border-gray-700">Attesa connessione...</div>
+            <button id="retry-auth-btn" class="hidden mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Riprova</button>
+        </div>
     </div>
     
     <div class="min-h-full flex flex-col">
@@ -286,8 +278,6 @@
                 </div>
             </div>
 
-            <!-- PAGINA STRATEGIE -->
-
             <!-- PAGINA RANKING -->
             <div id="page-ranking" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <!-- Filtri Ranking -->
@@ -345,9 +335,11 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getFirestore, collection, getDocs, writeBatch, query, where, doc, addDoc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
         
+        // ==================== CONFIGURAZIONE FIREBASE CORRETTA ====================
         const firebaseConfig = {
-            apiKey: "AIzaSyCWay4QfY1bxj4yBLnho3Zn02_NaxzbVRQ",
+            apiKey: "AIzaSyCwAy4QfYlbxj4yBLnho3ZnO2_NaxzbVRQ", // Chiave fornita dall'utente
             authDomain: "betmines-pronostici.firebaseapp.com",
             projectId: "betmines-pronostici",
             storageBucket: "betmines-pronostici.firebasestorage.app",
@@ -356,16 +348,17 @@
         };
         
         let db;
+        let auth;
+        
         try {
             const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
             db = getFirestore(app);
         } catch (error) {
-            console.error("Firebase Error:", error);
-            alert("Errore Firebase. Controlla console.");
-            throw error;
+            console.error("Critical Firebase Init Error:", error);
+            document.getElementById('auth-status').textContent = "Errore critico inizializzazione.";
+            document.getElementById('auth-status').classList.add('text-red-400');
         }
-        
-        // ==================== STRATEGIE PRE-CONFIGURATE ====================
         
         // ==================== GLOBAL STATE ====================
         let allMatches = [];
@@ -375,12 +368,71 @@
         let favoriteLeagues = [];
         let stagedFavoriteLeagues = [];
         let sortState = { column: 'data', direction: 'desc' };
-        let lastGeneratedRanking = null; // Per tracking ML
+        let lastGeneratedRanking = null;
         
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', async () => {
             const loadingOverlay = document.getElementById('loading-overlay');
+            const authStatus = document.getElementById('auth-status');
+            const retryBtn = document.getElementById('retry-auth-btn');
             
+            // --- GESTIONE AUTH ---
+            async function authenticate() {
+                authStatus.textContent = "Connessione a Firebase...";
+                authStatus.className = "text-blue-200 text-sm font-mono bg-gray-800 p-2 rounded border border-gray-700";
+                retryBtn.classList.add('hidden');
+                
+                try {
+                    await signInAnonymously(auth);
+                    // Non nascondiamo ancora l'overlay, aspettiamo il caricamento dati
+                    authStatus.textContent = "Autenticato. Caricamento dati...";
+                    authStatus.className = "text-green-400 text-sm font-mono bg-gray-800 p-2 rounded border border-green-700";
+                    
+                    // Avvia l'app vera e propria
+                    await startApp();
+                    
+                } catch (error) {
+                    console.error("Auth Error:", error);
+                    let msg = "Errore sconosciuto.";
+                    if(error.code === 'auth/api-key-not-valid') {
+                        msg = "CHIAVE API NON VALIDA. Controlla il codice HTML.";
+                    } else if(error.code === 'auth/operation-not-allowed') {
+                        msg = "AUTH ANONIMA NON ABILITATA in Firebase Console.";
+                    } else {
+                        msg = error.message;
+                    }
+                    
+                    authStatus.innerHTML = `<strong class="text-red-500">ERRORE:</strong><br>${msg}`;
+                    authStatus.className = "text-red-300 text-xs font-mono bg-red-900/50 p-2 rounded border border-red-700 text-left break-words";
+                    document.getElementById('loading-spinner').textContent = "⚠️ Connessione Fallita";
+                    document.getElementById('loading-spinner').classList.remove('animate-pulse');
+                    retryBtn.classList.remove('hidden');
+                }
+            }
+            
+            retryBtn.addEventListener('click', authenticate);
+            
+            // --- START APP LOGIC ---
+            async function startApp() {
+                try {
+                    await loadAllMatches();
+                    await loadFavorites();
+                    setupFilters();
+                    populateFilters();
+                    applyFiltersAndRender();
+                    await loadSavedFilters();
+                    
+                    showPage('page-dashboard');
+                    loadingOverlay.classList.add('hidden');
+                } catch (e) {
+                    console.error("Data Load Error:", e);
+                    authStatus.textContent = "Errore caricamento dati Firestore.";
+                    authStatus.classList.add('text-red-400');
+                }
+            }
+
+            // Avvia flusso auth
+            authenticate();
             
             // UI Elements
             const pages = document.querySelectorAll('.page');
@@ -537,10 +589,6 @@
                 searchInput.addEventListener('input', applyFiltersAndRender);
                 filterDateStart.addEventListener('change', applyFiltersAndRender);
                 filterDateEnd.addEventListener('change', applyFiltersAndRender);
-            }
-            
-            function normalizeLega(lega) {
-                return lega.replace(/\s+/g, ' ').trim();
             }
             
             function categorizeLeague(leagueName) {
