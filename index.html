@@ -40,6 +40,34 @@
             border-radius: 12px;
             font-weight: bold;
         }
+        .ht-badge-high { 
+            background-color: #10b981; 
+            color: white; 
+            padding: 2px 8px; 
+            border-radius: 8px; 
+            font-size: 0.7rem; 
+            font-weight: 600;
+        }
+        .ht-badge-medium { 
+            background-color: #f59e0b; 
+            color: white; 
+            padding: 2px 8px; 
+            border-radius: 8px; 
+            font-size: 0.7rem; 
+            font-weight: 600;
+        }
+        .ht-badge-low { 
+            background-color: #9ca3af; 
+            color: white; 
+            padding: 2px 8px; 
+            border-radius: 8px; 
+            font-size: 0.7rem; 
+            font-weight: 600;
+        }
+        .ht-badge-none { 
+            color: #d1d5db; 
+            font-size: 0.7rem;
+        }
     </style>
 </head>
 <body class="h-full text-gray-800">
@@ -58,7 +86,7 @@
                 <div class="flex justify-between items-center py-4">
                     <div class="flex items-center space-x-3">
                         <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Tipster Pro v2</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips</h1>
                     </div>
                     <nav class="flex space-x-2 flex-wrap">
                         <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
@@ -199,6 +227,7 @@
                                     <th class="p-3 font-semibold text-center">Ris.</th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="probabilita">Prob. <i class="fa-solid fa-sort sort-icon"></i></th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="quota">Quota <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold text-center" title="Over 0.5 HT - Info primo tempo">HT</th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="esito">Esito <i class="fa-solid fa-sort sort-icon"></i></th>
                                 </tr>
                             </thead>
@@ -220,6 +249,15 @@
                         <div>
                             <label for="tips-csv-file" class="block text-sm font-medium text-gray-700 mb-1">File CSV Tips (senza risultati)</label>
                             <input type="file" id="tips-csv-file" accept=".csv" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                        <div>
+                            <label for="tips-ht-file" class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                                File CSV 0.5 HT (Opzionale)
+                                <span class="text-xs text-gray-500 font-normal cursor-help" title="Aggiungi dati Over 0.5 HT per timing gol e boost ranking">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </span>
+                            </label>
+                            <input type="file" id="tips-ht-file" accept=".csv" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
                         </div>
                         <div id="tips-upload-preview" class="hidden bg-gray-50 p-4 rounded-lg border"></div>
                     </div>
@@ -369,6 +407,10 @@
         let stagedFavoriteLeagues = [];
         let sortState = { column: 'data', direction: 'desc' };
         let lastGeneratedRanking = null;
+        
+        // HT MERGE STATE
+        let rawMainData = [];
+        let rawHtData = [];
         
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', async () => {
@@ -768,6 +810,22 @@
                 
                 tbody.innerHTML = displayMatches.map(m => {
                     const esitoClass = m.esito === 'Vinto' ? 'text-green-600 font-bold' : m.esito === 'Perso' ? 'text-red-600 font-bold' : '';
+                    
+                    // Processo info HT
+                    let htDisplay = '<span class="ht-badge-none">-</span>';
+                    if (m.info_ht && m.info_ht.trim() !== '') {
+                        // Estraggo prob da "76% (@1.33)"
+                        const probMatch = m.info_ht.match(/(\d+)%/);
+                        if (probMatch) {
+                            const htProb = parseInt(probMatch[1]);
+                            let badgeClass = 'ht-badge-low';
+                            if (htProb >= 75) badgeClass = 'ht-badge-high';
+                            else if (htProb >= 60) badgeClass = 'ht-badge-medium';
+                            
+                            htDisplay = `<span class="${badgeClass}">${m.info_ht}</span>`;
+                        }
+                    }
+                    
                     return `
                         <tr class="hover:bg-gray-50">
                             <td class="p-3 text-xs">${m.data}</td>
@@ -778,13 +836,14 @@
                             <td class="p-3 text-xs text-center">${m.risultato || '-'}</td>
                             <td class="p-3 text-xs text-center">${m.probabilita}%</td>
                             <td class="p-3 text-xs text-center font-bold">${m.quota}</td>
+                            <td class="p-3 text-xs text-center">${htDisplay}</td>
                             <td class="p-3 text-xs text-center ${esitoClass}">${m.esito || '-'}</td>
                         </tr>
                     `;
                 }).join('');
                 
                 if (matches.length > 200) {
-                    tbody.innerHTML += `<tr><td colspan="9" class="p-3 text-center text-sm text-gray-500">Mostrati primi 200 di ${matches.length}</td></tr>`;
+                    tbody.innerHTML += `<tr><td colspan="10" class="p-3 text-center text-sm text-gray-500">Mostrati primi 200 di ${matches.length}</td></tr>`;
                 }
             }
             
@@ -976,6 +1035,57 @@
                 link.click();
             });
             
+            // ==================== HT MERGE FUNCTIONS ====================
+            function normalizeKey(str) {
+                // Normalizza stringa per matching squadre (rimuove accenti, lowercase, solo alfanumerici)
+                return str.normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]/g, "");
+            }
+            
+            function mergeMainWithHT() {
+                // Se non ho dati main, non posso fare merge
+                if (rawMainData.length === 0) return rawMainData;
+                
+                // Se non ho dati HT, ritorno main senza modifiche
+                if (rawHtData.length === 0) return rawMainData;
+                
+                // Creo mappa HT: chiave = squadre normalizzate
+                const htMap = {};
+                rawHtData.forEach(htRow => {
+                    const partita = String(htRow.Partita || '').trim();
+                    if (!partita) return;
+                    
+                    // Normalizzo nome partita (Home + Away senza spazi/accenti)
+                    const normalized = normalizeKey(partita);
+                    
+                    // Salvo prob e quota HT
+                    const probHT = parseInt(String(htRow['Probabilità'] || htRow.Probabilità || '0').replace('%', '').trim()) || 0;
+                    const quotaHT = parseFloat(String(htRow.Quota || '0').replace(',', '.').trim()) || 0;
+                    
+                    if (probHT > 0 && quotaHT > 0) {
+                        htMap[normalized] = { prob: probHT, quota: quotaHT.toFixed(2) };
+                    }
+                });
+                
+                // Arricchisco Main con info HT
+                return rawMainData.map(mainRow => {
+                    const partita = String(mainRow.Partita || '').trim();
+                    const normalized = normalizeKey(partita);
+                    
+                    // Cerco match in HT map
+                    if (htMap[normalized]) {
+                        const htInfo = htMap[normalized];
+                        mainRow.info_ht = `${htInfo.prob}% (@${htInfo.quota})`;
+                    } else {
+                        mainRow.info_ht = '';
+                    }
+                    
+                    return mainRow;
+                });
+            }
+            
             // ==================== UPLOAD TIPS ====================
             document.getElementById('tips-csv-file').addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -988,7 +1098,42 @@
                         alert('Seleziona data!');
                         return;
                     }
-                    processAndPreviewCSV(parsed, matchDate, 'tips');
+                    
+                    // Salvo in rawMainData
+                    rawMainData = parsed;
+                    
+                    // Faccio merge con HT se disponibile
+                    const mergedData = mergeMainWithHT();
+                    
+                    // Processo i dati merged
+                    processAndPreviewCSV(mergedData, matchDate, 'tips');
+                };
+                reader.readAsText(file);
+            });
+            
+            // ==================== UPLOAD HT ====================
+            document.getElementById('tips-ht-file').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) {
+                    // Se rimuovo file HT, resetto
+                    rawHtData = [];
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const parsed = parseCSV(event.target.result);
+                    
+                    // Salvo in rawHtData
+                    rawHtData = parsed;
+                    
+                    // Se ho già caricato Main, rifaccio merge
+                    if (rawMainData.length > 0) {
+                        const matchDate = document.getElementById('tips-date').value;
+                        if (matchDate) {
+                            const mergedData = mergeMainWithHT();
+                            processAndPreviewCSV(mergedData, matchDate, 'tips');
+                        }
+                    }
                 };
                 reader.readAsText(file);
             });
@@ -1059,7 +1204,8 @@
                         probabilita: probabilita,
                         mercato: String(row.Mercato).trim(),
                         tip: String(row.Tip).trim(),
-                        quota: quota
+                        quota: quota,
+                        info_ht: String(row.info_ht || '').trim()  // Campo HT opzionale
                     };
                     
                     // Calcola esito se risultati
@@ -1439,6 +1585,20 @@
                                         const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
                                         const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
                                         
+                                        // HT indicator
+                                        let htIndicator = '';
+                                        if (m.info_ht && m.info_ht.trim() !== '') {
+                                            const probMatch = m.info_ht.match(/(\d+)%/);
+                                            if (probMatch) {
+                                                const htProb = parseInt(probMatch[1]);
+                                                if (htProb >= 75) {
+                                                    htIndicator = `<div class="text-xs mt-1"><span class="bg-green-100 text-green-700 px-2 py-1 rounded">⚡ HT: ${m.info_ht}</span></div>`;
+                                                } else if (htProb >= 60) {
+                                                    htIndicator = `<div class="text-xs mt-1"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">💡 HT: ${m.info_ht}</span></div>`;
+                                                }
+                                            }
+                                        }
+                                        
                                         return `
                                             <div class="border rounded-lg p-4 hover:bg-gray-50">
                                                 <div class="flex justify-between items-start">
@@ -1455,6 +1615,7 @@
                                                             <span class="ml-2">@${m.quota.toFixed(2)}</span>
                                                             <span class="ml-2 text-gray-500">${m.probabilita}%</span>
                                                         </div>
+                                                        ${htIndicator}
                                                     </div>
                                                     <div class="text-right">
                                                         <span class="score-badge">${m.score}</span>
@@ -1683,13 +1844,33 @@
                 legaScore = Math.round(legaScore * confidenceFactor * recencyFactor);
                 tipScore = Math.round(tipScore * confidenceFactor);
                 
+                // HT BOOST
+                let htBonus = 0;
+                if (partita.info_ht && partita.info_ht.trim() !== '') {
+                    const probMatch = partita.info_ht.match(/(\d+)%/);
+                    if (probMatch) {
+                        const htProb = parseInt(probMatch[1]);
+                        
+                        // BOOST se Over Main + HT alto (allineati)
+                        if (tipNorm.startsWith('+') && htProb >= 70) {
+                            htBonus = Math.round((htProb - 70) * 0.5); // Max +15 punti se htProb=100
+                        }
+                        
+                        // PENALITÀ se Under Main + HT molto alto (disallineati)
+                        if (tipNorm.startsWith('-') && htProb >= 75) {
+                            htBonus = -10;
+                        }
+                    }
+                }
+                
                 const quotaPenalty = quota < 1.15 ? 0.8 : 1.0;
-                const totalScore = Math.round((legaScore + tipScore + probScore) * quotaPenalty);
+                const totalScore = Math.round((legaScore + tipScore + probScore + htBonus) * quotaPenalty);
                 
                 return { 
                     legaScore, 
                     tipScore, 
-                    probScore: Math.round(probScore), 
+                    probScore: Math.round(probScore),
+                    htBonus,
                     totalScore,
                     quotaValid
                 };
