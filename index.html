@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Mpetaz Tips</title>
+    <title>⚽ Mpetaz Tips v3.2</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
@@ -86,7 +86,7 @@
                 <div class="flex justify-between items-center py-4">
                     <div class="flex items-center space-x-3">
                         <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.2</h1>
                     </div>
                     <nav class="flex space-x-2 flex-wrap">
                         <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
@@ -227,6 +227,7 @@
                                     <th class="p-3 font-semibold text-center">Ris.</th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="probabilita">Prob. <i class="fa-solid fa-sort sort-icon"></i></th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="quota">Quota <i class="fa-solid fa-sort sort-icon"></i></th>
+                                    <th class="p-3 font-semibold text-center" title="Orario partita (ora italiana)">Ora</th>
                                     <th class="p-3 font-semibold text-center" title="Over 0.5 HT - Info primo tempo">HT</th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="esito">Esito <i class="fa-solid fa-sort sort-icon"></i></th>
                                 </tr>
@@ -335,7 +336,31 @@
                                 <option value="">Nessun filtro (tutte le partite)</option>
                             </select>
                         </div>
-                        <!-- Seconda riga -->
+                    </div>
+                    
+                    <!-- Terza riga: Tip Target Trading -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-1">🎯 Tip Target Trading (opzionale)</label>
+                        <select id="ranking-target-tip" class="w-full p-3 border rounded-lg bg-white">
+                            <option value="">-- Stesso tip del filtro --</option>
+                            <optgroup label="📊 Dati Reali (da file caricato)">
+                                <option value="0.5HT">Over 0.5 HT (da file HT)</option>
+                            </optgroup>
+                            <optgroup label="🔮 Stime Matematiche">
+                                <option value="+2.5">Over 2.5 FT</option>
+                                <option value="+3.5">Over 3.5 FT</option>
+                                <option value="+4.5">Over 4.5 FT</option>
+                                <option value="-2.5">Under 2.5 FT</option>
+                                <option value="-3.5">Under 3.5 FT</option>
+                            </optgroup>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-2">
+                            <strong>📊 Dati Reali:</strong> Odds precise dal file caricato (✅)<br>
+                            <strong>🔮 Stime:</strong> Range calcolato matematicamente da correlazioni storiche
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div>
                             <label class="block text-sm font-medium mb-1">Score Minimo</label>
                             <input type="number" id="ranking-score-min" value="45" class="w-full p-3 border rounded-lg">
@@ -411,6 +436,307 @@
         // HT MERGE STATE
         let rawMainData = [];
         let rawHtData = [];
+        
+        // API FOOTBALL CONFIG
+        const API_FOOTBALL_KEY = '62706d306e456ad02769b5bf985b8973';
+        const API_FOOTBALL_URL = 'https://v3.api-football.com';
+        
+        // MATCH TIMES CACHE (Firebase - condiviso tutti utenti, 24h)
+        const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 ore
+        
+        // Salva orario in Firebase cache temporanea
+        async function saveTimeToCache(date, partita, ora) {
+            if (!ora || ora.trim() === '') return;
+            
+            try {
+                const key = `${date}_${partita.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                await setDoc(doc(db, "match_times_temp", key), {
+                    data: date,
+                    partita: partita,
+                    ora: ora,
+                    timestamp: Date.now()
+                });
+            } catch(e) {
+                console.error('[CACHE] Error saving time:', e);
+            }
+        }
+        
+        // Ottieni orario da Firebase cache
+        async function getTimeFromCache(date, partita) {
+            try {
+                const key = `${date}_${partita.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                const docSnap = await getDoc(doc(db, "match_times_temp", key));
+                
+                if (!docSnap.exists()) return null;
+                
+                const data = docSnap.data();
+                
+                // Check se >24h
+                if (Date.now() - data.timestamp > CACHE_DURATION) {
+                    // Expired, cancella
+                    await deleteDoc(doc(db, "match_times_temp", key));
+                    return null;
+                }
+                
+                return data.ora;
+            } catch(e) {
+                console.error('[CACHE] Error getting time:', e);
+                return null;
+            }
+        }
+        
+        // Cleanup automatico cache >24h (batch)
+        async function cleanupExpiredTimes() {
+            try {
+                const q = query(collection(db, "match_times_temp"));
+                const snapshot = await getDocs(q);
+                
+                const batch = writeBatch(db);
+                let cleanedCount = 0;
+                const now = Date.now();
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (now - data.timestamp > CACHE_DURATION) {
+                        batch.delete(doc.ref);
+                        cleanedCount++;
+                    }
+                });
+                
+                if (cleanedCount > 0) {
+                    await batch.commit();
+                    console.log(`[CACHE] Cleaned ${cleanedCount} expired times (>24h)`);
+                }
+            } catch(e) {
+                console.error('[CACHE] Cleanup error:', e);
+            }
+        }
+        
+        // Stats cache
+        async function getCacheStats() {
+            try {
+                const q = query(collection(db, "match_times_temp"));
+                const snapshot = await getDocs(q);
+                return {
+                    total: snapshot.size,
+                    items: snapshot.docs.map(d => d.data())
+                };
+            } catch(e) {
+                return { total: 0, items: [] };
+            }
+        }
+        let dailyFixturesCache = null; // Bulk cache giornaliero
+        
+        // ==================== FUZZY MATCHING ====================
+        
+        // Levenshtein distance
+        function levenshteinDistance(a, b) {
+            const matrix = [];
+            
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+            
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+            
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            
+            return matrix[b.length][a.length];
+        }
+        
+        // Fuzzy match team name
+        function fuzzyMatchTeam(csvTeam, apiTeams) {
+            const csvNorm = csvTeam.toLowerCase().trim();
+            let bestMatch = null;
+            let bestScore = Infinity;
+            
+            for (let apiTeam of apiTeams) {
+                const apiNorm = apiTeam.toLowerCase().trim();
+                
+                // Match esatto
+                if (csvNorm === apiNorm) return apiTeam;
+                
+                // Contains
+                if (csvNorm.includes(apiNorm) || apiNorm.includes(csvNorm)) {
+                    const distance = levenshteinDistance(csvNorm, apiNorm);
+                    if (distance < bestScore) {
+                        bestScore = distance;
+                        bestMatch = apiTeam;
+                    }
+                }
+                
+                // Levenshtein
+                const distance = levenshteinDistance(csvNorm, apiNorm);
+                if (distance < bestScore) {
+                    bestScore = distance;
+                    bestMatch = apiTeam;
+                }
+            }
+            
+            // Accetta solo se distance < 5
+            return bestScore < 5 ? bestMatch : null;
+        }
+        
+        // ==================== BULK API FOOTBALL ====================
+        
+        // Carica tutte le fixtures del giorno (1 chiamata bulk)
+        async function loadDailyFixtures(date) {
+            console.log(`[API DEBUG] Loading fixtures for ${date}...`);
+            
+            // Check localStorage
+            const cacheKey = `fixtures_${date}`;
+            const cached = localStorage.getItem(cacheKey);
+            
+            if (cached) {
+                const data = JSON.parse(cached);
+                // Valido per 6 ore
+                if (Date.now() - data.timestamp < 6 * 60 * 60 * 1000) {
+                    console.log(`[API DEBUG] Using cached fixtures for ${date} (${data.fixtures.length} matches)`);
+                    dailyFixturesCache = data.fixtures;
+                    return data.fixtures;
+                }
+            }
+            
+            // Fetch da API
+            try {
+                console.log(`[API DEBUG] Fetching from API-Football...`);
+                const url = `${API_FOOTBALL_URL}/fixtures?date=${date}`;
+                console.log(`[API DEBUG] URL: ${url}`);
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'x-rapidapi-key': API_FOOTBALL_KEY,
+                        'x-rapidapi-host': 'v3.api-football.com'
+                    }
+                });
+                
+                console.log(`[API DEBUG] Response status: ${response.status}`);
+                
+                if (!response.ok) {
+                    console.error(`[API DEBUG] API error: ${response.status} ${response.statusText}`);
+                    return [];
+                }
+                
+                const data = await response.json();
+                apiCallsToday++;
+                
+                console.log(`[API DEBUG] Response data:`, data);
+                
+                const fixtures = data.response || [];
+                console.log(`[API DEBUG] Loaded ${fixtures.length} fixtures (API calls today: ${apiCallsToday})`);
+                
+                // Salva in localStorage
+                localStorage.setItem(cacheKey, JSON.stringify({
+                    fixtures: fixtures,
+                    timestamp: Date.now()
+                }));
+                
+                dailyFixturesCache = fixtures;
+                
+                return fixtures;
+            } catch(e) {
+                console.error('[API DEBUG] Error fetching fixtures:', e);
+                return [];
+            }
+        }
+        
+        // Trova fixture matchante con fuzzy matching
+        function findMatchingFixture(csvMatch, fixtures) {
+            if (!fixtures || fixtures.length === 0) return null;
+            
+            const [csvHome, csvAway] = csvMatch.split(' - ').map(t => t.trim());
+            
+            // Estrai tutti i nomi team dall'API
+            const apiTeams = fixtures.flatMap(f => [
+                f.teams.home.name,
+                f.teams.away.name
+            ]);
+            
+            // Fuzzy match
+            const homeMatch = fuzzyMatchTeam(csvHome, apiTeams);
+            const awayMatch = fuzzyMatchTeam(csvAway, apiTeams);
+            
+            if (!homeMatch || !awayMatch) return null;
+            
+            // Trova fixture con entrambi i team
+            const fixture = fixtures.find(f => 
+                f.teams.home.name === homeMatch && 
+                f.teams.away.name === awayMatch
+            );
+            
+            return fixture;
+        }
+        
+        // Ottieni orario da bulk cache
+        function getTimeFromBulkCache(date, match) {
+            if (!dailyFixturesCache) return null;
+            
+            const fixture = findMatchingFixture(match, dailyFixturesCache);
+            if (!fixture || !fixture.fixture || !fixture.fixture.date) return null;
+            
+            // Converti UTC a ora italiana
+            const utcDate = new Date(fixture.fixture.date);
+            const italianTime = new Date(utcDate.getTime() + (1 * 60 * 60 * 1000)); // UTC+1
+            
+            const hours = String(italianTime.getHours()).padStart(2, '0');
+            const minutes = String(italianTime.getMinutes()).padStart(2, '0');
+            
+            return `${hours}:${minutes}`;
+        }
+        
+        // ODDS CORRELATIONS LOOKUP TABLE
+        const ODDS_CORRELATIONS = {
+            "+1.5": {
+                "+2.5": {
+                    "1.10-1.20": [1.45, 1.65],
+                    "1.20-1.30": [1.60, 1.85],
+                    "1.30-1.40": [1.75, 2.10],
+                    "1.40-1.50": [1.90, 2.30]
+                },
+                "+3.5": {
+                    "1.10-1.20": [2.00, 2.40],
+                    "1.20-1.30": [2.20, 2.60],
+                    "1.30-1.40": [2.40, 2.90]
+                },
+                "-2.5": {
+                    "1.10-1.20": [2.50, 3.00],
+                    "1.20-1.30": [2.20, 2.70],
+                    "1.30-1.40": [2.00, 2.40]
+                }
+            },
+            "+2.5": {
+                "+3.5": {
+                    "1.10-1.20": [1.50, 1.75],
+                    "1.20-1.30": [1.70, 2.00],
+                    "1.30-1.40": [1.90, 2.30],
+                    "1.40-1.60": [2.10, 2.60]
+                },
+                "+4.5": {
+                    "1.10-1.20": [2.30, 2.80],
+                    "1.20-1.30": [2.50, 3.00],
+                    "1.30-1.40": [2.70, 3.30]
+                },
+                "-3.5": {
+                    "1.10-1.20": [2.00, 2.40],
+                    "1.20-1.30": [1.80, 2.20],
+                    "1.30-1.40": [1.60, 2.00]
+                }
+            }
+        };
         
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', async () => {
@@ -807,6 +1133,7 @@
                 document.getElementById('filtered-count').textContent = matches.length;
                 
                 const displayMatches = matches.slice(0, 200);
+                const now = new Date();
                 
                 tbody.innerHTML = displayMatches.map(m => {
                     const esitoClass = m.esito === 'Vinto' ? 'text-green-600 font-bold' : m.esito === 'Perso' ? 'text-red-600 font-bold' : '';
@@ -826,6 +1153,31 @@
                         }
                     }
                     
+                    // Processo ORA con badge smart
+                    let timeDisplay = '<span class="text-gray-400">-</span>';
+                    if (m.time && m.time.trim() !== '') {
+                        const matchTime = m.time;
+                        const [hours, minutes] = matchTime.split(':').map(n => parseInt(n));
+                        
+                        // Crea date per confronto (oggi con orario partita)
+                        const matchDate = new Date();
+                        matchDate.setHours(hours, minutes, 0, 0);
+                        
+                        const diffMinutes = (matchDate - now) / (1000 * 60);
+                        
+                        // Badge logica
+                        if (Math.abs(diffMinutes) <= 15) {
+                            // LIVE (±15 min)
+                            timeDisplay = `<span class="text-red-600 font-bold">🔴 ${matchTime}</span>`;
+                        } else if (diffMinutes > 0 && diffMinutes <= 60) {
+                            // IMMINENTE (<60 min)
+                            timeDisplay = `<span class="text-orange-600 font-bold">⏰ ${matchTime}</span>`;
+                        } else {
+                            // Normale
+                            timeDisplay = `<span class="text-gray-700">${matchTime}</span>`;
+                        }
+                    }
+                    
                     return `
                         <tr class="hover:bg-gray-50">
                             <td class="p-3 text-xs">${m.data}</td>
@@ -836,6 +1188,7 @@
                             <td class="p-3 text-xs text-center">${m.risultato || '-'}</td>
                             <td class="p-3 text-xs text-center">${m.probabilita}%</td>
                             <td class="p-3 text-xs text-center font-bold">${m.quota}</td>
+                            <td class="p-3 text-xs text-center">${timeDisplay}</td>
                             <td class="p-3 text-xs text-center">${htDisplay}</td>
                             <td class="p-3 text-xs text-center ${esitoClass}">${m.esito || '-'}</td>
                         </tr>
@@ -843,7 +1196,7 @@
                 }).join('');
                 
                 if (matches.length > 200) {
-                    tbody.innerHTML += `<tr><td colspan="10" class="p-3 text-center text-sm text-gray-500">Mostrati primi 200 di ${matches.length}</td></tr>`;
+                    tbody.innerHTML += `<tr><td colspan="11" class="p-3 text-center text-sm text-gray-500">Mostrati primi 200 di ${matches.length}</td></tr>`;
                 }
             }
             
@@ -1035,6 +1388,534 @@
                 link.click();
             });
             
+            // ==================== TARGET ODDS SYSTEM ====================
+            
+            // Estrai odds da info_ht
+            function extractHtOdds(infoHt) {
+                if (!infoHt || infoHt.trim() === '') return null;
+                
+                const oddsMatch = infoHt.match(/@([\d.]+)/);
+                if (oddsMatch) {
+                    return parseFloat(oddsMatch[1]);
+                }
+                return null;
+            }
+            
+            // Stima range odds basato su correlazioni
+            function estimateOddsRange(tipAttuale, oddsAttuale, tipTarget) {
+                // Trova range nella lookup table
+                const correlations = ODDS_CORRELATIONS[tipAttuale]?.[tipTarget];
+                if (!correlations) {
+                    // Fallback: calcolo matematico
+                    const probAttuale = 1 / oddsAttuale;
+                    const probTarget = probAttuale * 0.70; // Stima conservativa
+                    const oddsTarget = 1 / probTarget;
+                    
+                    return {
+                        min: Math.round((oddsTarget * 0.90) * 100) / 100,
+                        max: Math.round((oddsTarget * 1.10) * 100) / 100,
+                        avg: oddsTarget
+                    };
+                }
+                
+                // Cerca range corretto
+                for (let range in correlations) {
+                    const [minRange, maxRange] = range.split('-').map(Number);
+                    if (oddsAttuale >= minRange && oddsAttuale <= maxRange) {
+                        const [minOdds, maxOdds] = correlations[range];
+                        return {
+                            min: minOdds,
+                            max: maxOdds,
+                            avg: (minOdds + maxOdds) / 2
+                        };
+                    }
+                }
+                
+                // Fallback se non trovato range esatto
+                const probAttuale = 1 / oddsAttuale;
+                const probTarget = probAttuale * 0.70;
+                const oddsTarget = 1 / probTarget;
+                
+                return {
+                    min: Math.round((oddsTarget * 0.90) * 100) / 100,
+                    max: Math.round((oddsTarget * 1.10) * 100) / 100,
+                    avg: oddsTarget
+                };
+            }
+            
+            // Ottieni odds target (reale o stimato)
+            function getTargetOdds(match, tipTarget) {
+                if (!tipTarget || tipTarget === '') {
+                    // Nessun target specificato, usa tip attuale
+                    return {
+                        source: 'data',
+                        odds: match.quota,
+                        min: match.quota,
+                        max: match.quota,
+                        display: `@${match.quota.toFixed(2)}`,
+                        isEstimate: false
+                    };
+                }
+                
+                // CASO 1: Target è 0.5 HT - abbiamo dato reale!
+                if (tipTarget === '0.5HT') {
+                    const htOdds = extractHtOdds(match.info_ht);
+                    if (htOdds) {
+                        return {
+                            source: 'data',
+                            odds: htOdds,
+                            min: htOdds,
+                            max: htOdds,
+                            display: `@${htOdds.toFixed(2)}`,
+                            isEstimate: false
+                        };
+                    }
+                    return null; // HT non disponibile
+                }
+                
+                // CASO 2: Target è stesso tip - abbiamo dato reale!
+                if (tipTarget === match.tip) {
+                    return {
+                        source: 'data',
+                        odds: match.quota,
+                        min: match.quota,
+                        max: match.quota,
+                        display: `@${match.quota.toFixed(2)}`,
+                        isEstimate: false
+                    };
+                }
+                
+                // CASO 3: Target diverso - usa lookup table (più accurato)
+                const estimate = estimateOddsRange(match.tip, match.quota, tipTarget);
+                return {
+                    source: 'estimate',
+                    odds: estimate.avg,
+                    min: estimate.min,
+                    max: estimate.max,
+                    display: `@${estimate.min.toFixed(2)}-${estimate.max.toFixed(2)}`,
+                    isEstimate: true
+                };
+            }
+            
+            // Calcola green con odds precise
+            function calculateGreen(backStake, backOdds, layOdds) {
+                const liability = backStake * (layOdds - 1);
+                const backProfit = backStake * (backOdds - 1);
+                
+                // Green se lay vince (back perde)
+                const greenLay = liability;
+                // Green se back vince (lay perde) 
+                const greenBack = backProfit - liability;
+                
+                // Usa il minore per essere conservativi
+                return Math.min(greenLay, greenBack);
+            }
+            
+            // Calcola green range con odds stimate
+            function calculateGreenRange(backStake, backOdds, layOddsMin, layOddsMax) {
+                const greenMin = calculateGreen(backStake, backOdds, layOddsMin);
+                const greenMax = calculateGreen(backStake, backOdds, layOddsMax);
+                
+                return {
+                    min: greenMin,
+                    max: greenMax,
+                    avg: (greenMin + greenMax) / 2
+                };
+            }
+            
+            // ==================== MATCH TIMES SYSTEM ====================
+            
+            // Carica cache orari da Firebase
+            // Ottieni orario da API Football
+            async function getTimeFromAPIFootball(date, teamHome, teamAway) {
+                if (apiCallsToday >= 90) {
+                    console.warn("API call limit reached today");
+                    return null;
+                }
+                
+                try {
+                    const response = await fetch(`${API_FOOTBALL_URL}/fixtures?date=${date}&team=${teamHome}`, {
+                        headers: {
+                            'x-rapidapi-key': API_FOOTBALL_KEY,
+                            'x-rapidapi-host': 'v3.api-football.com'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        console.error("API Football error:", response.status);
+                        return null;
+                    }
+                    
+                    const data = await response.json();
+                    apiCallsToday++;
+                    
+                    if (data.response && data.response.length > 0) {
+                        // Cerca match che contiene entrambe le squadre
+                        const match = data.response.find(m => {
+                            const home = normalizeKey(m.teams.home.name);
+                            const away = normalizeKey(m.teams.away.name);
+                            const searchHome = normalizeKey(teamHome);
+                            const searchAway = normalizeKey(teamAway);
+                            
+                            return (home.includes(searchHome) || searchHome.includes(home)) &&
+                                   (away.includes(searchAway) || searchAway.includes(away));
+                        });
+                        
+                        if (match && match.fixture && match.fixture.date) {
+                            // Converti UTC a ora italiana (UTC+1 o UTC+2)
+                            const utcDate = new Date(match.fixture.date);
+                            const italianTime = new Date(utcDate.getTime() + (2 * 60 * 60 * 1000)); // UTC+2 per ora solare
+                            
+                            const hours = String(italianTime.getHours()).padStart(2, '0');
+                            const minutes = String(italianTime.getMinutes()).padStart(2, '0');
+                            
+                            return `${hours}:${minutes}`;
+                        }
+                    }
+                    
+                    return null;
+                } catch(e) {
+                    console.error("API Football fetch error:", e);
+                    return null;
+                }
+            }
+            
+            // Ottieni orario match (usa cache -> API)
+            async function getMatchTime(date, match) {
+                // 1. Prova cache Firebase
+                const cached = getTimeFromCache(date, match);
+                if (cached) return cached;
+                
+                // 2. Prova bulk cache (localStorage)
+                const bulkTime = getTimeFromBulkCache(date, match);
+                if (bulkTime) {
+                    // Salva in cache Firebase per prossime volte
+                    await saveTimeToCache(date, match, bulkTime);
+                    return bulkTime;
+                }
+                
+                // 3. Fallback: chiamata API singola (non dovrebbe servire)
+                const teams = match.split(' - ');
+                if (teams.length !== 2) return null;
+                
+                const teamHome = teams[0].trim();
+                const teamAway = teams[1].trim();
+                
+                const time = await getTimeFromAPIFootball(date, teamHome, teamAway);
+                
+                if (time) {
+                    await saveTimeToCache(date, match, time);
+                }
+                
+                return time;
+            }
+            
+            // ==================== POISSON ODDS CALCULATOR ====================
+            
+            // Calcola probabilità Poisson
+            function poissonProbability(lambda, k) {
+                let prob = Math.exp(-lambda);
+                for (let i = 1; i <= k; i++) {
+                    prob *= lambda / i;
+                }
+                return prob;
+            }
+            
+            // Stima lambda da quota esistente
+            function estimateLambda(tip, quota, prob) {
+                // Usa probabilità reale per calcolo accurato
+                const impliedProb = prob / 100;
+                
+                // Calcolo matematico basato su distribuzione Poisson
+                if (tip === '+0.5') {
+                    // P(X >= 1) = impliedProb
+                    // Lambda = -ln(1 - impliedProb)
+                    return -Math.log(1 - impliedProb);
+                } else if (tip === '+1.5') {
+                    // P(X >= 2) = impliedProb
+                    // Approssimazione: lambda ≈ 1.5 + (impliedProb - 0.5) * 3
+                    const baseLambda = 2.0;
+                    const adjustment = (impliedProb - 0.75) * 2;
+                    return Math.max(1.5, Math.min(4.0, baseLambda + adjustment));
+                } else if (tip === '+2.5') {
+                    const baseLambda = 3.0;
+                    const adjustment = (impliedProb - 0.60) * 2;
+                    return Math.max(2.5, Math.min(5.0, baseLambda + adjustment));
+                } else if (tip === '+3.5') {
+                    const baseLambda = 4.0;
+                    const adjustment = (impliedProb - 0.45) * 2;
+                    return Math.max(3.5, Math.min(6.0, baseLambda + adjustment));
+                }
+                
+                // Default fallback
+                return 2.5;
+            }
+            
+            // Calcola quota target con Poisson
+            function calculatePoissonOdds(tipCurrent, quotaCurrent, probCurrent, tipTarget) {
+                const lambda = estimateLambda(tipCurrent, quotaCurrent, probCurrent);
+                
+                let targetProb = 0;
+                
+                if (tipTarget === '+0.5') {
+                    // P(X >= 1) = 1 - P(X = 0)
+                    targetProb = 1 - poissonProbability(lambda, 0);
+                } else if (tipTarget === '+1.5') {
+                    // P(X >= 2) = 1 - P(X=0) - P(X=1)
+                    targetProb = 1 - poissonProbability(lambda, 0) - poissonProbability(lambda, 1);
+                } else if (tipTarget === '+2.5') {
+                    // P(X >= 3)
+                    targetProb = 1 - poissonProbability(lambda, 0) - poissonProbability(lambda, 1) - poissonProbability(lambda, 2);
+                } else if (tipTarget === '+3.5') {
+                    // P(X >= 4)
+                    let sum = 0;
+                    for (let k = 0; k <= 3; k++) {
+                        sum += poissonProbability(lambda, k);
+                    }
+                    targetProb = 1 - sum;
+                } else if (tipTarget === '-2.5') {
+                    // P(X < 3) = P(X=0) + P(X=1) + P(X=2)
+                    targetProb = poissonProbability(lambda, 0) + poissonProbability(lambda, 1) + poissonProbability(lambda, 2);
+                }
+                
+                if (targetProb <= 0 || targetProb >= 1) return null;
+                
+                const targetOdds = 1 / targetProb;
+                
+                return {
+                    odds: targetOdds,
+                    prob: Math.round(targetProb * 100),
+                    source: 'poisson'
+                };
+            }
+            
+            // ==================== AI TRADING ADVISOR ====================
+            
+            function generateTradingAdvice(match, tipTarget = null) {
+                const score = match.score || 0;
+                const tip = (match.tip || '').trim().toUpperCase();
+                const prob = match.probabilita || 0;
+                const quota = match.quota || 0;
+                
+                // Estrai HT prob se disponibile
+                let htProb = 0;
+                if (match.info_ht && match.info_ht.trim() !== '') {
+                    const htMatch = match.info_ht.match(/(\d+)%/);
+                    if (htMatch) htProb = parseInt(htMatch[1]);
+                }
+                
+                // Ottieni odds target
+                const targetOdds = getTargetOdds(match, tipTarget);
+                if (!targetOdds) {
+                    tipTarget = null;
+                }
+                
+                // Usa tip target per i calcoli se specificato E diverso da vuoto
+                const hasValidTarget = tipTarget && tipTarget.trim() !== '' && tipTarget !== tip;
+                const effectiveTip = hasValidTarget ? tipTarget : tip;
+                const effectiveQuota = targetOdds ? targetOdds.odds : quota;
+                const effectiveProb = targetOdds && targetOdds.prob ? targetOdds.prob : prob;
+                
+                // Bonus confidence se odds reale
+                const confidenceBonus = (targetOdds && !targetOdds.isEstimate) ? 5 : 0;
+                const adjustedScore = score + confidenceBonus;
+                
+                let advice = {
+                    confidence: '',
+                    confidenceIcon: '',
+                    confidenceColor: '',
+                    entry: '',
+                    timing: '',
+                    plan: '',
+                    stopLoss: '',
+                    reason: '',
+                    riskLevel: '',
+                    targetTip: effectiveTip,
+                    targetOdds: targetOdds,
+                    greenInfo: ''
+                };
+                
+                // Soglie meno conservative
+                if (adjustedScore >= 65 && htProb >= 70) {
+                    advice.confidence = 'MOLTO ALTA';
+                    advice.confidenceIcon = '🔥';
+                    advice.confidenceColor = 'text-green-700 bg-green-50';
+                    advice.riskLevel = 'BASSO';
+                    
+                    if (tipTarget === '0.5HT') {
+                        advice.entry = `Back ${tip} @${quota.toFixed(2)} pre-match`;
+                        advice.timing = `Primo tempo KEY (HT ${htProb}%)`;
+                        advice.plan = `Lay 0.5 HT ${targetOdds.display} se gol primi 20' ${targetOdds.isEstimate ? '(stima)' : '✅'}`;
+                        advice.stopLoss = `Se 0-0 a 30' → Lay comunque (HT alto!)`;
+                        advice.reason = `HT ${htProb}% = Gol HT quasi certo. Green ${targetOdds.isEstimate ? 'stimato' : 'garantito'}!`;
+                        
+                        const green = calculateGreen(100, quota, targetOdds.odds);
+                        advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
+                    } else {
+                        // Entry SEMPRE sul tip target (quello che vuoi tradare)
+                        advice.entry = `Back ${effectiveTip} ${targetOdds.display} pre-match`;
+                        advice.timing = `Gol probabile primi 15' (HT ${htProb}%)`;
+                        
+                        // Plan usa tip target per lay
+                        if (hasValidTarget) {
+                            advice.plan = `Se gol <15' → Lay ${effectiveTip} a quote inferiori per green`;
+                            advice.reason = `Score ${adjustedScore} + HT ${htProb}%. Back ${effectiveTip} ${targetOdds.display}, lay dopo gol`;
+                        } else {
+                            advice.plan = `Se gol <15' → Lay ${tip} a quote inferiori`;
+                            advice.reason = `Score ${adjustedScore} + HT ${htProb}% = Doppia conferma massima`;
+                        }
+                        
+                        advice.stopLoss = `Se 0-0 a 70' → Cash out con -5%`;
+                        
+                        if (targetOdds.isEstimate) {
+                            const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
+                            advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} su stake €100`;
+                        } else {
+                            const green = calculateGreen(100, quota, targetOdds.odds);
+                            advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
+                        }
+                    }
+                    
+                } else if (adjustedScore >= 50 && htProb >= 60) {
+                    advice.confidence = 'ALTA';
+                    advice.confidenceIcon = '⚡';
+                    advice.confidenceColor = 'text-green-600 bg-green-50';
+                    advice.riskLevel = 'MEDIO-BASSO';
+                    
+                    advice.entry = `Back ${effectiveTip} ${targetOdds.display} pre-match`;
+                    advice.timing = `Gol atteso primi 20' (HT ${htProb}%)`;
+                    
+                    if (hasValidTarget) {
+                        advice.plan = `Monitor primi 20', se gol → Lay ${effectiveTip} a quote inferiori`;
+                        advice.reason = `Score ${adjustedScore} + HT ${htProb}%. Back ${effectiveTip} ${targetOdds.display}`;
+                    } else {
+                        advice.plan = `Monitor primi 20', se gol → Lay ${tip} a quote inferiori`;
+                        advice.reason = `Score ${adjustedScore} + HT ${htProb}% = Buona confidence`;
+                    }
+                    
+                    advice.stopLoss = `Se 0-0 a 65' → Cash out con -8%`;
+                    
+                    if (targetOdds.isEstimate) {
+                        const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
+                        advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} su stake €100`;
+                    } else {
+                        const green = calculateGreen(100, quota, targetOdds.odds);
+                        advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
+                    }
+                    
+                } else if (adjustedScore >= 40 && htProb >= 50) {
+                    advice.confidence = 'MEDIA';
+                    advice.confidenceIcon = '💡';
+                    advice.confidenceColor = 'text-yellow-600 bg-yellow-50';
+                    advice.riskLevel = 'MEDIO';
+                    
+                    advice.entry = `Back ${effectiveTip} ${targetOdds.display} pre-match con cautela`;
+                    advice.timing = `Gol possibile HT (${htProb}%), monitor partita`;
+                    
+                    if (hasValidTarget) {
+                        advice.plan = `Entry cauta, se gol valuta Lay ${effectiveTip}`;
+                        advice.reason = `Score ${adjustedScore} medio. Back ${effectiveTip} ${targetOdds.display}`;
+                    } else {
+                        advice.plan = `Entry cauta, valuta situazione live dopo 25'`;
+                        advice.reason = `Score ${adjustedScore} medio, HT ${htProb}% discreto`;
+                    }
+                    
+                    advice.stopLoss = `Se 0-0 a 60' → Exit con -10%`;
+                    
+                    if (targetOdds.isEstimate) {
+                        const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
+                        advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} possibili`;
+                    } else {
+                        const green = calculateGreen(100, quota, targetOdds.odds);
+                        advice.greenInfo = `€${green.toFixed(2)} possibili`;
+                    }
+                    
+                } else if (adjustedScore >= 40 && htProb < 50 && tip.startsWith('+')) {
+                    advice.confidence = 'MEDIA';
+                    advice.confidenceIcon = '⏰';
+                    advice.confidenceColor = 'text-blue-600 bg-blue-50';
+                    advice.riskLevel = 'MEDIO';
+                    
+                    advice.entry = `NO pre-match. Aspetta HT per entry live`;
+                    advice.timing = `HT basso (${htProb}%) = Primo tempo lento previsto`;
+                    advice.plan = `Se 0-0 a HT → Back ${tip} live @quote migliori`;
+                    advice.stopLoss = `Se gol rapido → Skip, strategia non valida`;
+                    advice.reason = `Score OK ma HT basso = Pattern 2° tempo`;
+                    advice.greenInfo = `Valuta live dopo HT`;
+                    
+                } else if (adjustedScore >= 30 && adjustedScore < 40) {
+                    advice.confidence = 'BASSA';
+                    advice.confidenceIcon = '⚠️';
+                    advice.confidenceColor = 'text-orange-600 bg-orange-50';
+                    advice.riskLevel = 'ALTO';
+                    
+                    advice.entry = `Skip o stake minimo (0.5% bankroll)`;
+                    advice.timing = `Confidence insufficiente per entry sicura`;
+                    advice.plan = `Solo per esperti: entry live dopo 30' se 0-0`;
+                    advice.stopLoss = `Exit immediato se andamento negativo`;
+                    advice.reason = `Score ${adjustedScore} limite, rischio elevato`;
+                    advice.greenInfo = `N/A`;
+                    
+                } else {
+                    advice.confidence = 'MOLTO BASSA';
+                    advice.confidenceIcon = '❌';
+                    advice.confidenceColor = 'text-red-600 bg-red-50';
+                    advice.riskLevel = 'MOLTO ALTO';
+                    
+                    advice.entry = `SKIP - Non consigliato`;
+                    advice.timing = `Score troppo basso per betting sicuro`;
+                    advice.plan = `Evita questa partita`;
+                    advice.stopLoss = `N/A`;
+                    advice.reason = `Score ${adjustedScore} insufficiente, rischio eccessivo`;
+                    advice.greenInfo = `N/A`;
+                }
+                
+                return advice;
+            }
+            
+            // ==================== TOOLTIP SYSTEM ====================
+            
+            function generateScoreTooltip(match, scoreDetails) {
+                return `
+                    <div class="text-left">
+                        <div class="font-bold mb-2 text-center">SCORE BREAKDOWN</div>
+                        <div class="text-sm space-y-1">
+                            <div>Lega: <span class="font-semibold">+${scoreDetails.legaScore || 0}</span></div>
+                            <div>Tip: <span class="font-semibold">+${scoreDetails.tipScore || 0}</span></div>
+                            <div>Prob: <span class="font-semibold">+${scoreDetails.probScore || 0}</span> (${match.probabilita}%)</div>
+                            ${scoreDetails.htBonus ? `<div>HT Boost: <span class="font-semibold text-green-600">+${scoreDetails.htBonus}</span></div>` : ''}
+                            <div class="border-t pt-1 mt-1">Totale: <span class="font-bold text-lg">${scoreDetails.totalScore || 0}</span></div>
+                        </div>
+                        <div class="text-xs mt-2 pt-2 border-t text-gray-600">
+                            <div>80+ = ECCELLENTE 🔥</div>
+                            <div>60-79 = BUONO ⚡</div>
+                            <div>40-59 = MEDIO 💡</div>
+                            <div>&lt;40 = BASSO ⚠️</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function generateStatsTooltip(homeWins, awayWins) {
+                const homeColor = homeWins >= 7 ? '🟢' : homeWins >= 4 ? '🟡' : '🔴';
+                const awayColor = awayWins >= 7 ? '🟢' : awayWins >= 4 ? '🟡' : '🔴';
+                
+                return `
+                    <div class="text-left">
+                        <div class="font-bold mb-2 text-center">FORM SQUADRE</div>
+                        <div class="text-sm space-y-1">
+                            <div>${homeColor} Casa: <span class="font-semibold">${homeWins} W</span> ultimi 10</div>
+                            <div>${awayColor} Trasferta: <span class="font-semibold">${awayWins} W</span> ultimi 10</div>
+                        </div>
+                        <div class="text-xs mt-2 pt-2 border-t text-gray-600">
+                            <div>🟢 7+ = OTTIMA</div>
+                            <div>🟡 4-6 = MEDIA</div>
+                            <div>🔴 0-3 = SCARSA</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
             // ==================== HT MERGE FUNCTIONS ====================
             function normalizeKey(str) {
                 // Normalizza stringa per matching squadre (rimuove accenti, lowercase, solo alfanumerici)
@@ -1091,7 +1972,7 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = async function(event) {
                     const parsed = parseCSV(event.target.result);
                     const matchDate = document.getElementById('tips-date').value;
                     if (!matchDate) {
@@ -1106,7 +1987,7 @@
                     const mergedData = mergeMainWithHT();
                     
                     // Processo i dati merged
-                    processAndPreviewCSV(mergedData, matchDate, 'tips');
+                    await processAndPreviewCSV(mergedData, matchDate, 'tips');
                 };
                 reader.readAsText(file);
             });
@@ -1120,7 +2001,7 @@
                     return;
                 }
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = async function(event) {
                     const parsed = parseCSV(event.target.result);
                     
                     // Salvo in rawHtData
@@ -1131,7 +2012,7 @@
                         const matchDate = document.getElementById('tips-date').value;
                         if (matchDate) {
                             const mergedData = mergeMainWithHT();
-                            processAndPreviewCSV(mergedData, matchDate, 'tips');
+                            await processAndPreviewCSV(mergedData, matchDate, 'tips');
                         }
                     }
                 };
@@ -1143,14 +2024,14 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = async function(event) {
                     const parsed = parseCSV(event.target.result);
                     const matchDate = document.getElementById('results-date').value;
                     if (!matchDate) {
                         alert('Seleziona data!');
                         return;
                     }
-                    processAndPreviewCSV(parsed, matchDate, 'results');
+                    await processAndPreviewCSV(parsed, matchDate, 'results');
                 };
                 reader.readAsText(file);
             });
@@ -1169,7 +2050,7 @@
                 return data;
             }
             
-            function processAndPreviewCSV(parsedData, matchDate, type) {
+            async function processAndPreviewCSV(parsedData, matchDate, type) {
                 const requiredFields = ['Lega', 'Partita', 'Probabilità', 'Mercato', 'Tip', 'Quota'];
                 let potentialMatches = [];
                 let incomplete = 0;
@@ -1196,6 +2077,9 @@
                         continue;
                     }
                     
+                    // Parse ora dal CSV
+                    const ora = String(row.Ora || row.Time || '').trim();
+                    
                     const matchData = {
                         data: matchDate,
                         lega: normalizeLega(String(row.Lega).trim()),
@@ -1205,8 +2089,14 @@
                         mercato: String(row.Mercato).trim(),
                         tip: String(row.Tip).trim(),
                         quota: quota,
-                        info_ht: String(row.info_ht || '').trim()  // Campo HT opzionale
+                        info_ht: String(row.info_ht || '').trim()
                     };
+                    
+                    // Se c'è ora nel CSV → salva in cache Firebase temporanea
+                    if (ora && ora !== '' && type === 'tips') {
+                        // Salva in cache (non nel DB principale!)
+                        await saveTimeToCache(matchData.data, matchData.partita, ora);
+                    }
                     
                     // Calcola esito se risultati
                     if (type === 'results' && matchData.risultato) {
@@ -1271,34 +2161,19 @@
                 let deletedCount = 0;
                 
                 try {
-                    // SE RISULTATI: cancella prima tutte partite stessa data SENZA risultato
-                    if (type === 'results' && dataToUpload.length > 0) {
-                        const uploadDate = dataToUpload[0].data;
-                        
-                        // Trova partite stessa data senza risultato
-                        const oldMatches = allMatches.filter(m => 
-                            m.data === uploadDate && 
-                            (!m.risultato || m.risultato.trim() === '')
-                        );
-                        
-                        if (oldMatches.length > 0) {
-                            const deleteBatch = writeBatch(db);
-                            oldMatches.forEach(m => {
-                                if (m.id) {
-                                    deleteBatch.delete(doc(matchesCollection, m.id));
-                                    deletedCount++;
-                                }
-                            });
-                            await deleteBatch.commit();
-                        }
+                    // CARICA ORARI AUTOMATICAMENTE per tips (non per results)
+                    if (type === 'tips') {
+                        console.log('[INFO] Caricamento orari disabilitato. Aggiungi colonna "Ora" al CSV per includerli.');
+                        // API Football disabilitata - non raggiungibile
+                        // Usa CSV con colonna "Ora" oppure lascia vuoto
                     }
                     
-                    // Carica nuove partite
+                    // Carica/aggiorna partite
                     const batch = writeBatch(db);
                     dataToUpload.forEach(match => {
                         if (match.id) {
-                            // Update esistente
-                            batch.update(doc(matchesCollection, match.id), match);
+                            // Update esistente - usa set con merge per evitare errori
+                            batch.set(doc(matchesCollection, match.id), match, { merge: true });
                         } else {
                             // Nuovo
                             const docRef = doc(matchesCollection);
@@ -1485,6 +2360,7 @@
                 const scoreMin = parseInt(document.getElementById('ranking-score-min').value);
                 const maxMatches = parseInt(document.getElementById('ranking-max-matches').value);
                 const selectedFilterId = document.getElementById('ranking-filter-select').value;
+                const tipTarget = document.getElementById('ranking-target-tip').value || null;
                 
                 if (!rankingDate) {
                     alert('Seleziona data!');
@@ -1492,7 +2368,7 @@
                 }
                 
                 const resultsContainer = document.getElementById('ranking-results');
-                resultsContainer.innerHTML = '<div class="bg-white p-6 rounded-xl shadow text-center"><div class="animate-pulse text-lg">🔄 Generazione ranking...</div></div>';
+                resultsContainer.innerHTML = '<div class="bg-white p-6 rounded-xl shadow text-center"><div class="animate-pulse text-lg">🔄 Generazione ranking... <br><span class="text-sm text-gray-500">(Recupero orari in corso...)</span></div></div>';
                 
                 try {
                     // Partite del giorno senza risultato
@@ -1569,6 +2445,27 @@
                         byTip[tip] = byTip[tip].slice(0, maxMatches);
                     });
                     
+                    // CARICA ORARI da Firebase cache temporanea
+                    const allRankedMatches = Object.values(byTip).flat();
+                    let loadedTimes = 0;
+                    
+                    for (let match of allRankedMatches) {
+                        const ora = await getTimeFromCache(match.data, match.partita);
+                        if (ora) {
+                            match.time = ora;
+                            loadedTimes++;
+                        }
+                    }
+                    
+                    console.log(`[CACHE] Orari recuperati: ${loadedTimes}/${allRankedMatches.length}`);
+                    
+                    if (loadedTimes === 0) {
+                        console.log('[INFO] Nessun orario in cache. Carica CSV con colonna "Ora".');
+                    }
+                    if (loadedTimes > 0) {
+                        console.log(`Loaded ${loadedTimes} match times for ranking`);
+                    }
+                    
                     // Render ranking per tip
                     const tipBlocks = Object.keys(byTip).sort().map(tip => {
                         const matches = byTip[tip];
@@ -1599,27 +2496,100 @@
                                             }
                                         }
                                         
+                                        // Orario display
+                                        let timeDisplay = '';
+                                        if (m.time && m.time.trim() !== '') {
+                                            timeDisplay = `<div class="text-xs mt-1"><span class="text-gray-600 font-bold">⏰ ${m.time}</span></div>`;
+                                        }
+                                        
+                                        // AI Trading Advice
+                                        const advice = generateTradingAdvice(m, tipTarget);
+                                        
+                                        // Target display
+                                        let targetDisplay = '';
+                                        if (tipTarget && advice.targetOdds) {
+                                            const targetLabel = tipTarget === '0.5HT' ? 'Over 0.5 HT' : tipTarget;
+                                            const sourceIcon = advice.targetOdds.isEstimate ? '🔮' : '✅';
+                                            targetDisplay = `<div class="text-xs mt-1 font-semibold text-blue-600">🎯 Target: ${targetLabel} ${advice.targetOdds.display} ${sourceIcon}</div>`;
+                                        }
+                                        
                                         return `
                                             <div class="border rounded-lg p-4 hover:bg-gray-50">
-                                                <div class="flex justify-between items-start">
+                                                <div class="flex justify-between items-start mb-3">
                                                     <div class="flex-1">
-                                                        <div class="font-bold text-lg">
-                                                            ${idx + 1}. 
-                                                            <span class="team-${team1Stats.color}">${team1}</span>
-                                                            - 
-                                                            <span class="team-${team2Stats.color}">${team2}</span>
+                                                        <div class="flex justify-between items-start">
+                                                            <div class="font-bold text-lg">
+                                                                ${idx + 1}. 
+                                                                <span class="team-${team1Stats.color}">${team1}</span>
+                                                                - 
+                                                                <span class="team-${team2Stats.color}">${team2}</span>
+                                                            </div>
                                                         </div>
-                                                        <div class="text-sm text-gray-600">${m.lega}</div>
+                                                        <div class="text-sm text-gray-600 flex items-center gap-2">
+                                                            ${m.time && m.time.trim() !== '' ? `<span class="text-gray-900 font-bold">⏰ ${m.time}</span> | ` : ''}
+                                                            ${m.lega}
+                                                        </div>
                                                         <div class="text-sm mt-1">
                                                             <span class="bg-blue-100 px-2 py-1 rounded text-xs">${m.mercato}</span>
                                                             <span class="ml-2">@${m.quota.toFixed(2)}</span>
                                                             <span class="ml-2 text-gray-500">${m.probabilita}%</span>
                                                         </div>
                                                         ${htIndicator}
+                                                        ${targetDisplay}
                                                     </div>
                                                     <div class="text-right">
-                                                        <span class="score-badge">${m.score}</span>
-                                                        <div class="text-xs text-gray-500 mt-1">${team1Stats.stats} | ${team2Stats.stats}</div>
+                                                        <div class="relative inline-block">
+                                                            <span class="score-badge cursor-help tooltip-trigger" 
+                                                                  data-tooltip-type="score"
+                                                                  data-score="${m.score || 0}"
+                                                                  data-lega-score="20"
+                                                                  data-tip-score="15"
+                                                                  data-prob-score="${Math.floor((m.probabilita || 0) / 5)}"
+                                                                  data-ht-bonus="${(m.info_ht && m.info_ht.trim() !== '') ? '15' : '0'}">
+                                                                ${m.score || 0}
+                                                            </span>
+                                                            <span class="ml-1 text-blue-500 text-xs cursor-help tooltip-trigger"
+                                                                  data-tooltip-type="score"
+                                                                  data-score="${m.score || 0}"
+                                                                  data-lega-score="20"
+                                                                  data-tip-score="15"
+                                                                  data-prob-score="${Math.floor((m.probabilita || 0) / 5)}"
+                                                                  data-ht-bonus="${(m.info_ht && m.info_ht.trim() !== '') ? '15' : '0'}"
+                                                                  title="Hover per dettagli score">
+                                                                ℹ️
+                                                            </span>
+                                                        </div>
+                                                        <div class="text-xs text-gray-500 mt-1 relative inline-block">
+                                                            <span class="tooltip-trigger cursor-help"
+                                                                  data-tooltip-type="stats"
+                                                                  data-home-wins="${(team1Stats.stats.match(/\d+/) || ['0'])[0]}"
+                                                                  data-away-wins="${((team2Stats.stats.split('|')[1] || '').match(/\d+/) || ['0'])[0]}">
+                                                                ${team1Stats.stats} | ${team2Stats.stats}
+                                                            </span>
+                                                            <span class="ml-1 text-blue-500 cursor-help tooltip-trigger"
+                                                                  data-tooltip-type="stats"
+                                                                  data-home-wins="${(team1Stats.stats.match(/\d+/) || ['0'])[0]}"
+                                                                  data-away-wins="${((team2Stats.stats.split('|')[1] || '').match(/\d+/) || ['0'])[0]}"
+                                                                  title="Hover per dettagli form">
+                                                                ℹ️
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- AI TRADING ADVICE -->
+                                                <div class="mt-3 p-3 rounded-lg ${advice.confidenceColor} border-l-4 ${advice.confidence === 'MOLTO ALTA' || advice.confidence === 'ALTA' ? 'border-green-500' : advice.confidence === 'MEDIA' ? 'border-yellow-500' : 'border-red-500'}">
+                                                    <div class="font-bold text-sm mb-2">
+                                                        🎯 STRATEGIA ${advice.confidenceIcon}
+                                                        <span class="float-right">${advice.confidence}</span>
+                                                    </div>
+                                                    <div class="text-xs space-y-1">
+                                                        <div><strong>💰 Entry:</strong> ${advice.entry}</div>
+                                                        ${advice.timing ? `<div><strong>⚡ Timing:</strong> ${advice.timing}</div>` : ''}
+                                                        ${advice.plan ? `<div><strong>🎯 Plan:</strong> ${advice.plan}</div>` : ''}
+                                                        ${advice.greenInfo && advice.greenInfo !== 'N/A' ? `<div><strong>💚 Green:</strong> ${advice.greenInfo}</div>` : ''}
+                                                        ${advice.stopLoss ? `<div><strong>⛔ Stop:</strong> ${advice.stopLoss}</div>` : ''}
+                                                        <div class="pt-1 mt-1 border-t border-gray-300"><strong>📈 Perché:</strong> ${advice.reason}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1667,8 +2637,11 @@
                                 Score minimo: ${scoreMin} • 
                                 ${Object.keys(byTip).length} tip diverse
                             </div>
-                            <button id="save-ranking-btn" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md">
+                            <button id="save-ranking-btn" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md mr-3">
                                 <i class="fa-solid fa-save mr-2"></i>Salva Ranking per Tracking ML
+                            </button>
+                            <button id="export-csv-btn" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md">
+                                <i class="fa-solid fa-download mr-2"></i>Esporta CSV Strategie
                             </button>
                         </div>
                         ${tipBlocks}
@@ -1676,6 +2649,42 @@
                     
                     // Event listener per salva ranking
                     document.getElementById('save-ranking-btn').addEventListener('click', saveRankingForTracking);
+                    
+                    // Event listener per export CSV
+                    document.getElementById('export-csv-btn').addEventListener('click', () => {
+                        const csvData = [];
+                        csvData.push(['Data', 'Lega', 'Partita', 'Tip', 'Quota', 'Prob%', 'HT', 'Ora', 'Score', 'Confidence', 'Entry', 'Green'].join(','));
+                        
+                        Object.keys(byTip).forEach(tip => {
+                            byTip[tip].forEach(m => {
+                                const advice = generateTradingAdvice(m, tipTarget);
+                                const htInfo = m.info_ht || '-';
+                                const time = m.time || '-';
+                                
+                                csvData.push([
+                                    m.data,
+                                    `"${m.lega}"`,
+                                    `"${m.partita}"`,
+                                    m.tip,
+                                    m.quota.toFixed(2),
+                                    m.probabilita,
+                                    `"${htInfo}"`,
+                                    time,
+                                    m.score,
+                                    advice.confidence,
+                                    `"${advice.entry}"`,
+                                    `"${advice.greenInfo || 'N/A'}"`
+                                ].join(','));
+                            });
+                        });
+                        
+                        const csvContent = csvData.join('\n');
+                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = `strategie_${rankingDate}_${filterName.replace(/\s+/g, '_')}.csv`;
+                        link.click();
+                    });
                 } catch(e) {
                     console.error('Error:', e);
                     resultsContainer.innerHTML = `<div class="bg-red-50 p-6 rounded-xl text-center">❌ Errore: ${e.message}</div>`;
@@ -2057,6 +3066,109 @@
             showPage('page-dashboard');
             
             loadingOverlay.classList.add('hidden');
+        });
+        
+        // ==================== TOOLTIP SYSTEM ====================
+        
+        // Crea elemento tooltip
+        const tooltipEl = document.createElement('div');
+        tooltipEl.id = 'custom-tooltip';
+        tooltipEl.className = 'fixed bg-gray-900 text-white text-xs rounded-lg p-3 shadow-xl pointer-events-none z-[9999]';
+        tooltipEl.style.display = 'none';
+        document.body.appendChild(tooltipEl);
+        
+        // Mostra tooltip
+        function showTooltipCustom(element, type) {
+            const rect = element.getBoundingClientRect();
+            let content = '';
+            
+            if (type === 'score') {
+                const score = element.dataset.score || '0';
+                const legaScore = element.dataset.legaScore || '0';
+                const tipScore = element.dataset.tipScore || '0';
+                const probScore = element.dataset.probScore || '0';
+                const htBonus = element.dataset.htBonus || '0';
+                
+                content = `
+                    <div class="font-bold mb-2">SCORE BREAKDOWN</div>
+                    <div class="space-y-1">
+                        <div>Lega: +${legaScore}</div>
+                        <div>Tip: +${tipScore}</div>
+                        <div>Prob: +${probScore}</div>
+                        ${htBonus > 0 ? `<div class="text-green-300">HT Boost: +${htBonus}</div>` : ''}
+                        <div class="border-t border-gray-700 pt-1 mt-1">Totale: <span class="font-bold">${score}</span></div>
+                    </div>
+                    <div class="text-xs mt-2 pt-2 border-t border-gray-700 opacity-75">
+                        <div>65+ = ECCELLENTE 🔥</div>
+                        <div>50-64 = BUONO ⚡</div>
+                        <div>30-49 = MEDIO 💡</div>
+                        <div>&lt;30 = BASSO ⚠️</div>
+                    </div>
+                `;
+            } else if (type === 'stats') {
+                const homeWins = element.dataset.homeWins || '0';
+                const awayWins = element.dataset.awayWins || '0';
+                
+                const homeColor = homeWins >= 7 ? '🟢' : homeWins >= 4 ? '🟡' : '🔴';
+                const awayColor = awayWins >= 7 ? '🟢' : awayWins >= 4 ? '🟡' : '🔴';
+                
+                content = `
+                    <div class="font-bold mb-2">FORM SQUADRE</div>
+                    <div class="space-y-1">
+                        <div>${homeColor} Casa: <span class="font-semibold">${homeWins} W</span> ultimi 10</div>
+                        <div>${awayColor} Trasferta: <span class="font-semibold">${awayWins} W</span> ultimi 10</div>
+                    </div>
+                    <div class="text-xs mt-2 pt-2 border-t border-gray-700 opacity-75">
+                        <div>🟢 7+ = OTTIMA</div>
+                        <div>🟡 4-6 = MEDIA</div>
+                        <div>🔴 0-3 = SCARSA</div>
+                    </div>
+                `;
+            }
+            
+            tooltipEl.innerHTML = content;
+            tooltipEl.style.display = 'block';
+            
+            // Posiziona tooltip - FIX: Rimuovi scrollY perché è position: fixed
+            setTimeout(() => {
+                const tooltipRect = tooltipEl.getBoundingClientRect();
+                let top = rect.top - tooltipRect.height - 10;
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                
+                // Evita overflow top/bottom/left/right
+                if (top < 0) top = rect.bottom + 10;
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+                
+                tooltipEl.style.top = `${top}px`; // FIX: Solo top relativo a viewport
+                tooltipEl.style.left = `${left}px`;
+            }, 0);
+        }
+        
+        // Nascondi tooltip
+        function hideTooltipCustom() {
+            tooltipEl.style.display = 'none';
+        }
+        
+        // Event delegation per tooltip - FIX: Usa mouseover per bubbling corretto
+        document.addEventListener('mouseover', (e) => {
+            const trigger = e.target.closest('.tooltip-trigger');
+            if (trigger && trigger.dataset.tooltipType) {
+                showTooltipCustom(trigger, trigger.dataset.tooltipType);
+            } else {
+                hideTooltipCustom();
+            }
+        });
+        
+        document.addEventListener('mouseout', (e) => {
+             // Lascia che mouseover gestisca la scomparsa se esce dal trigger
+             const related = e.relatedTarget;
+             const trigger = e.target.closest('.tooltip-trigger');
+             if (trigger && (!related || !trigger.contains(related))) {
+                 hideTooltipCustom();
+             }
         });
     </script>
 </body>
