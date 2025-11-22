@@ -1697,6 +1697,9 @@
                 const prob = match.probabilita || 0;
                 const quota = match.quota || 0;
                 
+                // Normalizza tipTarget
+                const tipTargetNorm = tipTarget ? tipTarget.trim().toUpperCase() : null;
+                
                 // Estrai HT prob se disponibile
                 let htProb = 0;
                 if (match.info_ht && match.info_ht.trim() !== '') {
@@ -1711,8 +1714,8 @@
                 }
                 
                 // Usa tip target per i calcoli se specificato E diverso da vuoto
-                const hasValidTarget = tipTarget && tipTarget.trim() !== '' && tipTarget !== tip;
-                const effectiveTip = hasValidTarget ? tipTarget : tip;
+                const hasValidTarget = tipTargetNorm && tipTargetNorm !== '' && tipTargetNorm !== tip;
+                const effectiveTip = hasValidTarget ? tipTargetNorm : tip;
                 const effectiveQuota = targetOdds ? targetOdds.odds : quota;
                 const effectiveProb = targetOdds && targetOdds.prob ? targetOdds.prob : prob;
                 
@@ -1735,14 +1738,21 @@
                     greenInfo: ''
                 };
                 
-                // Soglie meno conservative
-                if (adjustedScore >= 65 && htProb >= 70) {
+                // Logica rivista: HT è bonus, non requisito
+                // Se HT disponibile e alto → boost confidence
+                // Se HT non disponibile → basa su score
+                
+                const hasHtData = htProb > 0;
+                const htBoost = hasHtData && htProb >= 70;
+                const htGood = hasHtData && htProb >= 55;
+                
+                if (adjustedScore >= 60 || (adjustedScore >= 50 && htBoost)) {
                     advice.confidence = 'MOLTO ALTA';
                     advice.confidenceIcon = '🔥';
                     advice.confidenceColor = 'text-green-700 bg-green-50';
                     advice.riskLevel = 'BASSO';
                     
-                    if (tipTarget === '0.5HT') {
+                    if (tipTargetNorm === '0.5HT' && hasHtData) {
                         advice.entry = `Back ${tip} @${quota.toFixed(2)} pre-match`;
                         advice.timing = `Primo tempo KEY (HT ${htProb}%)`;
                         advice.plan = `Lay 0.5 HT ${targetOdds.display} se gol primi 20' ${targetOdds.isEstimate ? '(stima)' : '✅'}`;
@@ -1752,96 +1762,73 @@
                         const green = calculateGreen(100, quota, targetOdds.odds);
                         advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
                     } else {
-                        // Entry SEMPRE sul tip target (quello che vuoi tradare)
-                        advice.entry = `Back ${effectiveTip} ${targetOdds.display} pre-match`;
-                        advice.timing = `Gol probabile primi 15' (HT ${htProb}%)`;
+                        // Entry SEMPRE sul tip target
+                        advice.entry = `Back ${effectiveTip} ${targetOdds ? targetOdds.display : '@' + quota.toFixed(2)} pre-match`;
+                        advice.timing = hasHtData ? `Gol probabile primi 15' (HT ${htProb}%)` : `Score alto, buone probabilità`;
                         
-                        // Plan usa tip target per lay
-                        if (hasValidTarget) {
-                            advice.plan = `Se gol <15' → Lay ${effectiveTip} a quote inferiori per green`;
-                            advice.reason = `Score ${adjustedScore} + HT ${htProb}%. Back ${effectiveTip} ${targetOdds.display}, lay dopo gol`;
-                        } else {
-                            advice.plan = `Se gol <15' → Lay ${tip} a quote inferiori`;
-                            advice.reason = `Score ${adjustedScore} + HT ${htProb}% = Doppia conferma massima`;
-                        }
+                        advice.plan = `Se gol → Lay ${effectiveTip} a quote inferiori per green`;
+                        advice.reason = hasHtData ? 
+                            `Score ${adjustedScore} + HT ${htProb}%. Target ${effectiveTip}` :
+                            `Score ${adjustedScore} alto. Target ${effectiveTip}`;
                         
                         advice.stopLoss = `Se 0-0 a 70' → Cash out con -5%`;
                         
-                        if (targetOdds.isEstimate) {
+                        if (targetOdds && targetOdds.isEstimate) {
                             const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
                             advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} su stake €100`;
-                        } else {
+                        } else if (targetOdds) {
                             const green = calculateGreen(100, quota, targetOdds.odds);
                             advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
                         }
                     }
                     
-                } else if (adjustedScore >= 50 && htProb >= 60) {
+                } else if (adjustedScore >= 45 || (adjustedScore >= 35 && htGood)) {
                     advice.confidence = 'ALTA';
                     advice.confidenceIcon = '⚡';
                     advice.confidenceColor = 'text-green-600 bg-green-50';
                     advice.riskLevel = 'MEDIO-BASSO';
                     
-                    advice.entry = `Back ${effectiveTip} ${targetOdds.display} pre-match`;
-                    advice.timing = `Gol atteso primi 20' (HT ${htProb}%)`;
+                    advice.entry = `Back ${effectiveTip} ${targetOdds ? targetOdds.display : '@' + quota.toFixed(2)} pre-match`;
+                    advice.timing = hasHtData ? `Gol atteso primi 20' (HT ${htProb}%)` : `Score buono`;
                     
-                    if (hasValidTarget) {
-                        advice.plan = `Monitor primi 20', se gol → Lay ${effectiveTip} a quote inferiori`;
-                        advice.reason = `Score ${adjustedScore} + HT ${htProb}%. Back ${effectiveTip} ${targetOdds.display}`;
-                    } else {
-                        advice.plan = `Monitor primi 20', se gol → Lay ${tip} a quote inferiori`;
-                        advice.reason = `Score ${adjustedScore} + HT ${htProb}% = Buona confidence`;
-                    }
+                    advice.plan = `Monitor primi 20', se gol → Lay ${effectiveTip} a quote inferiori`;
+                    advice.reason = hasHtData ?
+                        `Score ${adjustedScore} + HT ${htProb}%. Target ${effectiveTip}` :
+                        `Score ${adjustedScore}. Target ${effectiveTip}`;
                     
                     advice.stopLoss = `Se 0-0 a 65' → Cash out con -8%`;
                     
-                    if (targetOdds.isEstimate) {
+                    if (targetOdds && targetOdds.isEstimate) {
                         const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
                         advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} su stake €100`;
-                    } else {
+                    } else if (targetOdds) {
                         const green = calculateGreen(100, quota, targetOdds.odds);
                         advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
                     }
                     
-                } else if (adjustedScore >= 40 && htProb >= 50) {
+                } else if (adjustedScore >= 30) {
                     advice.confidence = 'MEDIA';
                     advice.confidenceIcon = '💡';
                     advice.confidenceColor = 'text-yellow-600 bg-yellow-50';
                     advice.riskLevel = 'MEDIO';
                     
-                    advice.entry = `Back ${effectiveTip} ${targetOdds.display} pre-match con cautela`;
-                    advice.timing = `Gol possibile HT (${htProb}%), monitor partita`;
+                    advice.entry = `Back ${effectiveTip} ${targetOdds ? targetOdds.display : '@' + quota.toFixed(2)} pre-match con cautela`;
+                    advice.timing = hasHtData ? `Gol possibile HT (${htProb}%), monitor` : `Score medio`;
                     
-                    if (hasValidTarget) {
-                        advice.plan = `Entry cauta, se gol valuta Lay ${effectiveTip}`;
-                        advice.reason = `Score ${adjustedScore} medio. Back ${effectiveTip} ${targetOdds.display}`;
-                    } else {
-                        advice.plan = `Entry cauta, valuta situazione live dopo 25'`;
-                        advice.reason = `Score ${adjustedScore} medio, HT ${htProb}% discreto`;
-                    }
+                    advice.plan = `Entry cauta, se gol valuta Lay ${effectiveTip}`;
+                    advice.reason = hasHtData ?
+                        `Score ${adjustedScore} medio, HT ${htProb}%. Target ${effectiveTip}` :
+                        `Score ${adjustedScore} medio. Target ${effectiveTip}`;
                     
                     advice.stopLoss = `Se 0-0 a 60' → Exit con -10%`;
                     
-                    if (targetOdds.isEstimate) {
+                    if (targetOdds && targetOdds.isEstimate) {
                         const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
                         advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} possibili`;
-                    } else {
+                    } else if (targetOdds) {
                         const green = calculateGreen(100, quota, targetOdds.odds);
                         advice.greenInfo = `€${green.toFixed(2)} possibili`;
                     }
-                    
-                } else if (adjustedScore >= 40 && htProb < 50 && tip.startsWith('+')) {
-                    advice.confidence = 'MEDIA';
-                    advice.confidenceIcon = '⏰';
-                    advice.confidenceColor = 'text-blue-600 bg-blue-50';
-                    advice.riskLevel = 'MEDIO';
-                    
-                    advice.entry = `NO pre-match. Aspetta HT per entry live`;
-                    advice.timing = `HT basso (${htProb}%) = Primo tempo lento previsto`;
-                    advice.plan = `Se 0-0 a HT → Back ${tip} live @quote migliori`;
-                    advice.stopLoss = `Se gol rapido → Skip, strategia non valida`;
-                    advice.reason = `Score OK ma HT basso = Pattern 2° tempo`;
-                    advice.greenInfo = `Valuta live dopo HT`;
                     
                 } else if (adjustedScore >= 30 && adjustedScore < 40) {
                     advice.confidence = 'BASSA';
@@ -2423,7 +2410,8 @@
                         const score = calculateScore(m, new Set([m.lega.toLowerCase()]), new Set([m.tip]), leaguePerformance, allMatches);
                         return {
                             ...m,
-                            score: score.totalScore
+                            score: score.totalScore,
+                            scoreDetails: score // Salva dettagli per tooltip
                         };
                     }).filter(m => m.score >= scoreMin);
                     
@@ -2488,11 +2476,16 @@
                                             const probMatch = m.info_ht.match(/(\d+)%/);
                                             if (probMatch) {
                                                 const htProb = parseInt(probMatch[1]);
-                                                if (htProb >= 75) {
-                                                    htIndicator = `<div class="text-xs mt-1"><span class="bg-green-100 text-green-700 px-2 py-1 rounded">⚡ HT: ${m.info_ht}</span></div>`;
-                                                } else if (htProb >= 60) {
+                                                if (htProb >= 70) {
+                                                    htIndicator = `<div class="text-xs mt-1"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">⚡ HT: ${m.info_ht}</span></div>`;
+                                                } else if (htProb >= 55) {
                                                     htIndicator = `<div class="text-xs mt-1"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">💡 HT: ${m.info_ht}</span></div>`;
+                                                } else {
+                                                    htIndicator = `<div class="text-xs mt-1"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">📊 HT: ${m.info_ht}</span></div>`;
                                                 }
+                                            } else {
+                                                // Se info_ht presente ma formato diverso
+                                                htIndicator = `<div class="text-xs mt-1"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">📊 HT: ${m.info_ht}</span></div>`;
                                             }
                                         }
                                         
@@ -2542,19 +2535,21 @@
                                                             <span class="score-badge cursor-help tooltip-trigger" 
                                                                   data-tooltip-type="score"
                                                                   data-score="${m.score || 0}"
-                                                                  data-lega-score="20"
-                                                                  data-tip-score="15"
-                                                                  data-prob-score="${Math.floor((m.probabilita || 0) / 5)}"
-                                                                  data-ht-bonus="${(m.info_ht && m.info_ht.trim() !== '') ? '15' : '0'}">
+                                                                  data-lega-score="${m.scoreDetails?.legaScore || 0}"
+                                                                  data-tip-score="${m.scoreDetails?.tipScore || 0}"
+                                                                  data-prob-score="${m.scoreDetails?.probScore || 0}"
+                                                                  data-team-bonus="${m.scoreDetails?.teamBonus || 0}"
+                                                                  data-ht-bonus="${m.scoreDetails?.htBonus || 0}">
                                                                 ${m.score || 0}
                                                             </span>
                                                             <span class="ml-1 text-blue-500 text-xs cursor-help tooltip-trigger"
                                                                   data-tooltip-type="score"
                                                                   data-score="${m.score || 0}"
-                                                                  data-lega-score="20"
-                                                                  data-tip-score="15"
-                                                                  data-prob-score="${Math.floor((m.probabilita || 0) / 5)}"
-                                                                  data-ht-bonus="${(m.info_ht && m.info_ht.trim() !== '') ? '15' : '0'}"
+                                                                  data-lega-score="${m.scoreDetails?.legaScore || 0}"
+                                                                  data-tip-score="${m.scoreDetails?.tipScore || 0}"
+                                                                  data-prob-score="${m.scoreDetails?.probScore || 0}"
+                                                                  data-team-bonus="${m.scoreDetails?.teamBonus || 0}"
+                                                                  data-ht-bonus="${m.scoreDetails?.htBonus || 0}"
                                                                   title="Hover per dettagli score">
                                                                 ℹ️
                                                             </span>
@@ -2562,15 +2557,23 @@
                                                         <div class="text-xs text-gray-500 mt-1 relative inline-block">
                                                             <span class="tooltip-trigger cursor-help"
                                                                   data-tooltip-type="stats"
-                                                                  data-home-wins="${(team1Stats.stats.match(/\d+/) || ['0'])[0]}"
-                                                                  data-away-wins="${((team2Stats.stats.split('|')[1] || '').match(/\d+/) || ['0'])[0]}">
+                                                                  data-mercato="${m.mercato || ''}"
+                                                                  data-tip="${m.tip || ''}"
+                                                                  data-home-count="${team1Stats.count || 0}"
+                                                                  data-home-total="${team1Stats.total || 0}"
+                                                                  data-away-count="${team2Stats.count || 0}"
+                                                                  data-away-total="${team2Stats.total || 0}">
                                                                 ${team1Stats.stats} | ${team2Stats.stats}
                                                             </span>
                                                             <span class="ml-1 text-blue-500 cursor-help tooltip-trigger"
                                                                   data-tooltip-type="stats"
-                                                                  data-home-wins="${(team1Stats.stats.match(/\d+/) || ['0'])[0]}"
-                                                                  data-away-wins="${((team2Stats.stats.split('|')[1] || '').match(/\d+/) || ['0'])[0]}"
-                                                                  title="Hover per dettagli form">
+                                                                  data-mercato="${m.mercato || ''}"
+                                                                  data-tip="${m.tip || ''}"
+                                                                  data-home-count="${team1Stats.count || 0}"
+                                                                  data-home-total="${team1Stats.total || 0}"
+                                                                  data-away-count="${team2Stats.count || 0}"
+                                                                  data-away-total="${team2Stats.total || 0}"
+                                                                  title="Hover per dettagli">
                                                                 ℹ️
                                                             </span>
                                                         </div>
@@ -2794,13 +2797,57 @@
             // ==================== RANKING FUNCTIONS ====================
             function calculateScore(partita, legheSet, tipsSet, leaguePerformance = {}, dbCompleto = null) {
                 let legaScore = 0, tipScore = 0, probScore = 0, quotaValid = true;
+                let teamBonus = 0;
                 
                 const lega = (partita.lega || '').toLowerCase().trim();
-                if (legheSet.has(lega)) legaScore = 20;
+                if (legheSet.has(lega)) legaScore = 15;
                 else if (lega.startsWith('eu-')) legaScore = 5;
                 
                 let tipNorm = (partita.tip || '').trim().toUpperCase();
-                if (tipsSet.has(tipNorm)) tipScore = 20;
+                if (tipsSet.has(tipNorm)) tipScore = 10;
+                
+                const mercato = (partita.mercato || '').toLowerCase().trim();
+                
+                // ANALISI SQUADRE per tip GOL
+                if (dbCompleto && dbCompleto.length > 0 && partita.partita) {
+                    const teams = partita.partita.split(' - ');
+                    if (teams.length === 2) {
+                        const teamHome = teams[0].trim();
+                        const teamAway = teams[1].trim();
+                        
+                        // Analizza entrambe le squadre
+                        const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
+                        const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
+                        
+                        // Per tip GOL (+1.5, +2.5, etc): conta tendenza gol
+                        if (mercato.includes('numero di gol') || mercato.includes('goal')) {
+                            // Calcola bonus squadre per gol
+                            if (homeStats.total >= 5 && awayStats.total >= 5) {
+                                const homePerc = (homeStats.count / homeStats.total) * 100;
+                                const awayPerc = (awayStats.count / awayStats.total) * 100;
+                                const avgPerc = (homePerc + awayPerc) / 2;
+                                
+                                // Bonus significativo per squadre con buona tendenza
+                                if (avgPerc >= 70) teamBonus = 25;
+                                else if (avgPerc >= 60) teamBonus = 15;
+                                else if (avgPerc >= 50) teamBonus = 5;
+                                else if (avgPerc < 40) teamBonus = -10; // Penalità
+                            }
+                        }
+                        // Per 1X2: conta forma (già gestito in league performance)
+                        else if (mercato.includes('1x2') || mercato.includes('doppia chance')) {
+                            // Per 1X2 usa statistiche casa/trasferta
+                            if (homeStats.total >= 5) {
+                                const homePerc = (homeStats.count / homeStats.total) * 100;
+                                if (homePerc >= 60) teamBonus += 10;
+                            }
+                            if (awayStats.total >= 5) {
+                                const awayPerc = (awayStats.count / awayStats.total) * 100;
+                                if (awayPerc >= 60) teamBonus += 10;
+                            }
+                        }
+                    }
+                }
                 
                 let confidenceFactor = 1.0;
                 let recencyFactor = 1.0;
@@ -2808,7 +2855,7 @@
                 if (dbCompleto && dbCompleto.length > 0) {
                     const leagueMatches = dbCompleto.filter(m => (m.lega || '').toLowerCase().trim() === lega);
                     const sampleSize = leagueMatches.length;
-                    confidenceFactor = Math.min(1.0, 0.5 + (sampleSize / 1000));
+                    confidenceFactor = Math.min(1.0, 0.5 + (sampleSize / 500));
                     
                     const threeMonthsAgo = new Date();
                     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
@@ -2822,22 +2869,22 @@
                 if (leaguePerformance[lega]) {
                     const leagueStats = leaguePerformance[lega];
                     
-                    if (tipNorm.startsWith('+') && parseFloat(leagueStats.over25Percentage) > 60) {
+                    if (tipNorm.startsWith('+') && parseFloat(leagueStats.over25Percentage) > 55) {
                         const overPerc = parseFloat(leagueStats.over25Percentage);
-                        legaScore += Math.min(20, Math.max(0, (overPerc - 60) / 2));
+                        legaScore += Math.min(15, Math.max(0, (overPerc - 55) / 2));
                     }
                     
-                    if (tipNorm.startsWith('-') && parseFloat(leagueStats.under25Percentage) > 60) {
+                    if (tipNorm.startsWith('-') && parseFloat(leagueStats.under25Percentage) > 55) {
                         const underPerc = parseFloat(leagueStats.under25Percentage);
-                        legaScore += Math.min(20, Math.max(0, (underPerc - 60) / 2));
+                        legaScore += Math.min(15, Math.max(0, (underPerc - 55) / 2));
                     }
                     
                     if (leagueStats.tips[tipNorm]) {
                         const tipSuccessRate = parseFloat(leagueStats.tips[tipNorm].successRate);
-                        if (tipSuccessRate > 70) {
-                            tipScore += Math.min(25, Math.max(0, (tipSuccessRate - 70) / 1.5));
-                        } else if (tipSuccessRate > 55) {
-                            tipScore += Math.min(15, Math.max(0, (tipSuccessRate - 55) / 2));
+                        if (tipSuccessRate > 65) {
+                            tipScore += Math.min(20, Math.max(0, (tipSuccessRate - 65)));
+                        } else if (tipSuccessRate > 50) {
+                            tipScore += Math.min(10, Math.max(0, (tipSuccessRate - 50) / 2));
                         }
                     }
                 }
@@ -2846,39 +2893,40 @@
                 if (quota < 1.20) quotaValid = false;
                 
                 const prob = parseFloat((partita.probabilita || 0));
-                if (prob <= 65) probScore = 0;
-                else if (prob <= 77) probScore = 5;
-                else probScore = 15 + Math.min(20, (prob - 78));
+                if (prob <= 60) probScore = 0;
+                else if (prob <= 75) probScore = 5 + Math.round((prob - 60) * 0.5);
+                else probScore = 15 + Math.min(15, Math.round((prob - 75)));
                 
-                legaScore = Math.round(legaScore * confidenceFactor * recencyFactor);
-                tipScore = Math.round(tipScore * confidenceFactor);
-                
-                // HT BOOST
+                // HT BOOST - PIÙ SIGNIFICATIVO
                 let htBonus = 0;
                 if (partita.info_ht && partita.info_ht.trim() !== '') {
                     const probMatch = partita.info_ht.match(/(\d+)%/);
                     if (probMatch) {
                         const htProb = parseInt(probMatch[1]);
                         
-                        // BOOST se Over Main + HT alto (allineati)
-                        if (tipNorm.startsWith('+') && htProb >= 70) {
-                            htBonus = Math.round((htProb - 70) * 0.5); // Max +15 punti se htProb=100
+                        // BOOST significativo per Over + HT alto
+                        if (tipNorm.startsWith('+') && htProb >= 65) {
+                            htBonus = Math.round((htProb - 60) * 0.4); // Max +16 punti se htProb=100
                         }
                         
-                        // PENALITÀ se Under Main + HT molto alto (disallineati)
+                        // PENALITÀ per Under + HT alto
                         if (tipNorm.startsWith('-') && htProb >= 75) {
-                            htBonus = -10;
+                            htBonus = -15;
                         }
                     }
                 }
                 
-                const quotaPenalty = quota < 1.15 ? 0.8 : 1.0;
-                const totalScore = Math.round((legaScore + tipScore + probScore + htBonus) * quotaPenalty);
+                legaScore = Math.round(legaScore * confidenceFactor * recencyFactor);
+                tipScore = Math.round(tipScore * confidenceFactor);
+                
+                const quotaPenalty = quota < 1.15 ? 0.85 : 1.0;
+                const totalScore = Math.round((legaScore + tipScore + probScore + teamBonus + htBonus) * quotaPenalty);
                 
                 return { 
                     legaScore, 
                     tipScore, 
                     probScore: Math.round(probScore),
+                    teamBonus,
                     htBonus,
                     totalScore,
                     quotaValid
@@ -3087,15 +3135,17 @@
                 const legaScore = element.dataset.legaScore || '0';
                 const tipScore = element.dataset.tipScore || '0';
                 const probScore = element.dataset.probScore || '0';
+                const teamBonus = element.dataset.teamBonus || '0';
                 const htBonus = element.dataset.htBonus || '0';
                 
                 content = `
                     <div class="font-bold mb-2">SCORE BREAKDOWN</div>
                     <div class="space-y-1">
                         <div>Lega: +${legaScore}</div>
-                        <div>Tip: +${tipScore}</div>
-                        <div>Prob: +${probScore}</div>
-                        ${htBonus > 0 ? `<div class="text-green-300">HT Boost: +${htBonus}</div>` : ''}
+                        <div>Tip success: +${tipScore}</div>
+                        <div>Probabilità: +${probScore}</div>
+                        ${parseInt(teamBonus) !== 0 ? `<div class="${parseInt(teamBonus) > 0 ? 'text-green-300' : 'text-red-300'}">Squadre: ${parseInt(teamBonus) > 0 ? '+' : ''}${teamBonus}</div>` : ''}
+                        ${parseInt(htBonus) !== 0 ? `<div class="${parseInt(htBonus) > 0 ? 'text-green-300' : 'text-red-300'}">HT Boost: ${parseInt(htBonus) > 0 ? '+' : ''}${htBonus}</div>` : ''}
                         <div class="border-t border-gray-700 pt-1 mt-1">Totale: <span class="font-bold">${score}</span></div>
                     </div>
                     <div class="text-xs mt-2 pt-2 border-t border-gray-700 opacity-75">
@@ -3106,24 +3156,49 @@
                     </div>
                 `;
             } else if (type === 'stats') {
-                const homeWins = element.dataset.homeWins || '0';
-                const awayWins = element.dataset.awayWins || '0';
+                const mercato = element.dataset.mercato || '';
+                const tip = element.dataset.tip || '';
+                const homeCount = parseInt(element.dataset.homeCount) || 0;
+                const homeTotal = parseInt(element.dataset.homeTotal) || 0;
+                const awayCount = parseInt(element.dataset.awayCount) || 0;
+                const awayTotal = parseInt(element.dataset.awayTotal) || 0;
                 
-                const homeColor = homeWins >= 7 ? '🟢' : homeWins >= 4 ? '🟡' : '🔴';
-                const awayColor = awayWins >= 7 ? '🟢' : awayWins >= 4 ? '🟡' : '🔴';
+                const homePerc = homeTotal > 0 ? Math.round((homeCount / homeTotal) * 100) : 0;
+                const awayPerc = awayTotal > 0 ? Math.round((awayCount / awayTotal) * 100) : 0;
                 
-                content = `
-                    <div class="font-bold mb-2">FORM SQUADRE</div>
-                    <div class="space-y-1">
-                        <div>${homeColor} Casa: <span class="font-semibold">${homeWins} W</span> ultimi 10</div>
-                        <div>${awayColor} Trasferta: <span class="font-semibold">${awayWins} W</span> ultimi 10</div>
-                    </div>
-                    <div class="text-xs mt-2 pt-2 border-t border-gray-700 opacity-75">
-                        <div>🟢 7+ = OTTIMA</div>
-                        <div>🟡 4-6 = MEDIA</div>
-                        <div>🔴 0-3 = SCARSA</div>
-                    </div>
-                `;
+                const homeColor = homePerc >= 70 ? '🟢' : homePerc >= 50 ? '🟡' : '🔴';
+                const awayColor = awayPerc >= 70 ? '🟢' : awayPerc >= 50 ? '🟡' : '🔴';
+                
+                // Per mercato GOL mostra tendenza gol
+                if (mercato.toLowerCase().includes('gol') || mercato.toLowerCase().includes('goal') || tip.startsWith('+') || tip.startsWith('-')) {
+                    const tipLabel = tip.startsWith('+') ? `Over ${tip.substring(1)}` : tip.startsWith('-') ? `Under ${tip.substring(1)}` : tip;
+                    content = `
+                        <div class="font-bold mb-2">TENDENZA GOL (${tipLabel})</div>
+                        <div class="space-y-1">
+                            <div>${homeColor} Casa: <span class="font-semibold">${homeCount}/${homeTotal}</span> (${homePerc}%)</div>
+                            <div>${awayColor} Trasferta: <span class="font-semibold">${awayCount}/${awayTotal}</span> (${awayPerc}%)</div>
+                        </div>
+                        <div class="text-xs mt-2 pt-2 border-t border-gray-700 opacity-75">
+                            <div>🟢 70%+ = Squadra gol-friendly</div>
+                            <div>🟡 50-69% = Nella media</div>
+                            <div>🔴 &lt;50% = Pochi gol</div>
+                        </div>
+                    `;
+                } else {
+                    // Per 1X2/Doppia Chance mostra forma
+                    content = `
+                        <div class="font-bold mb-2">FORM SQUADRE</div>
+                        <div class="space-y-1">
+                            <div>${homeColor} Casa: <span class="font-semibold">${homeCount}/${homeTotal}</span> (${homePerc}%)</div>
+                            <div>${awayColor} Trasferta: <span class="font-semibold">${awayCount}/${awayTotal}</span> (${awayPerc}%)</div>
+                        </div>
+                        <div class="text-xs mt-2 pt-2 border-t border-gray-700 opacity-75">
+                            <div>🟢 70%+ = OTTIMA</div>
+                            <div>🟡 50-69% = MEDIA</div>
+                            <div>🔴 &lt;50% = SCARSA</div>
+                        </div>
+                    `;
+                }
             }
             
             tooltipEl.innerHTML = content;
