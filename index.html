@@ -101,6 +101,9 @@
                         <button data-page="page-ranking" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
                             <i class="fa-solid fa-trophy mr-1"></i>Ranking
                         </button>
+                        <button data-page="page-storico" class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-clock-rotate-left mr-1"></i>Storico
+                        </button>
                     </nav>
                 </div>
             </div>
@@ -424,6 +427,61 @@
                 
                 <!-- MAGIC RESULTS (separati) -->
                 <div id="magic-results" class="hidden"></div>
+            </div>
+
+            <!-- PAGINA STORICO PREVISIONI -->
+            <div id="page-storico" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Selezione Data -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
+                    <h2 class="text-2xl font-bold mb-4">
+                        <i class="fa-solid fa-clock-rotate-left text-purple-600 mr-2"></i>
+                        Storico Previsioni
+                    </h2>
+                    <p class="text-sm text-gray-600 mb-6">Visualizza le previsioni salvate e verifica i risultati</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Data Previsioni</label>
+                            <input type="date" id="storico-date" class="w-full p-3 border rounded-lg">
+                        </div>
+                        <div>
+                            <button id="load-storico-btn" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700">
+                                <i class="fa-solid fa-search mr-2"></i>Cerca Previsioni
+                            </button>
+                        </div>
+                        <div>
+                            <button id="load-all-storico-btn" class="w-full bg-gray-600 text-white py-3 rounded-lg font-bold hover:bg-gray-700">
+                                <i class="fa-solid fa-list mr-2"></i>Ultime 10 Giornate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lista Strategie per Data -->
+                <div id="storico-strategie-list" class="hidden">
+                    <div class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-4 rounded-t-xl">
+                        <h3 class="text-xl font-bold" id="storico-date-title">Strategie del --</h3>
+                        <p class="text-sm opacity-90" id="storico-count">-- strategie salvate</p>
+                    </div>
+                    <div id="storico-strategie-container" class="bg-white rounded-b-xl shadow-md border border-gray-200 p-4">
+                        <!-- Strategie caricate dinamicamente -->
+                    </div>
+                </div>
+                
+                <!-- Dettaglio Strategia Selezionata -->
+                <div id="storico-dettaglio" class="hidden mt-6">
+                    <!-- Dettaglio caricato dinamicamente -->
+                </div>
+                
+                <!-- Stats Globali -->
+                <div id="storico-stats-globali" class="hidden mt-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4">📊 Statistiche Globali</h3>
+                        <div id="storico-stats-content" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <!-- Stats caricate dinamicamente -->
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </main>
@@ -3304,6 +3362,424 @@
                 
                 return advice;
             }
+            
+            // ==================== STORICO PREVISIONI ====================
+            
+            // Carica previsioni per data specifica
+            async function loadStorico(date) {
+                const storicoList = document.getElementById('storico-strategie-list');
+                const storicoContainer = document.getElementById('storico-strategie-container');
+                const storicoDateTitle = document.getElementById('storico-date-title');
+                const storicoCount = document.getElementById('storico-count');
+                const storicoDettaglio = document.getElementById('storico-dettaglio');
+                const storicoStatsGlobali = document.getElementById('storico-stats-globali');
+                
+                storicoList.classList.remove('hidden');
+                storicoDettaglio.classList.add('hidden');
+                storicoStatsGlobali.classList.add('hidden');
+                storicoContainer.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Caricamento...</div>';
+                
+                try {
+                    const rankingHistoryCol = collection(db, "ranking_history");
+                    const q = query(rankingHistoryCol, where("data_partite", "==", date));
+                    const snapshot = await getDocs(q);
+                    
+                    if (snapshot.empty) {
+                        storicoDateTitle.textContent = `Previsioni del ${date}`;
+                        storicoCount.textContent = 'Nessuna previsione salvata';
+                        storicoContainer.innerHTML = `
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fa-solid fa-inbox text-4xl mb-3"></i>
+                                <p>Nessuna previsione salvata per questa data.</p>
+                                <p class="text-sm mt-2">Vai su Ranking o Magic per generare e salvare previsioni.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    const rankings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    
+                    storicoDateTitle.textContent = `Previsioni del ${date}`;
+                    storicoCount.textContent = `${rankings.length} strategie salvate`;
+                    
+                    // Calcola stats per ogni strategia
+                    const strategieCards = rankings.map(ranking => {
+                        const allPartite = Object.values(ranking.partite_by_tip).flat();
+                        const vinte = allPartite.filter(p => p.esito === 'Vinto').length;
+                        const perse = allPartite.filter(p => p.esito === 'Perso').length;
+                        const pending = allPartite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                        const totConEsito = vinte + perse;
+                        const winRate = totConEsito > 0 ? Math.round((vinte / totConEsito) * 100) : null;
+                        
+                        // Determina icona e colore
+                        let icon = '📊';
+                        let bgClass = 'bg-gray-50 hover:bg-gray-100';
+                        let borderClass = 'border-gray-200';
+                        
+                        if (ranking.magic_type === 'singole') {
+                            icon = '🎯';
+                            bgClass = 'bg-green-50 hover:bg-green-100';
+                            borderClass = 'border-green-300';
+                        } else if (ranking.magic_type === 'trading') {
+                            icon = '📈';
+                            bgClass = 'bg-blue-50 hover:bg-blue-100';
+                            borderClass = 'border-blue-300';
+                        }
+                        
+                        // Stats badge
+                        let statsBadge = '';
+                        if (totConEsito > 0) {
+                            const winColor = winRate >= 70 ? 'bg-green-500' : winRate >= 50 ? 'bg-yellow-500' : 'bg-red-500';
+                            statsBadge = `
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="text-green-600 font-bold">${vinte}W</span>
+                                    <span class="text-red-600 font-bold">${perse}L</span>
+                                    ${pending > 0 ? `<span class="text-gray-500">${pending}P</span>` : ''}
+                                    <span class="${winColor} text-white text-xs px-2 py-1 rounded-full font-bold">${winRate}%</span>
+                                </div>
+                            `;
+                        } else if (pending > 0) {
+                            statsBadge = `<div class="text-sm text-gray-500 mt-2"><i class="fa-solid fa-clock mr-1"></i>${pending} partite in attesa risultati</div>`;
+                        }
+                        
+                        return `
+                            <div class="p-4 rounded-lg border-2 ${borderClass} ${bgClass} cursor-pointer transition-all storico-strategia-card" 
+                                 data-ranking-id="${ranking.id}">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-2xl">${icon}</span>
+                                            <div>
+                                                <div class="font-bold text-lg">${ranking.filtro_nome}</div>
+                                                <div class="text-sm text-gray-600">${allPartite.length} partite</div>
+                                            </div>
+                                        </div>
+                                        ${statsBadge}
+                                    </div>
+                                    <div class="text-right text-xs text-gray-500">
+                                        <div>${new Date(ranking.timestamp).toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}</div>
+                                        <div class="mt-1"><i class="fa-solid fa-chevron-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    storicoContainer.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${strategieCards}</div>`;
+                    
+                    // Event listeners per cards
+                    document.querySelectorAll('.storico-strategia-card').forEach(card => {
+                        card.addEventListener('click', () => {
+                            const rankingId = card.dataset.rankingId;
+                            const ranking = rankings.find(r => r.id === rankingId);
+                            if (ranking) showStoricoDettaglio(ranking);
+                        });
+                    });
+                    
+                    // Mostra stats globali se ci sono risultati
+                    showStoricoStatsGlobali(rankings);
+                    
+                } catch(e) {
+                    console.error('Storico Error:', e);
+                    storicoContainer.innerHTML = `<div class="text-center py-4 text-red-600">Errore: ${e.message}</div>`;
+                }
+            }
+            
+            // Mostra dettaglio strategia
+            function showStoricoDettaglio(ranking) {
+                const dettaglioEl = document.getElementById('storico-dettaglio');
+                dettaglioEl.classList.remove('hidden');
+                
+                // Scroll to dettaglio
+                dettaglioEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Determina icona
+                let icon = '📊';
+                let gradientClass = 'from-gray-500 to-gray-600';
+                if (ranking.magic_type === 'singole') {
+                    icon = '🎯';
+                    gradientClass = 'from-green-500 to-emerald-600';
+                } else if (ranking.magic_type === 'trading') {
+                    icon = '📈';
+                    gradientClass = 'from-blue-500 to-indigo-600';
+                }
+                
+                // Costruisci lista partite per tip
+                const tipSections = Object.keys(ranking.partite_by_tip).map(tip => {
+                    const partite = ranking.partite_by_tip[tip];
+                    
+                    const partiteRows = partite.map(p => {
+                        let esitoClass = 'bg-gray-100 text-gray-600';
+                        let esitoIcon = '⏳';
+                        let esitoBorder = 'border-gray-200';
+                        
+                        if (p.esito === 'Vinto') {
+                            esitoClass = 'bg-green-100 text-green-700';
+                            esitoIcon = '✅';
+                            esitoBorder = 'border-green-300';
+                        } else if (p.esito === 'Perso') {
+                            esitoClass = 'bg-red-100 text-red-700';
+                            esitoIcon = '❌';
+                            esitoBorder = 'border-red-300';
+                        }
+                        
+                        return `
+                            <div class="p-3 rounded-lg border ${esitoBorder} ${esitoClass} mb-2">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold">${p.partita}</div>
+                                        <div class="text-xs opacity-75">${p.lega}</div>
+                                        ${p.risultato ? `<div class="text-sm font-bold mt-1">⚽ Risultato: ${p.risultato}</div>` : ''}
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg">${esitoIcon}</div>
+                                        <div class="text-xs">Tip: ${p.tip} @${p.quota?.toFixed(2) || '-'}</div>
+                                        <div class="text-xs">Prob: ${p.probabilita || '-'}%</div>
+                                        <div class="text-xs font-bold">Score: ${p.score || '-'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Stats per tip
+                    const vinte = partite.filter(p => p.esito === 'Vinto').length;
+                    const perse = partite.filter(p => p.esito === 'Perso').length;
+                    const pending = partite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                    
+                    return `
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="text-lg font-bold">${tip}</h4>
+                                <div class="text-sm">
+                                    <span class="text-green-600 font-bold">${vinte}W</span> / 
+                                    <span class="text-red-600 font-bold">${perse}L</span>
+                                    ${pending > 0 ? ` / <span class="text-gray-500">${pending}P</span>` : ''}
+                                </div>
+                            </div>
+                            ${partiteRows}
+                        </div>
+                    `;
+                }).join('');
+                
+                // Stats totali
+                const allPartite = Object.values(ranking.partite_by_tip).flat();
+                const totVinte = allPartite.filter(p => p.esito === 'Vinto').length;
+                const totPerse = allPartite.filter(p => p.esito === 'Perso').length;
+                const totPending = allPartite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                const totConEsito = totVinte + totPerse;
+                const winRate = totConEsito > 0 ? Math.round((totVinte / totConEsito) * 100) : null;
+                
+                dettaglioEl.innerHTML = `
+                    <div class="bg-gradient-to-r ${gradientClass} text-white p-4 rounded-t-xl">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl mr-2">${icon}</span>
+                                <span class="text-xl font-bold">${ranking.filtro_nome}</span>
+                            </div>
+                            <button id="close-dettaglio-btn" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-sm">
+                                <i class="fa-solid fa-times mr-1"></i>Chiudi
+                            </button>
+                        </div>
+                        <div class="mt-2 text-sm opacity-90">
+                            📅 ${ranking.data_partite} • ${allPartite.length} partite • 
+                            Salvato alle ${new Date(ranking.timestamp).toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}
+                        </div>
+                        ${winRate !== null ? `
+                            <div class="mt-3 flex items-center gap-4">
+                                <span class="bg-white/20 px-3 py-1 rounded-lg">
+                                    <span class="font-bold">${totVinte}</span> Vinte
+                                </span>
+                                <span class="bg-white/20 px-3 py-1 rounded-lg">
+                                    <span class="font-bold">${totPerse}</span> Perse
+                                </span>
+                                <span class="bg-white text-gray-800 px-3 py-1 rounded-lg font-bold">
+                                    ${winRate}% Win Rate
+                                </span>
+                            </div>
+                        ` : totPending > 0 ? `
+                            <div class="mt-3 text-sm">
+                                <i class="fa-solid fa-clock mr-1"></i>${totPending} partite in attesa risultati
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="bg-white rounded-b-xl shadow-md border border-gray-200 p-4">
+                        ${tipSections}
+                    </div>
+                `;
+                
+                // Close button
+                document.getElementById('close-dettaglio-btn').addEventListener('click', () => {
+                    dettaglioEl.classList.add('hidden');
+                });
+            }
+            
+            // Stats globali per tutte le strategie della data
+            function showStoricoStatsGlobali(rankings) {
+                const statsEl = document.getElementById('storico-stats-globali');
+                const statsContent = document.getElementById('storico-stats-content');
+                
+                // Calcola totali
+                let totPartite = 0;
+                let totVinte = 0;
+                let totPerse = 0;
+                let totPending = 0;
+                
+                rankings.forEach(r => {
+                    const partite = Object.values(r.partite_by_tip).flat();
+                    totPartite += partite.length;
+                    totVinte += partite.filter(p => p.esito === 'Vinto').length;
+                    totPerse += partite.filter(p => p.esito === 'Perso').length;
+                    totPending += partite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                });
+                
+                const totConEsito = totVinte + totPerse;
+                const winRate = totConEsito > 0 ? Math.round((totVinte / totConEsito) * 100) : null;
+                
+                if (totConEsito === 0) {
+                    statsEl.classList.add('hidden');
+                    return;
+                }
+                
+                statsEl.classList.remove('hidden');
+                
+                const winRateColor = winRate >= 70 ? 'text-green-600' : winRate >= 50 ? 'text-yellow-600' : 'text-red-600';
+                
+                statsContent.innerHTML = `
+                    <div class="bg-blue-50 p-4 rounded-xl text-center">
+                        <div class="text-3xl font-bold text-blue-600">${totPartite}</div>
+                        <div class="text-sm text-gray-600">Partite Totali</div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-xl text-center">
+                        <div class="text-3xl font-bold text-green-600">${totVinte}</div>
+                        <div class="text-sm text-gray-600">Vinte</div>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-xl text-center">
+                        <div class="text-3xl font-bold text-red-600">${totPerse}</div>
+                        <div class="text-sm text-gray-600">Perse</div>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-xl text-center">
+                        <div class="text-3xl font-bold ${winRateColor}">${winRate}%</div>
+                        <div class="text-sm text-gray-600">Win Rate</div>
+                    </div>
+                `;
+            }
+            
+            // Carica ultime N giornate
+            async function loadUltimeGiornate(n = 10) {
+                const storicoList = document.getElementById('storico-strategie-list');
+                const storicoContainer = document.getElementById('storico-strategie-container');
+                const storicoDateTitle = document.getElementById('storico-date-title');
+                const storicoCount = document.getElementById('storico-count');
+                const storicoDettaglio = document.getElementById('storico-dettaglio');
+                const storicoStatsGlobali = document.getElementById('storico-stats-globali');
+                
+                storicoList.classList.remove('hidden');
+                storicoDettaglio.classList.add('hidden');
+                storicoStatsGlobali.classList.add('hidden');
+                storicoContainer.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Caricamento ultime giornate...</div>';
+                
+                try {
+                    const rankingHistoryCol = collection(db, "ranking_history");
+                    const snapshot = await getDocs(rankingHistoryCol);
+                    
+                    if (snapshot.empty) {
+                        storicoDateTitle.textContent = 'Storico Completo';
+                        storicoCount.textContent = 'Nessuna previsione salvata';
+                        storicoContainer.innerHTML = `
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fa-solid fa-inbox text-4xl mb-3"></i>
+                                <p>Nessuna previsione salvata nel sistema.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Raggruppa per data
+                    const byDate = {};
+                    snapshot.docs.forEach(doc => {
+                        const data = doc.data();
+                        const date = data.data_partite;
+                        if (!byDate[date]) byDate[date] = [];
+                        byDate[date].push({ id: doc.id, ...data });
+                    });
+                    
+                    // Ordina date e prendi ultime N
+                    const sortedDates = Object.keys(byDate).sort().reverse().slice(0, n);
+                    
+                    storicoDateTitle.textContent = `Ultime ${sortedDates.length} Giornate`;
+                    storicoCount.textContent = `${snapshot.docs.length} strategie totali`;
+                    
+                    // Costruisci cards per data
+                    const dateCards = sortedDates.map(date => {
+                        const rankings = byDate[date];
+                        
+                        // Stats aggregate per data
+                        let totVinte = 0, totPerse = 0, totPending = 0;
+                        rankings.forEach(r => {
+                            const partite = Object.values(r.partite_by_tip).flat();
+                            totVinte += partite.filter(p => p.esito === 'Vinto').length;
+                            totPerse += partite.filter(p => p.esito === 'Perso').length;
+                            totPending += partite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                        });
+                        
+                        const totConEsito = totVinte + totPerse;
+                        const winRate = totConEsito > 0 ? Math.round((totVinte / totConEsito) * 100) : null;
+                        
+                        let statsBadge = '';
+                        if (winRate !== null) {
+                            const winColor = winRate >= 70 ? 'bg-green-500' : winRate >= 50 ? 'bg-yellow-500' : 'bg-red-500';
+                            statsBadge = `<span class="${winColor} text-white text-xs px-2 py-1 rounded-full font-bold ml-2">${winRate}%</span>`;
+                        } else if (totPending > 0) {
+                            statsBadge = `<span class="bg-gray-400 text-white text-xs px-2 py-1 rounded-full ml-2">Pending</span>`;
+                        }
+                        
+                        return `
+                            <div class="p-4 rounded-lg border-2 border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer transition-all storico-date-card" 
+                                 data-date="${date}">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-lg">📅 ${date} ${statsBadge}</div>
+                                        <div class="text-sm text-gray-600">${rankings.length} strategie</div>
+                                    </div>
+                                    <div class="text-gray-400">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    storicoContainer.innerHTML = `<div class="space-y-3">${dateCards}</div>`;
+                    
+                    // Event listeners
+                    document.querySelectorAll('.storico-date-card').forEach(card => {
+                        card.addEventListener('click', () => {
+                            const date = card.dataset.date;
+                            document.getElementById('storico-date').value = date;
+                            loadStorico(date);
+                        });
+                    });
+                    
+                } catch(e) {
+                    console.error('Storico Error:', e);
+                    storicoContainer.innerHTML = `<div class="text-center py-4 text-red-600">Errore: ${e.message}</div>`;
+                }
+            }
+            
+            // Event listeners Storico
+            document.getElementById('load-storico-btn').addEventListener('click', () => {
+                const date = document.getElementById('storico-date').value;
+                if (!date) {
+                    alert('Seleziona una data!');
+                    return;
+                }
+                loadStorico(date);
+            });
+            
+            document.getElementById('load-all-storico-btn').addEventListener('click', () => {
+                loadUltimeGiornate(10);
+            });
             
             // ==================== RANKING TRACKING & ML ====================
             async function saveRankingForTracking() {
