@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Mpetaz Tips v3.4.4 - Clean Edition</title>
+    <title>⚽ Mpetaz Tips v3.4.5.2 - Clean Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
@@ -86,7 +86,7 @@
                 <div class="flex justify-between items-center py-4">
                     <div class="flex items-center space-x-3">
                         <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.4.4</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.4.5.2</h1>
                     </div>
                     <nav class="flex space-x-2 flex-wrap">
                         <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
@@ -1352,9 +1352,11 @@
                 const select = document.getElementById('saved-filters-select');
                 select.innerHTML = '<option value="">Seleziona...</option>' + savedFilters.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
                 
-                // Popola dropdown Ranking
+                // Popola dropdown Ranking con opzione speciale BEST 0.5 HT
                 const rankingSelect = document.getElementById('ranking-filter-select');
-                rankingSelect.innerHTML = '<option value="">Nessun filtro (tutte le partite)</option>' + savedFilters.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+                rankingSelect.innerHTML = '<option value="">Nessun filtro (tutte le partite)</option>' + 
+                    '<option value="BEST_05HT" style="background: linear-gradient(to right, #fef3c7, #fde68a); font-weight: bold;">⚡ BEST 0.5 HT (Auto)</option>' +
+                    savedFilters.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
             };
             
             const handleSaveFilter = async () => {
@@ -1766,8 +1768,8 @@
             
             // ==================== AI TRADING ADVISOR ====================
             
-            // V3.4.1 - BOLLINO BETFAIR SEMPLIFICATO
-            function generateBetfairBadge(match) {
+            // V3.4.5.1 - BOLLINO BETFAIR INTELLIGENTE
+            function generateBetfairBadge(match, is05HT = false, team1Stats = null, team2Stats = null) {
                 const tip = (match.tip || '').trim().toUpperCase();
                 const score = match.score || 0;
                 
@@ -1780,10 +1782,34 @@
                 
                 let betfairBadge = null;
                 
-                // LOGICA BOLLINO: partita "tradabile"?
-                
+                // SPECIALE: Filtro BEST 0.5 HT → Badge dinamico basato su prolificità
+                if (is05HT && htProb >= 70 && score >= 50 && team1Stats && team2Stats) {
+                    // Calcola prolificità media squadre per Over 2.5
+                    const team1Over25 = team1Stats.total >= 5 ? (team1Stats.count / team1Stats.total) * 100 : 0;
+                    const team2Over25 = team2Stats.total >= 5 ? (team2Stats.count / team2Stats.total) * 100 : 0;
+                    const avgProlificita = (team1Over25 + team2Over25) / 2;
+                    
+                    // Badge dinamico basato su prolificità
+                    if (avgProlificita >= 75) {
+                        betfairBadge = {
+                            text: 'Betfair Back Over 2.5',
+                            color: 'bg-yellow-100 text-yellow-700 border-yellow-300'
+                        };
+                    } else if (avgProlificita >= 60) {
+                        betfairBadge = {
+                            text: 'Betfair Back Over 1.5',
+                            color: 'bg-yellow-100 text-yellow-700 border-yellow-300'
+                        };
+                    } else if (avgProlificita < 50 && avgProlificita >= 30) {
+                        betfairBadge = {
+                            text: 'Betfair Lay Under 2.5',
+                            color: 'bg-yellow-100 text-yellow-700 border-yellow-300'
+                        };
+                    }
+                    // Se < 30% o 50-60% → nessun badge (poco affidabile)
+                }
                 // OVER con HT alto + score buono → Back Over 2.5
-                if (tip.startsWith('+') && htProb >= 70 && score >= 35) {
+                else if (tip.startsWith('+') && htProb >= 70 && score >= 35) {
                     betfairBadge = {
                         text: 'Betfair Back Over 2.5',
                         color: 'bg-purple-100 text-purple-700 border-purple-300'
@@ -2346,7 +2372,27 @@
                     
                     // APPLICA FILTRO SE SELEZIONATO
                     let filterName = "Tutte le partite";
-                    if (selectedFilterId) {
+                    
+                    // FILTRO SPECIALE: BEST 0.5 HT
+                    if (selectedFilterId === 'BEST_05HT') {
+                        filterName = "⚡ BEST 0.5 HT (Auto)";
+                        
+                        todayMatches = todayMatches.filter(m => {
+                            // Requisito 1: HT prob disponibile e >= 70%
+                            if (!m.info_ht || m.info_ht.trim() === '') return false;
+                            const htMatch = m.info_ht.match(/(\d+)%/);
+                            if (!htMatch) return false;
+                            const htProb = parseInt(htMatch[1]);
+                            if (htProb < 70) return false;
+                            
+                            // Requisito 2: Tip Over (squadre prolifiche)
+                            if (!m.tip.startsWith('+')) return false;
+                            
+                            return true;
+                        });
+                    }
+                    // FILTRI NORMALI
+                    else if (selectedFilterId) {
                         const selectedFilter = savedFilters.find(f => f.id === selectedFilterId);
                         if (selectedFilter) {
                             filterName = selectedFilter.name;
@@ -2390,7 +2436,10 @@
                     
                     // Calcola score per tutte le partite
                     const rankedMatches = todayMatches.map(m => {
-                        const score = calculateScore(m, new Set([m.lega.toLowerCase()]), new Set([m.tip]), leaguePerformance, allMatches);
+                        // Se filtro BEST 0.5 HT, usa score speciale
+                        const score = selectedFilterId === 'BEST_05HT' 
+                            ? calculateScore05HT(m, allMatches)
+                            : calculateScore(m, new Set([m.lega.toLowerCase()]), new Set([m.tip]), leaguePerformance, allMatches);
                         return {
                             ...m,
                             score: score.totalScore,
@@ -2441,11 +2490,19 @@
                     const tipBlocks = Object.keys(byTip).sort().map(tip => {
                         const matches = byTip[tip];
                         
+                        // Titolo dinamico per BEST 0.5 HT
+                        const sectionTitle = selectedFilterId === 'BEST_05HT' 
+                            ? '⚡ BEST 0.5 HT' 
+                            : `📊 ${tip}`;
+                        const sectionSubtitle = selectedFilterId === 'BEST_05HT'
+                            ? `${matches.length} partite selezionate automaticamente`
+                            : `${matches.length} partite (max ${maxMatches} per tip)`;
+                        
                         return `
                             <div class="bg-white p-6 rounded-xl shadow mb-6">
-                                <h3 class="text-2xl font-bold mb-3">📊 ${tip}</h3>
+                                <h3 class="text-2xl font-bold mb-3">${sectionTitle}</h3>
                                 <div class="text-sm text-gray-600 mb-4">
-                                    ${matches.length} partite (max ${maxMatches} per tip)
+                                    ${sectionSubtitle}
                                 </div>
                                 <div class="space-y-3">
                                     ${matches.map((m, idx) => {
@@ -2478,12 +2535,16 @@
                                             timeDisplay = `<div class="text-xs mt-1"><span class="text-gray-600 font-bold">⏰ ${m.time}</span></div>`;
                                         }
                                         
-                                        // Bollino Betfair
-                                        const betfairBadge = generateBetfairBadge(m);
+                                        // Bollino Betfair (con flag 0.5 HT se filtro attivo + stats squadre)
+                                        const betfairBadge = generateBetfairBadge(m, selectedFilterId === 'BEST_05HT', team1Stats, team2Stats);
                                         let betfairDisplay = '';
                                         if (betfairBadge) {
-                                            betfairDisplay = `<div class="mt-2"><span class="px-3 py-1 rounded-full text-xs font-bold border ${betfairBadge.color}">🟣 ${betfairBadge.text}</span></div>`;
+                                            const icon = selectedFilterId === 'BEST_05HT' ? '⚡' : '🟣';
+                                            betfairDisplay = `<div class="mt-2"><span class="px-3 py-1 rounded-full text-xs font-bold border ${betfairBadge.color}">${icon} ${betfairBadge.text}</span></div>`;
                                         }
+                                        
+                                        // Formato display TIP FT chiaro
+                                        const tipDisplay = `${m.tip} FT`;
                                         
                                         return `
                                             <div class="border rounded-lg p-4 ${(m.score || 0) < 30 ? 'bg-red-50 border-red-200' : 'bg-white hover:bg-gray-50'}">
@@ -2502,8 +2563,8 @@
                                                             ${m.lega}
                                                         </div>
                                                         <div class="text-sm mt-1">
-                                                            <span class="bg-blue-100 px-2 py-1 rounded text-xs">${m.mercato}</span>
-                                                            <span class="ml-2">@${m.quota.toFixed(2)}</span>
+                                                            <span class="bg-blue-100 px-2 py-1 rounded text-xs font-semibold">${tipDisplay}</span>
+                                                            <span class="ml-2 font-bold">@${m.quota.toFixed(2)}</span>
                                                             <span class="ml-2 text-gray-500">${m.probabilita}%</span>
                                                         </div>
                                                         ${htIndicator}
@@ -3225,6 +3286,61 @@
             }
             
             // ==================== RANKING FUNCTIONS ====================
+            // V3.4.5 - SCORE SPECIALE PER 0.5 HT
+            function calculateScore05HT(partita, dbCompleto) {
+                let score = 0;
+                
+                // Estrai HT prob
+                let htProb = 0;
+                if (partita.info_ht && partita.info_ht.trim() !== '') {
+                    const htMatch = partita.info_ht.match(/(\d+)%/);
+                    if (htMatch) htProb = parseInt(htMatch[1]);
+                }
+                
+                // PESO 1: HT Probability (50% del score)
+                if (htProb >= 85) score += 50;
+                else if (htProb >= 80) score += 45;
+                else if (htProb >= 75) score += 40;
+                else if (htProb >= 70) score += 35;
+                else if (htProb >= 65) score += 25;
+                
+                // PESO 2: Prolificità squadre Over 1.5 (30% del score)
+                const teams = partita.partita.split(' - ');
+                if (teams.length === 2 && dbCompleto && dbCompleto.length > 0) {
+                    const teamHome = teams[0].trim();
+                    const teamAway = teams[1].trim();
+                    
+                    const homeStats = analyzeTeamStats(teamHome, true, '+1.5', dbCompleto);
+                    const awayStats = analyzeTeamStats(teamAway, false, '+1.5', dbCompleto);
+                    
+                    if (homeStats.total >= 5 && awayStats.total >= 5) {
+                        const homePerc = (homeStats.count / homeStats.total) * 100;
+                        const awayPerc = (awayStats.count / awayStats.total) * 100;
+                        const avgPerc = (homePerc + awayPerc) / 2;
+                        
+                        if (avgPerc >= 75) score += 30;
+                        else if (avgPerc >= 65) score += 25;
+                        else if (avgPerc >= 55) score += 20;
+                        else if (avgPerc >= 45) score += 15;
+                        else score += 10;
+                    }
+                }
+                
+                // PESO 3: Orario favorevole (20% del score - bonus)
+                if (partita.time) {
+                    const [hours] = partita.time.split(':').map(Number);
+                    if (hours >= 17 && hours <= 22) score += 20; // Orario prime time
+                    else if (hours >= 14 && hours <= 23) score += 10; // Orario buono
+                }
+                
+                return {
+                    teamBonus: score,
+                    totalScore: Math.min(100, score),
+                    quotaValid: true,
+                    htProb: htProb
+                };
+            }
+            
             function calculateScore(partita, legheSet, tipsSet, leaguePerformance = {}, dbCompleto = null) {
                 // V3.4.1 - SCORE SEMPLIFICATO: SOLO statistiche squadre per TIP BASE
                 
