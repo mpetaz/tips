@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Mpetaz Tips v3.4.2 - Clean Edition</title>
+    <title>⚽ Mpetaz Tips v3.4.4 - Clean Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
@@ -86,7 +86,7 @@
                 <div class="flex justify-between items-center py-4">
                     <div class="flex items-center space-x-3">
                         <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.4.2</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.4.4</h1>
                     </div>
                     <nav class="flex space-x-2 flex-wrap">
                         <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
@@ -149,8 +149,16 @@
                                 <label for="new-filter-name" class="block text-xs font-medium text-gray-600">Salva strategia attuale</label>
                                 <input type="text" id="new-filter-name" placeholder="Nome della strategia..." class="w-full p-2 border rounded-lg text-sm">
                             </div>
-                            <div>
-                                <button id="save-filter-btn" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm">Salva Strategia</button>
+                            <div class="flex gap-2">
+                                <button id="save-filter-btn" class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-green-700">
+                                    <i class="fa-solid fa-save mr-1"></i>Salva Strategia
+                                </button>
+                                <button id="reset-filters-btn" class="bg-gray-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-gray-600">
+                                    <i class="fa-solid fa-arrows-rotate"></i>
+                                </button>
+                                <button id="export-filtered-btn" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700">
+                                    <i class="fa-solid fa-file-csv"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -204,15 +212,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="mt-6 flex justify-end space-x-4">
-                        <button id="export-filtered-btn" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-                            <i class="fa-solid fa-file-csv mr-2"></i>Esporta Filtrati
-                        </button>
-                        <button id="reset-filters-btn" class="bg-gray-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors">
-                            <i class="fa-solid fa-arrows-rotate mr-2"></i>Reset Tutti i Filtri
-                        </button>
-                    </div>
                 </div>
                 
                 <!-- Match List -->
@@ -230,7 +229,6 @@
                                     <th class="p-3 font-semibold text-center">Ris.</th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="probabilita">Prob. <i class="fa-solid fa-sort sort-icon"></i></th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="quota">Quota <i class="fa-solid fa-sort sort-icon"></i></th>
-                                    <th class="p-3 font-semibold text-center" title="Orario partita (ora italiana)">Ora</th>
                                     <th class="p-3 font-semibold text-center" title="Over 0.5 HT - Info primo tempo">HT</th>
                                     <th class="p-3 font-semibold sortable-header text-center" data-sort="esito">Esito <i class="fa-solid fa-sort sort-icon"></i></th>
                                 </tr>
@@ -982,13 +980,12 @@
             const deleteFilterBtn = document.getElementById('delete-filter-btn');
             const updateFavoritesBtn = document.getElementById('update-favorites-btn');
             
-            // Dates
-            const today = new Date();
-            filterDateEnd.value = today.toISOString().split('T')[0];
-            const threeMonthsAgo = new Date(today);
-            threeMonthsAgo.setMonth(today.getMonth() - 3);
-            filterDateStart.value = threeMonthsAgo.toISOString().split('T')[0];
+            // Dates - Dashboard VUOTA all'inizio
+            filterDateStart.value = '';
+            filterDateEnd.value = '';
             
+            // Altre pagine mantengono data odierna
+            const today = new Date();
             document.getElementById('tips-date').value = today.toISOString().split('T')[0];
             document.getElementById('results-date').value = today.toISOString().split('T')[0];
             document.getElementById('ranking-date').value = today.toISOString().split('T')[0];
@@ -1267,7 +1264,6 @@
                             <td class="p-3 text-xs text-center">${m.risultato || '-'}</td>
                             <td class="p-3 text-xs text-center">${m.probabilita}%</td>
                             <td class="p-3 text-xs text-center font-bold">${m.quota}</td>
-                            <td class="p-3 text-xs text-center">${timeDisplay}</td>
                             <td class="p-3 text-xs text-center">${htDisplay}</td>
                             <td class="p-3 text-xs text-center ${esitoClass}">${m.esito || '-'}</td>
                         </tr>
@@ -1275,7 +1271,7 @@
                 }).join('');
                 
                 if (matches.length > 200) {
-                    tbody.innerHTML += `<tr><td colspan="11" class="p-3 text-center text-sm text-gray-500">Mostrati primi 200 di ${matches.length}</td></tr>`;
+                    tbody.innerHTML += `<tr><td colspan="9" class="p-3 text-center text-sm text-gray-500">Mostrati primi 200 di ${matches.length}</td></tr>`;
                 }
             }
             
@@ -2490,7 +2486,7 @@
                                         }
                                         
                                         return `
-                                            <div class="border rounded-lg p-4 hover:bg-gray-50">
+                                            <div class="border rounded-lg p-4 ${(m.score || 0) < 30 ? 'bg-red-50 border-red-200' : 'bg-white hover:bg-gray-50'}">
                                                 <div class="flex justify-between items-start mb-3">
                                                     <div class="flex-1">
                                                         <div class="flex justify-between items-start">
@@ -2513,29 +2509,7 @@
                                                         ${htIndicator}
                                                     </div>
                                                     <div class="text-right">
-                                                        <div class="relative inline-block">
-                                                            <span class="score-badge cursor-help tooltip-trigger" 
-                                                                  data-tooltip-type="score"
-                                                                  data-score="${m.score || 0}"
-                                                                  data-lega-score="${m.scoreDetails?.legaScore || 0}"
-                                                                  data-tip-score="${m.scoreDetails?.tipScore || 0}"
-                                                                  data-prob-score="${m.scoreDetails?.probScore || 0}"
-                                                                  data-team-bonus="${m.scoreDetails?.teamBonus || 0}"
-                                                                  data-ht-bonus="${m.scoreDetails?.htBonus || 0}">
-                                                                ${m.score || 0}
-                                                            </span>
-                                                            <span class="ml-1 text-blue-500 text-xs cursor-help tooltip-trigger"
-                                                                  data-tooltip-type="score"
-                                                                  data-score="${m.score || 0}"
-                                                                  data-lega-score="${m.scoreDetails?.legaScore || 0}"
-                                                                  data-tip-score="${m.scoreDetails?.tipScore || 0}"
-                                                                  data-prob-score="${m.scoreDetails?.probScore || 0}"
-                                                                  data-team-bonus="${m.scoreDetails?.teamBonus || 0}"
-                                                                  data-ht-bonus="${m.scoreDetails?.htBonus || 0}"
-                                                                  title="Hover per dettagli score">
-                                                                ℹ️
-                                                            </span>
-                                                        </div>
+                                                        <div class="score-badge">${m.score || 0}</div>
                                                         <div class="text-xs text-gray-500 mt-1 relative inline-block">
                                                             <span class="tooltip-trigger cursor-help"
                                                                   data-tooltip-type="stats"
@@ -2564,6 +2538,9 @@
                                                 
                                                 <!-- BOLLINO BETFAIR -->
                                                 ${betfairDisplay}
+                                                
+                                                <!-- WARNING SCORE BASSO -->
+                                                ${(m.score || 0) < 30 ? '<div class="mt-2"><span class="bg-red-500 text-white text-xs px-2 py-1 rounded font-bold">⚠️ Score Basso - Poco Affidabile</span></div>' : ''}
                                             </div>
                                         `;
                                     }).join('')}
@@ -2696,8 +2673,30 @@
                     
                     const rankings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     
-                    storicoDateTitle.textContent = `Previsioni del ${date}`;
+                    storicoDateTitle.innerHTML = `Previsioni del ${date} <button id="delete-date-btn" class="ml-3 bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" title="Cancella tutte le strategie di questa giornata"><i class="fa-solid fa-trash mr-1"></i>Cancella Giornata</button>`;
                     storicoCount.textContent = `${rankings.length} strategie salvate`;
+                    
+                    // Event listener cancella giornata
+                    document.getElementById('delete-date-btn').addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        if (!confirm(`⚠️ ATTENZIONE!\n\nVuoi cancellare TUTTE le ${rankings.length} strategie del ${date}?\n\nQuesta azione è IRREVERSIBILE e può influenzare il machine learning futuro.`)) return;
+                        
+                        try {
+                            const batch = [];
+                            for (const ranking of rankings) {
+                                const docRef = doc(db, "ranking_history", ranking.id);
+                                batch.push(deleteDoc(docRef));
+                            }
+                            await Promise.all(batch);
+                            
+                            showModal("✅ Cancellato!", `Tutte le ${rankings.length} strategie del ${date} sono state eliminate.`, () => {
+                                // Ricarica storico
+                                storicoList.classList.add('hidden');
+                            });
+                        } catch(e) {
+                            showModal("Errore", `Errore cancellazione: ${e.message}`, () => {});
+                        }
+                    });
                     
                     // Calcola stats per ogni strategia
                     const strategieCards = rankings.map(ranking => {
@@ -2740,10 +2739,10 @@
                         }
                         
                         return `
-                            <div class="p-4 rounded-lg border-2 ${borderClass} ${bgClass} cursor-pointer transition-all storico-strategia-card" 
+                            <div class="p-4 rounded-lg border-2 ${borderClass} ${bgClass} transition-all storico-strategia-card" 
                                  data-ranking-id="${ranking.id}">
                                 <div class="flex justify-between items-start">
-                                    <div>
+                                    <div class="flex-1 cursor-pointer" onclick="document.querySelector('[data-ranking-id=\\"${ranking.id}\\"]').dispatchEvent(new CustomEvent('view-detail'))">
                                         <div class="flex items-center gap-2">
                                             <span class="text-2xl">${icon}</span>
                                             <div>
@@ -2753,9 +2752,15 @@
                                         </div>
                                         ${statsBadge}
                                     </div>
-                                    <div class="text-right text-xs text-gray-500">
-                                        <div>${new Date(ranking.timestamp).toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}</div>
-                                        <div class="mt-1"><i class="fa-solid fa-chevron-right"></i></div>
+                                    <div class="flex flex-col items-end gap-2">
+                                        <button class="delete-strategy-btn text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded" 
+                                                data-strategy-id="${ranking.id}"
+                                                data-strategy-name="${ranking.filtro_nome}"
+                                                title="Cancella questa strategia">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                        <div class="text-xs text-gray-500">${new Date(ranking.timestamp).toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'})}</div>
+                                        <div class="cursor-pointer text-gray-400 hover:text-gray-600"><i class="fa-solid fa-chevron-right"></i></div>
                                     </div>
                                 </div>
                             </div>
@@ -2764,12 +2769,35 @@
                     
                     storicoContainer.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${strategieCards}</div>`;
                     
-                    // Event listeners per cards
+                    // Event listeners per cards - view detail
                     document.querySelectorAll('.storico-strategia-card').forEach(card => {
-                        card.addEventListener('click', () => {
+                        card.addEventListener('view-detail', () => {
                             const rankingId = card.dataset.rankingId;
                             const ranking = rankings.find(r => r.id === rankingId);
                             if (ranking) showStoricoDettaglio(ranking);
+                        });
+                    });
+                    
+                    // Event listeners per pulsanti cancella strategia
+                    document.querySelectorAll('.delete-strategy-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            e.stopPropagation();
+                            const strategyId = btn.dataset.strategyId;
+                            const strategyName = btn.dataset.strategyName;
+                            
+                            if (!confirm(`⚠️ Cancellare la strategia "${strategyName}"?\n\nQuesta azione è irreversibile e può influenzare il ML futuro.`)) return;
+                            
+                            try {
+                                const docRef = doc(db, "ranking_history", strategyId);
+                                await deleteDoc(docRef);
+                                
+                                showModal("✅ Cancellato!", `Strategia "${strategyName}" eliminata.`, () => {
+                                    // Ricarica la data
+                                    loadStorico(date);
+                                });
+                            } catch(e) {
+                                showModal("Errore", `Errore cancellazione: ${e.message}`, () => {});
+                            }
                         });
                     });
                     
