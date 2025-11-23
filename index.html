@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Mpetaz Tips v3.3 - Magic Edition</title>
+    <title>⚽ Mpetaz Tips v3.4.2 - Clean Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
@@ -86,7 +86,7 @@
                 <div class="flex justify-between items-center py-4">
                     <div class="flex items-center space-x-3">
                         <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.3</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.4.2</h1>
                     </div>
                     <nav class="flex space-x-2 flex-wrap">
                         <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
@@ -365,68 +365,19 @@
                         </div>
                     </div>
                     
-                    <!-- Terza riga: Tip Target Trading -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium mb-1">🎯 Tip Target Trading (opzionale)</label>
-                        <select id="ranking-target-tip" class="w-full p-3 border rounded-lg bg-white">
-                            <option value="">-- Stesso tip del filtro --</option>
-                            <optgroup label="📊 Dati Reali (da file caricato)">
-                                <option value="0.5HT">Over 0.5 HT (da file HT)</option>
-                            </optgroup>
-                            <optgroup label="🔮 Stime Matematiche">
-                                <option value="+2.5">Over 2.5 FT</option>
-                                <option value="+3.5">Over 3.5 FT</option>
-                                <option value="+4.5">Over 4.5 FT</option>
-                                <option value="-2.5">Under 2.5 FT</option>
-                                <option value="-3.5">Under 3.5 FT</option>
-                            </optgroup>
-                        </select>
-                        <p class="text-xs text-gray-500 mt-2">
-                            <strong>📊 Dati Reali:</strong> Odds precise dal file caricato (✅)<br>
-                            <strong>🔮 Stime:</strong> Range calcolato matematicamente da correlazioni storiche
-                        </p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Score Minimo</label>
-                            <input type="number" id="ranking-score-min" value="45" class="w-full p-3 border rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Max Partite da Mostrare</label>
-                            <input type="number" id="ranking-max-matches" value="20" class="w-full p-3 border rounded-lg">
-                        </div>
+                        <label class="block text-sm font-medium mb-1">Max Partite da Mostrare</label>
+                        <input type="number" id="ranking-max-matches" value="20" min="1" max="50" class="w-full p-3 border rounded-lg">
+                        <p class="text-xs text-gray-500 mt-1">Numero massimo di partite per ogni tip nel ranking</p>
                     </div>
                     
                     <button id="generate-ranking-btn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:opacity-90">
                         <i class="fa-solid fa-magic mr-2"></i>Applica e Genera Ranking
                     </button>
-                    
-                    <!-- MAGIC BUTTON -->
-                    <div class="mt-4 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border-2 border-amber-300">
-                        <div class="text-center mb-3">
-                            <span class="text-2xl">🔮</span>
-                            <h3 class="text-lg font-bold text-amber-800 inline ml-2">MAGIC TOP 5</h3>
-                            <p class="text-xs text-amber-700 mt-1">Selezione automatica delle migliori partite basata su 12,000+ match storici</p>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <button id="magic-singole-btn" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 px-4 rounded-lg font-bold hover:opacity-90 shadow-lg">
-                                <i class="fa-solid fa-bullseye mr-2"></i>TOP 5 SINGOLE/MULTIPLE
-                                <span class="block text-xs font-normal mt-1">Alta probabilità, score elevato</span>
-                            </button>
-                            <button id="magic-trading-btn" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-lg font-bold hover:opacity-90 shadow-lg">
-                                <i class="fa-solid fa-chart-line mr-2"></i>TOP 5 TRADING
-                                <span class="block text-xs font-normal mt-1">Tardo pomeriggio/sera, HT+Over</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 
                 <!-- Risultati Ranking -->
                 <div id="ranking-results"></div>
-                
-                <!-- MAGIC RESULTS (separati) -->
-                <div id="magic-results" class="hidden"></div>
             </div>
 
             <!-- PAGINA STORICO PREVISIONI -->
@@ -1819,14 +1770,10 @@
             
             // ==================== AI TRADING ADVISOR ====================
             
-            function generateTradingAdvice(match, tipTarget = null) {
-                const score = match.score || 0;
+            // V3.4.1 - BOLLINO BETFAIR SEMPLIFICATO
+            function generateBetfairBadge(match) {
                 const tip = (match.tip || '').trim().toUpperCase();
-                const prob = match.probabilita || 0;
-                const quota = match.quota || 0;
-                
-                // Normalizza tipTarget
-                const tipTargetNorm = tipTarget ? tipTarget.trim().toUpperCase() : null;
+                const score = match.score || 0;
                 
                 // Estrai HT prob se disponibile
                 let htProb = 0;
@@ -1835,157 +1782,40 @@
                     if (htMatch) htProb = parseInt(htMatch[1]);
                 }
                 
-                // Ottieni odds target
-                const targetOdds = getTargetOdds(match, tipTarget);
-                if (!targetOdds) {
-                    tipTarget = null;
+                let betfairBadge = null;
+                
+                // LOGICA BOLLINO: partita "tradabile"?
+                
+                // OVER con HT alto + score buono → Back Over 2.5
+                if (tip.startsWith('+') && htProb >= 70 && score >= 35) {
+                    betfairBadge = {
+                        text: 'Betfair Back Over 2.5',
+                        color: 'bg-purple-100 text-purple-700 border-purple-300'
+                    };
+                }
+                // OVER con squadre molto prolifiche → Back Over 2.5
+                else if (tip.startsWith('+') && score >= 45) {
+                    betfairBadge = {
+                        text: 'Betfair Back Over 2.5',
+                        color: 'bg-purple-100 text-purple-700 border-purple-300'
+                    };
+                }
+                // UNDER con score buono → Lay Over 2.5
+                else if (tip.startsWith('-') && score >= 40) {
+                    betfairBadge = {
+                        text: 'Betfair Lay Over 2.5',
+                        color: 'bg-purple-100 text-purple-700 border-purple-300'
+                    };
+                }
+                // 1X2 / DC equilibrata → Lay The Draw
+                else if ((tip.includes('X') || tip.includes('12')) && score >= 30) {
+                    betfairBadge = {
+                        text: 'Betfair Lay The Draw',
+                        color: 'bg-purple-100 text-purple-700 border-purple-300'
+                    };
                 }
                 
-                // Usa tip target per i calcoli se specificato E diverso da vuoto
-                const hasValidTarget = tipTargetNorm && tipTargetNorm !== '' && tipTargetNorm !== tip;
-                const effectiveTip = hasValidTarget ? tipTargetNorm : tip;
-                const effectiveQuota = targetOdds ? targetOdds.odds : quota;
-                const effectiveProb = targetOdds && targetOdds.prob ? targetOdds.prob : prob;
-                
-                // Bonus confidence se odds reale
-                const confidenceBonus = (targetOdds && !targetOdds.isEstimate) ? 5 : 0;
-                const adjustedScore = score + confidenceBonus;
-                
-                let advice = {
-                    confidence: '',
-                    confidenceIcon: '',
-                    confidenceColor: '',
-                    entry: '',
-                    timing: '',
-                    plan: '',
-                    stopLoss: '',
-                    reason: '',
-                    riskLevel: '',
-                    targetTip: effectiveTip,
-                    targetOdds: targetOdds,
-                    greenInfo: ''
-                };
-                
-                // Logica rivista: HT è bonus, non requisito
-                // Se HT disponibile e alto → boost confidence
-                // Se HT non disponibile → basa su score
-                
-                const hasHtData = htProb > 0;
-                const htBoost = hasHtData && htProb >= 70;
-                const htGood = hasHtData && htProb >= 55;
-                
-                if (adjustedScore >= 60 || (adjustedScore >= 50 && htBoost)) {
-                    advice.confidence = 'MOLTO ALTA';
-                    advice.confidenceIcon = '🔥';
-                    advice.confidenceColor = 'text-green-700 bg-green-50';
-                    advice.riskLevel = 'BASSO';
-                    
-                    if (tipTargetNorm === '0.5HT' && hasHtData) {
-                        advice.entry = `Back ${tip} @${quota.toFixed(2)} pre-match`;
-                        advice.timing = `Primo tempo KEY (HT ${htProb}%)`;
-                        advice.plan = `Lay 0.5 HT ${targetOdds.display} se gol primi 20' ${targetOdds.isEstimate ? '(stima)' : '✅'}`;
-                        advice.stopLoss = `Se 0-0 a 30' → Lay comunque (HT alto!)`;
-                        advice.reason = `HT ${htProb}% = Gol HT quasi certo. Green ${targetOdds.isEstimate ? 'stimato' : 'garantito'}!`;
-                        
-                        const green = calculateGreen(100, quota, targetOdds.odds);
-                        advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
-                    } else {
-                        // Entry SEMPRE sul tip target
-                        advice.entry = `Back ${effectiveTip} ${targetOdds ? targetOdds.display : '@' + quota.toFixed(2)} pre-match`;
-                        advice.timing = hasHtData ? `Gol probabile primi 15' (HT ${htProb}%)` : `Score alto, buone probabilità`;
-                        
-                        advice.plan = `Se gol → Lay ${effectiveTip} a quote inferiori per green`;
-                        advice.reason = hasHtData ? 
-                            `Score ${adjustedScore} + HT ${htProb}%. Target ${effectiveTip}` :
-                            `Score ${adjustedScore} alto. Target ${effectiveTip}`;
-                        
-                        advice.stopLoss = `Se 0-0 a 70' → Cash out con -5%`;
-                        
-                        if (targetOdds && targetOdds.isEstimate) {
-                            const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
-                            advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} su stake €100`;
-                        } else if (targetOdds) {
-                            const green = calculateGreen(100, quota, targetOdds.odds);
-                            advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
-                        }
-                    }
-                    
-                } else if (adjustedScore >= 45 || (adjustedScore >= 35 && htGood)) {
-                    advice.confidence = 'ALTA';
-                    advice.confidenceIcon = '⚡';
-                    advice.confidenceColor = 'text-green-600 bg-green-50';
-                    advice.riskLevel = 'MEDIO-BASSO';
-                    
-                    advice.entry = `Back ${effectiveTip} ${targetOdds ? targetOdds.display : '@' + quota.toFixed(2)} pre-match`;
-                    advice.timing = hasHtData ? `Gol atteso primi 20' (HT ${htProb}%)` : `Score buono`;
-                    
-                    advice.plan = `Monitor primi 20', se gol → Lay ${effectiveTip} a quote inferiori`;
-                    advice.reason = hasHtData ?
-                        `Score ${adjustedScore} + HT ${htProb}%. Target ${effectiveTip}` :
-                        `Score ${adjustedScore}. Target ${effectiveTip}`;
-                    
-                    advice.stopLoss = `Se 0-0 a 65' → Cash out con -8%`;
-                    
-                    if (targetOdds && targetOdds.isEstimate) {
-                        const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
-                        advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} su stake €100`;
-                    } else if (targetOdds) {
-                        const green = calculateGreen(100, quota, targetOdds.odds);
-                        advice.greenInfo = `€${green.toFixed(2)} su stake €100`;
-                    }
-                    
-                } else if (adjustedScore >= 30) {
-                    advice.confidence = 'MEDIA';
-                    advice.confidenceIcon = '💡';
-                    advice.confidenceColor = 'text-yellow-600 bg-yellow-50';
-                    advice.riskLevel = 'MEDIO';
-                    
-                    advice.entry = `Back ${effectiveTip} ${targetOdds ? targetOdds.display : '@' + quota.toFixed(2)} pre-match con cautela`;
-                    advice.timing = hasHtData ? `Gol possibile HT (${htProb}%), monitor` : `Score medio`;
-                    
-                    advice.plan = `Entry cauta, se gol valuta Lay ${effectiveTip}`;
-                    advice.reason = hasHtData ?
-                        `Score ${adjustedScore} medio, HT ${htProb}%. Target ${effectiveTip}` :
-                        `Score ${adjustedScore} medio. Target ${effectiveTip}`;
-                    
-                    advice.stopLoss = `Se 0-0 a 60' → Exit con -10%`;
-                    
-                    if (targetOdds && targetOdds.isEstimate) {
-                        const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
-                        advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} possibili`;
-                    } else if (targetOdds) {
-                        const green = calculateGreen(100, quota, targetOdds.odds);
-                        advice.greenInfo = `€${green.toFixed(2)} possibili`;
-                    }
-                    
-                } else if (adjustedScore >= 30 && adjustedScore < 40) {
-                    advice.confidence = 'BASSA';
-                    advice.confidenceIcon = '⚠️';
-                    advice.confidenceColor = 'text-orange-600 bg-orange-50';
-                    advice.riskLevel = 'ALTO';
-                    
-                    advice.entry = `Skip o stake minimo (0.5% bankroll)`;
-                    advice.timing = `Confidence insufficiente per entry sicura`;
-                    advice.plan = `Solo per esperti: entry live dopo 30' se 0-0`;
-                    advice.stopLoss = `Exit immediato se andamento negativo`;
-                    advice.reason = `Score ${adjustedScore} limite, rischio elevato`;
-                    advice.greenInfo = `N/A`;
-                    
-                } else {
-                    advice.confidence = 'MOLTO BASSA';
-                    advice.confidenceIcon = '❌';
-                    advice.confidenceColor = 'text-red-600 bg-red-50';
-                    advice.riskLevel = 'MOLTO ALTO';
-                    
-                    advice.entry = `SKIP - Non consigliato`;
-                    advice.timing = `Score troppo basso per betting sicuro`;
-                    advice.plan = `Evita questa partita`;
-                    advice.stopLoss = `N/A`;
-                    advice.reason = `Score ${adjustedScore} insufficiente, rischio eccessivo`;
-                    advice.greenInfo = `N/A`;
-                }
-                
-                return advice;
+                return betfairBadge;
             }
             
             // ==================== TOOLTIP SYSTEM ====================
@@ -2503,10 +2333,8 @@
             // ==================== RANKING ====================
             document.getElementById('generate-ranking-btn').addEventListener('click', async () => {
                 const rankingDate = document.getElementById('ranking-date').value;
-                const scoreMin = parseInt(document.getElementById('ranking-score-min').value);
                 const maxMatches = parseInt(document.getElementById('ranking-max-matches').value);
                 const selectedFilterId = document.getElementById('ranking-filter-select').value;
-                const tipTarget = document.getElementById('ranking-target-tip').value || null;
                 
                 if (!rankingDate) {
                     alert('Seleziona data!');
@@ -2572,10 +2400,10 @@
                             score: score.totalScore,
                             scoreDetails: score // Salva dettagli per tooltip
                         };
-                    }).filter(m => m.score >= scoreMin);
+                    }).filter(m => m.score > 0); // Solo partite con score > 0
                     
                     if (rankedMatches.length === 0) {
-                        resultsContainer.innerHTML = `<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessun match supera score ${scoreMin} con filtri selezionati</div>`;
+                        resultsContainer.innerHTML = `<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessuna partita disponibile con i filtri selezionati</div>`;
                         return;
                     }
                     
@@ -2654,15 +2482,11 @@
                                             timeDisplay = `<div class="text-xs mt-1"><span class="text-gray-600 font-bold">⏰ ${m.time}</span></div>`;
                                         }
                                         
-                                        // AI Trading Advice
-                                        const advice = generateTradingAdvice(m, tipTarget);
-                                        
-                                        // Target display
-                                        let targetDisplay = '';
-                                        if (tipTarget && advice.targetOdds) {
-                                            const targetLabel = tipTarget === '0.5HT' ? 'Over 0.5 HT' : tipTarget;
-                                            const sourceIcon = advice.targetOdds.isEstimate ? '🔮' : '✅';
-                                            targetDisplay = `<div class="text-xs mt-1 font-semibold text-blue-600">🎯 Target: ${targetLabel} ${advice.targetOdds.display} ${sourceIcon}</div>`;
+                                        // Bollino Betfair
+                                        const betfairBadge = generateBetfairBadge(m);
+                                        let betfairDisplay = '';
+                                        if (betfairBadge) {
+                                            betfairDisplay = `<div class="mt-2"><span class="px-3 py-1 rounded-full text-xs font-bold border ${betfairBadge.color}">🟣 ${betfairBadge.text}</span></div>`;
                                         }
                                         
                                         return `
@@ -2687,7 +2511,6 @@
                                                             <span class="ml-2 text-gray-500">${m.probabilita}%</span>
                                                         </div>
                                                         ${htIndicator}
-                                                        ${targetDisplay}
                                                     </div>
                                                     <div class="text-right">
                                                         <div class="relative inline-block">
@@ -2739,21 +2562,8 @@
                                                     </div>
                                                 </div>
                                                 
-                                                <!-- AI TRADING ADVICE -->
-                                                <div class="mt-3 p-3 rounded-lg ${advice.confidenceColor} border-l-4 ${advice.confidence === 'MOLTO ALTA' || advice.confidence === 'ALTA' ? 'border-green-500' : advice.confidence === 'MEDIA' ? 'border-yellow-500' : 'border-red-500'}">
-                                                    <div class="font-bold text-sm mb-2">
-                                                        🎯 STRATEGIA ${advice.confidenceIcon}
-                                                        <span class="float-right">${advice.confidence}</span>
-                                                    </div>
-                                                    <div class="text-xs space-y-1">
-                                                        <div><strong>💰 Entry:</strong> ${advice.entry}</div>
-                                                        ${advice.timing ? `<div><strong>⚡ Timing:</strong> ${advice.timing}</div>` : ''}
-                                                        ${advice.plan ? `<div><strong>🎯 Plan:</strong> ${advice.plan}</div>` : ''}
-                                                        ${advice.greenInfo && advice.greenInfo !== 'N/A' ? `<div><strong>💚 Green:</strong> ${advice.greenInfo}</div>` : ''}
-                                                        ${advice.stopLoss ? `<div><strong>⛔ Stop:</strong> ${advice.stopLoss}</div>` : ''}
-                                                        <div class="pt-1 mt-1 border-t border-gray-300"><strong>📈 Perché:</strong> ${advice.reason}</div>
-                                                    </div>
-                                                </div>
+                                                <!-- BOLLINO BETFAIR -->
+                                                ${betfairDisplay}
                                             </div>
                                         `;
                                     }).join('')}
@@ -2771,7 +2581,6 @@
                         partite_by_tip: {},
                         stats: {
                             totale_partite: rankedMatches.length,
-                            score_minimo: scoreMin,
                             tips_count: Object.keys(byTip).length
                         }
                     };
@@ -2795,8 +2604,7 @@
                             <h2 class="text-3xl font-bold mb-2">🏆 Ranking ${rankingDate}</h2>
                             <div class="text-lg mb-1">📊 Filtro: <span class="font-bold">${filterName}</span></div>
                             <div class="text-sm opacity-90 mb-3">
-                                ✅ ${rankedMatches.length} partite totali su ${todayMatches.length} filtrate • 
-                                Score minimo: ${scoreMin} • 
+                                ✅ ${rankedMatches.length} partite totali su ${todayMatches.length} filtrate •                                 
                                 ${Object.keys(byTip).length} tip diverse
                             </div>
                             <button id="save-ranking-btn" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md mr-3">
@@ -2815,11 +2623,12 @@
                     // Event listener per export CSV
                     document.getElementById('export-csv-btn').addEventListener('click', () => {
                         const csvData = [];
-                        csvData.push(['Data', 'Lega', 'Partita', 'Tip', 'Quota', 'Prob%', 'HT', 'Ora', 'Score', 'Confidence', 'Entry', 'Green'].join(','));
+                        csvData.push(['Data', 'Lega', 'Partita', 'Tip', 'Quota', 'Prob%', 'HT', 'Ora', 'Score', 'Betfair'].join(','));
                         
                         Object.keys(byTip).forEach(tip => {
                             byTip[tip].forEach(m => {
-                                const advice = generateTradingAdvice(m, tipTarget);
+                                const betfairBadge = generateBetfairBadge(m);
+                                const betfairText = betfairBadge ? betfairBadge.text : 'N/A';
                                 const htInfo = m.info_ht || '-';
                                 const time = m.time || '-';
                                 
@@ -2833,9 +2642,7 @@
                                     `"${htInfo}"`,
                                     time,
                                     m.score,
-                                    advice.confidence,
-                                    `"${advice.entry}"`,
-                                    `"${advice.greenInfo || 'N/A'}"`
+                                    `"${betfairText}"`
                                 ].join(','));
                             });
                         });
@@ -2852,516 +2659,6 @@
                     resultsContainer.innerHTML = `<div class="bg-red-50 p-6 rounded-xl text-center">❌ Errore: ${e.message}</div>`;
                 }
             });
-            
-            // ==================== MAGIC TOP 5 FUNCTIONS ====================
-            
-            // MAGIC: Calcola score speciale per singole/multiple (alta affidabilità)
-            function calculateMagicSingoleScore(match, leaguePerformance, dbCompleto) {
-                const baseScore = calculateScore(match, new Set([match.lega.toLowerCase()]), new Set([match.tip]), leaguePerformance, dbCompleto);
-                let magicScore = baseScore.totalScore;
-                
-                // BONUS per probabilità molto alta (>80%)
-                if (match.probabilita >= 85) magicScore += 15;
-                else if (match.probabilita >= 80) magicScore += 10;
-                
-                // BONUS per leghe top Over (se tip è Over)
-                if (match.tip.startsWith('+')) {
-                    const isTopLeague = TOP_OVER_LEAGUES.some(l => match.lega.toLowerCase().includes(l.toLowerCase().replace('EU-', '').replace('NA-', '')));
-                    if (isTopLeague) magicScore += 10;
-                }
-                
-                // BONUS per quote sicure (1.15-1.35 sweet spot)
-                if (match.quota >= 1.15 && match.quota <= 1.35) magicScore += 8;
-                else if (match.quota >= 1.10 && match.quota <= 1.45) magicScore += 5;
-                
-                // PENALITÀ per quote troppo basse (poco valore)
-                if (match.quota < 1.10) magicScore -= 15;
-                
-                // BONUS HT forte (correlato a partite con gol)
-                if (match.info_ht) {
-                    const htMatch = match.info_ht.match(/(\d+)%/);
-                    if (htMatch) {
-                        const htProb = parseInt(htMatch[1]);
-                        if (htProb >= 75) magicScore += 12;
-                        else if (htProb >= 65) magicScore += 6;
-                    }
-                }
-                
-                return { ...baseScore, magicScore, type: 'singola' };
-            }
-            
-            // MAGIC: Calcola score speciale per trading (tardo pomeriggio + HT + Over)
-            function calculateMagicTradingScore(match, leaguePerformance, dbCompleto) {
-                const baseScore = calculateScore(match, new Set([match.lega.toLowerCase()]), new Set([match.tip]), leaguePerformance, dbCompleto);
-                let magicScore = baseScore.totalScore;
-                
-                // BONUS ORARIO: preferisci 17:00-22:00 per trading italiano
-                if (match.time) {
-                    const [hours] = match.time.split(':').map(Number);
-                    if (hours >= 17 && hours <= 22) magicScore += 20;
-                    else if (hours >= 15 && hours <= 23) magicScore += 10;
-                    else if (hours < 14) magicScore -= 10; // Penalizza mattina
-                }
-                
-                // BONUS HT FORTE (critico per trading)
-                if (match.info_ht) {
-                    const htMatch = match.info_ht.match(/(\d+)%/);
-                    if (htMatch) {
-                        const htProb = parseInt(htMatch[1]);
-                        if (htProb >= 78) magicScore += 25;
-                        else if (htProb >= 70) magicScore += 15;
-                        else if (htProb >= 60) magicScore += 8;
-                    }
-                } else {
-                    magicScore -= 10; // Penalità senza HT
-                }
-                
-                // BONUS per tip Over (ideali per trading)
-                if (match.tip === '+1.5') magicScore += 10;
-                else if (match.tip === '+2.5') magicScore += 5;
-                
-                // BONUS quota ragionevole per green decente
-                if (match.quota >= 1.15 && match.quota <= 1.30) magicScore += 8;
-                
-                // BONUS leghe top Over
-                const isTopLeague = TOP_OVER_LEAGUES.some(l => match.lega.toLowerCase().includes(l.toLowerCase().replace('EU-', '').replace('NA-', '')));
-                if (isTopLeague) magicScore += 8;
-                
-                return { ...baseScore, magicScore, type: 'trading' };
-            }
-            
-            // MAGIC: Genera selezione automatica
-            async function generateMagicSelection(type) {
-                const rankingDate = document.getElementById('ranking-date').value;
-                
-                if (!rankingDate) {
-                    alert('Seleziona prima una data!');
-                    return;
-                }
-                
-                const magicResults = document.getElementById('magic-results');
-                const rankingResults = document.getElementById('ranking-results');
-                rankingResults.innerHTML = '';
-                magicResults.classList.remove('hidden');
-                magicResults.innerHTML = '<div class="bg-white p-6 rounded-xl shadow text-center"><div class="animate-pulse text-lg">🔮 Magia in corso... <br><span class="text-sm text-gray-500">(Analisi di 12,000+ match storici)</span></div></div>';
-                
-                try {
-                    // Carica partite del giorno senza risultato
-                    let todayMatches = allMatches.filter(m => m.data === rankingDate && !m.risultato);
-                    
-                    if (todayMatches.length === 0) {
-                        magicResults.innerHTML = '<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessuna partita trovata per questa data!</div>';
-                        return;
-                    }
-                    
-                    const leaguePerformance = analyzeLeaguePerformance(allMatches);
-                    
-                    // Carica orari per le partite
-                    for (let match of todayMatches) {
-                        const ora = await getTimeFromCache(match.data, match.partita);
-                        if (ora) match.time = ora;
-                    }
-                    
-                    let rankedMatches = [];
-                    let title = '';
-                    let subtitle = '';
-                    let icon = '';
-                    let gradientClass = '';
-                    
-                    if (type === 'singole') {
-                        // TOP 5 SINGOLE: alta probabilità, score elevato
-                        rankedMatches = todayMatches
-                            .filter(m => m.probabilita >= 70 && m.quota >= 1.10 && m.quota <= 1.50)
-                            .map(m => ({
-                                ...m,
-                                scoreDetails: calculateMagicSingoleScore(m, leaguePerformance, allMatches)
-                            }))
-                            .filter(m => m.scoreDetails.magicScore >= 50)
-                            .sort((a, b) => b.scoreDetails.magicScore - a.scoreDetails.magicScore)
-                            .slice(0, 5);
-                        
-                        title = '🎯 TOP 5 SINGOLE/MULTIPLE';
-                        subtitle = 'Selezione automatica: alta probabilità + score elevato + leghe affidabili';
-                        icon = 'fa-bullseye';
-                        gradientClass = 'from-green-500 to-emerald-600';
-                        
-                    } else if (type === 'trading') {
-                        // TOP 5 TRADING: orario tardo + HT forte + Over
-                        rankedMatches = todayMatches
-                            .filter(m => m.tip.startsWith('+') && m.probabilita >= 65)
-                            .map(m => ({
-                                ...m,
-                                scoreDetails: calculateMagicTradingScore(m, leaguePerformance, allMatches)
-                            }))
-                            .filter(m => m.scoreDetails.magicScore >= 40)
-                            .sort((a, b) => b.scoreDetails.magicScore - a.scoreDetails.magicScore)
-                            .slice(0, 5);
-                        
-                        title = '📈 TOP 5 TRADING BETFAIR';
-                        subtitle = 'Selezione automatica: orario ideale + HT forte + Over per green';
-                        icon = 'fa-chart-line';
-                        gradientClass = 'from-blue-500 to-indigo-600';
-                    }
-                    
-                    if (rankedMatches.length === 0) {
-                        magicResults.innerHTML = `<div class="bg-yellow-50 p-6 rounded-xl text-center">⚠️ Nessuna partita soddisfa i criteri Magic per oggi.<br><span class="text-sm">Prova con il ranking standard.</span></div>`;
-                        return;
-                    }
-                    
-                    // SALVA per tracking ML
-                    lastGeneratedRanking = {
-                        timestamp: new Date().toISOString(),
-                        data_partite: rankingDate,
-                        filtro_nome: `MAGIC_${type.toUpperCase()}`,
-                        filtro_id: null,
-                        magic_type: type,
-                        partite_by_tip: {},
-                        stats: {
-                            totale_partite: rankedMatches.length,
-                            score_minimo: Math.min(...rankedMatches.map(m => m.scoreDetails.magicScore)),
-                            tips_count: new Set(rankedMatches.map(m => m.tip)).size
-                        }
-                    };
-                    
-                    rankedMatches.forEach(m => {
-                        if (!lastGeneratedRanking.partite_by_tip[m.tip]) {
-                            lastGeneratedRanking.partite_by_tip[m.tip] = [];
-                        }
-                        lastGeneratedRanking.partite_by_tip[m.tip].push({
-                            partita: m.partita,
-                            lega: m.lega,
-                            tip: m.tip,
-                            mercato: m.mercato,
-                            quota: m.quota,
-                            probabilita: m.probabilita,
-                            score: m.scoreDetails.magicScore,
-                            esito: null
-                        });
-                    });
-                    
-                    // Render risultati Magic
-                    const matchCards = rankedMatches.map((m, idx) => {
-                        const [team1, team2] = m.partita.split(' - ');
-                        const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
-                        const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
-                        
-                        // USA MAGIC ADVICE invece di generateTradingAdvice standard
-                        const advice = generateMagicAdvice(m, type);
-                        
-                        // HT indicator
-                        let htBadge = '<span class="text-gray-400 text-xs">No HT</span>';
-                        if (m.info_ht) {
-                            const htMatch = m.info_ht.match(/(\d+)%/);
-                            if (htMatch) {
-                                const htProb = parseInt(htMatch[1]);
-                                const htClass = htProb >= 75 ? 'bg-green-100 text-green-700' : htProb >= 60 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600';
-                                htBadge = `<span class="${htClass} px-2 py-1 rounded text-xs font-bold">HT: ${m.info_ht}</span>`;
-                            }
-                        }
-                        
-                        // Time badge
-                        let timeBadge = '';
-                        if (m.time) {
-                            const [hours] = m.time.split(':').map(Number);
-                            const timeClass = (hours >= 17 && hours <= 22) ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600';
-                            timeBadge = `<span class="${timeClass} px-2 py-1 rounded text-xs font-bold">⏰ ${m.time}</span>`;
-                        }
-                        
-                        // Magic Score Tooltip content (user-friendly)
-                        const tooltipContent = generateUserFriendlyTooltip(m, type);
-                        
-                        return `
-                            <div class="bg-white border-2 ${idx === 0 ? 'border-amber-400 shadow-lg' : 'border-gray-200'} rounded-xl p-5 mb-4 hover:shadow-md transition-shadow">
-                                <div class="flex justify-between items-start mb-3">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="bg-gradient-to-r ${gradientClass} text-white text-xs font-bold px-3 py-1 rounded-full">
-                                                #${idx + 1}
-                                            </span>
-                                            ${idx === 0 ? '<span class="text-amber-500 text-lg">👑</span>' : ''}
-                                            <span class="text-xs text-gray-500">${m.lega}</span>
-                                        </div>
-                                        <div class="font-bold text-lg mb-2">
-                                            <span class="team-${team1Stats.color}">${team1}</span>
-                                            <span class="text-gray-400 mx-2">vs</span>
-                                            <span class="team-${team2Stats.color}">${team2}</span>
-                                        </div>
-                                        <div class="flex flex-wrap gap-2 text-xs">
-                                            <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold">${m.tip} @${m.quota.toFixed(2)}</span>
-                                            <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded">${m.probabilita}% prob</span>
-                                            ${htBadge}
-                                            ${timeBadge}
-                                        </div>
-                                    </div>
-                                    <div class="text-center tooltip-trigger cursor-help" data-tooltip-type="magic" data-magic-content="${encodeURIComponent(tooltipContent)}">
-                                        <div class="text-3xl font-black bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent">
-                                            ${m.scoreDetails.magicScore}
-                                        </div>
-                                        <div class="text-xs text-gray-500">MAGIC</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- PERCHÉ QUESTA PARTITA (user-friendly) -->
-                                <div class="bg-gray-50 rounded-lg p-3 mb-3">
-                                    <div class="text-xs font-bold text-gray-700 mb-2">📊 PERCHÉ QUESTA PARTITA:</div>
-                                    <div class="text-xs text-gray-600 space-y-1">
-                                        ${generateWhyThisMatch(m, type)}
-                                    </div>
-                                </div>
-                                
-                                <!-- STRATEGIA -->
-                                <div class="p-3 rounded-lg ${advice.confidenceColor} border-l-4 ${advice.confidence === 'MOLTO ALTA' || advice.confidence === 'ALTA' ? 'border-green-500' : advice.confidence === 'MEDIA' ? 'border-yellow-500' : 'border-red-500'}">
-                                    <div class="font-bold text-sm mb-2">
-                                        ${advice.confidenceIcon} ${type === 'trading' ? 'STRATEGIA TRADING' : 'STRATEGIA'}
-                                        <span class="float-right text-xs">${advice.confidence}</span>
-                                    </div>
-                                    <div class="text-xs space-y-1">
-                                        <div><strong>💰 Entry:</strong> ${advice.entry}</div>
-                                        ${advice.timing ? `<div><strong>⚡ Timing:</strong> ${advice.timing}</div>` : ''}
-                                        ${advice.plan ? `<div><strong>🎯 Plan:</strong> ${advice.plan}</div>` : ''}
-                                        ${advice.greenInfo && advice.greenInfo !== 'N/A' ? `<div><strong>💚 Green:</strong> ${advice.greenInfo}</div>` : ''}
-                                        ${advice.stopLoss ? `<div><strong>⛔ Stop:</strong> ${advice.stopLoss}</div>` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                    
-                    magicResults.innerHTML = `
-                        <div class="mb-6 bg-gradient-to-r ${gradientClass} text-white p-6 rounded-xl shadow-lg">
-                            <div class="flex items-center gap-3 mb-2">
-                                <span class="text-4xl">🔮</span>
-                                <div>
-                                    <h2 class="text-2xl font-bold">${title}</h2>
-                                    <p class="text-sm opacity-90">${subtitle}</p>
-                                </div>
-                            </div>
-                            <div class="text-sm opacity-90 mt-3">
-                                📅 ${rankingDate} • ${rankedMatches.length} partite selezionate • Basato su 12,000+ match storici
-                            </div>
-                            <div class="flex gap-3 mt-4">
-                                <button id="save-magic-btn" class="bg-white text-gray-800 px-4 py-2 rounded-lg font-bold hover:bg-gray-100 text-sm">
-                                    <i class="fa-solid fa-save mr-2"></i>Salva per Tracking
-                                </button>
-                            </div>
-                        </div>
-                        ${matchCards}
-                    `;
-                    
-                    // Event listener salvataggio
-                    document.getElementById('save-magic-btn').addEventListener('click', saveRankingForTracking);
-                    
-                } catch(e) {
-                    console.error('Magic Error:', e);
-                    magicResults.innerHTML = `<div class="bg-red-50 p-6 rounded-xl text-center">❌ Errore: ${e.message}</div>`;
-                }
-            }
-            
-            // Genera spiegazione user-friendly per tooltip
-            function generateUserFriendlyTooltip(match, type) {
-                const parts = [];
-                const s = match.scoreDetails;
-                
-                if (s.legaScore > 10) parts.push(`Lega top: +${s.legaScore}`);
-                if (s.tipScore > 10) parts.push(`Tip affidabile: +${s.tipScore}`);
-                if (s.probScore > 15) parts.push(`Prob alta: +${s.probScore}`);
-                if (s.teamBonus > 10) parts.push(`Squadre prolifiche: +${s.teamBonus}`);
-                if (s.htBonus > 5) parts.push(`HT boost: +${s.htBonus}`);
-                
-                return parts.join(' | ');
-            }
-            
-            // Genera "Perché questa partita" in modo chiaro
-            function generateWhyThisMatch(match, type) {
-                const reasons = [];
-                const s = match.scoreDetails;
-                
-                // Probabilità
-                if (match.probabilita >= 85) {
-                    reasons.push(`<div>✅ <strong>Probabilità eccellente</strong> (${match.probabilita}%) - storico molto favorevole</div>`);
-                } else if (match.probabilita >= 75) {
-                    reasons.push(`<div>✅ <strong>Probabilità alta</strong> (${match.probabilita}%) - buono storico</div>`);
-                }
-                
-                // Lega
-                if (s.legaScore >= 15) {
-                    reasons.push(`<div>🏆 <strong>Lega top</strong> per questo tipo di scommessa</div>`);
-                } else if (s.legaScore >= 10) {
-                    reasons.push(`<div>🏆 <strong>Lega affidabile</strong> - buone performance storiche</div>`);
-                }
-                
-                // Squadre
-                if (s.teamBonus >= 20) {
-                    reasons.push(`<div>⚽ <strong>Entrambe le squadre prolifiche</strong> - tendenza gol alta</div>`);
-                } else if (s.teamBonus >= 10) {
-                    reasons.push(`<div>⚽ <strong>Squadre con buona tendenza gol</strong></div>`);
-                }
-                
-                // HT
-                if (match.info_ht) {
-                    const htMatch = match.info_ht.match(/(\d+)%/);
-                    if (htMatch) {
-                        const htProb = parseInt(htMatch[1]);
-                        if (htProb >= 75) {
-                            reasons.push(`<div>🔥 <strong>HT molto alto</strong> (${htProb}%) - gol probabile nel 1° tempo</div>`);
-                        } else if (htProb >= 65) {
-                            reasons.push(`<div>💡 <strong>HT buono</strong> (${htProb}%) - possibile gol precoce</div>`);
-                        }
-                    }
-                }
-                
-                // Orario (per trading)
-                if (type === 'trading' && match.time) {
-                    const [hours] = match.time.split(':').map(Number);
-                    if (hours >= 17 && hours <= 22) {
-                        reasons.push(`<div>⏰ <strong>Orario ideale</strong> (${match.time}) - perfetto per trading serale</div>`);
-                    }
-                }
-                
-                // Quota
-                if (match.quota >= 1.15 && match.quota <= 1.35) {
-                    reasons.push(`<div>💰 <strong>Quota bilanciata</strong> (@${match.quota.toFixed(2)}) - buon rapporto rischio/rendimento</div>`);
-                }
-                
-                return reasons.length > 0 ? reasons.join('') : '<div>Partita selezionata per score complessivo elevato</div>';
-            }
-            
-            // Event listeners per Magic buttons
-            document.getElementById('magic-singole-btn').addEventListener('click', () => generateMagicSelection('singole'));
-            document.getElementById('magic-trading-btn').addEventListener('click', () => generateMagicSelection('trading'));
-            
-            // MAGIC ADVICE - usa magicScore per confidence (non base score!)
-            function generateMagicAdvice(match, type) {
-                const magicScore = match.scoreDetails.magicScore;
-                const quota = match.quota;
-                const tip = match.tip;
-                
-                // Estrai HT prob se disponibile
-                let htProb = 0;
-                if (match.info_ht) {
-                    const htMatch = match.info_ht.match(/(\d+)%/);
-                    if (htMatch) htProb = parseInt(htMatch[1]);
-                }
-                
-                // Target tip per trading
-                const targetTip = type === 'trading' ? '+2.5' : tip;
-                const targetOdds = getTargetOdds(match, type === 'trading' ? '+2.5' : null);
-                
-                const advice = {
-                    confidence: '',
-                    confidenceIcon: '',
-                    confidenceColor: '',
-                    entry: '',
-                    timing: '',
-                    plan: '',
-                    stopLoss: '',
-                    reason: '',
-                    riskLevel: '',
-                    greenInfo: ''
-                };
-                
-                // SOGLIE MAGIC (più alte perché magicScore include bonus extra)
-                if (magicScore >= 120) {
-                    advice.confidence = 'ECCELLENTE';
-                    advice.confidenceIcon = '🔥🔥';
-                    advice.confidenceColor = 'text-green-700 bg-green-100';
-                    advice.riskLevel = 'MOLTO BASSO';
-                    
-                    if (type === 'trading') {
-                        advice.entry = `BACK Over 2.5 ${targetOdds ? targetOdds.display : ''} pre-match`;
-                        advice.timing = htProb >= 70 ? `Gol quasi certo 1°T (HT ${htProb}%)` : `Partita ad alto potenziale gol`;
-                        advice.plan = `Se gol entro 25' → LAY Over 2.5 per green sicuro`;
-                        advice.stopLoss = `Se 0-0 a 60' → Cash out con -5% max`;
-                        advice.reason = `Magic Score ${magicScore} = TOP PICK! Tutti i fattori allineati.`;
-                    } else {
-                        advice.entry = `${tip} @${quota.toFixed(2)} - ALTA FIDUCIA`;
-                        advice.timing = `Ottima per singola o inserimento in multipla`;
-                        advice.plan = `Stake normale (1-2% bankroll)`;
-                        advice.stopLoss = `N/A - scommessa diretta`;
-                        advice.reason = `Magic Score ${magicScore} = TOP PICK! Probabilità + storico eccellenti.`;
-                    }
-                    
-                    if (targetOdds && targetOdds.isEstimate) {
-                        const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
-                        advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} su €100`;
-                    } else if (targetOdds) {
-                        const green = calculateGreen(100, quota, targetOdds.odds);
-                        advice.greenInfo = `€${green.toFixed(2)} su €100`;
-                    }
-                    
-                } else if (magicScore >= 100) {
-                    advice.confidence = 'MOLTO ALTA';
-                    advice.confidenceIcon = '🔥';
-                    advice.confidenceColor = 'text-green-600 bg-green-50';
-                    advice.riskLevel = 'BASSO';
-                    
-                    if (type === 'trading') {
-                        advice.entry = `BACK Over 2.5 ${targetOdds ? targetOdds.display : ''} pre-match`;
-                        advice.timing = htProb >= 65 ? `Gol probabile 1°T (HT ${htProb}%)` : `Buone probabilità gol precoce`;
-                        advice.plan = `Monitor primi 30', se gol → LAY per green`;
-                        advice.stopLoss = `Se 0-0 a 55' → Cash out con -8%`;
-                        advice.reason = `Magic Score ${magicScore} molto alto. Ottimo per trading.`;
-                    } else {
-                        advice.entry = `${tip} @${quota.toFixed(2)} - Consigliata`;
-                        advice.timing = `Buona per singola o multipla`;
-                        advice.plan = `Stake normale`;
-                        advice.stopLoss = `N/A`;
-                        advice.reason = `Magic Score ${magicScore} = scelta solida.`;
-                    }
-                    
-                    if (targetOdds && targetOdds.isEstimate) {
-                        const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
-                        advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} su €100`;
-                    } else if (targetOdds) {
-                        const green = calculateGreen(100, quota, targetOdds.odds);
-                        advice.greenInfo = `€${green.toFixed(2)} su €100`;
-                    }
-                    
-                } else if (magicScore >= 80) {
-                    advice.confidence = 'ALTA';
-                    advice.confidenceIcon = '⚡';
-                    advice.confidenceColor = 'text-blue-600 bg-blue-50';
-                    advice.riskLevel = 'MEDIO-BASSO';
-                    
-                    if (type === 'trading') {
-                        advice.entry = `BACK Over 2.5 ${targetOdds ? targetOdds.display : ''} con stake ridotto`;
-                        advice.timing = htProb >= 60 ? `Possibile gol 1°T (HT ${htProb}%)` : `Monitorare andamento`;
-                        advice.plan = `Entry cauta, se gol → LAY per green`;
-                        advice.stopLoss = `Se 0-0 a 50' → Cash out con -10%`;
-                        advice.reason = `Magic Score ${magicScore} buono ma non eccezionale.`;
-                    } else {
-                        advice.entry = `${tip} @${quota.toFixed(2)} - Buona scelta`;
-                        advice.timing = `Valida per singola`;
-                        advice.plan = `Stake ridotto (0.5-1% bankroll)`;
-                        advice.stopLoss = `N/A`;
-                        advice.reason = `Magic Score ${magicScore} = scelta valida.`;
-                    }
-                    
-                    if (targetOdds && targetOdds.isEstimate) {
-                        const greenRange = calculateGreenRange(100, quota, targetOdds.min, targetOdds.max);
-                        advice.greenInfo = `€${greenRange.min.toFixed(2)}-€${greenRange.max.toFixed(2)} possibili`;
-                    } else if (targetOdds) {
-                        const green = calculateGreen(100, quota, targetOdds.odds);
-                        advice.greenInfo = `€${green.toFixed(2)} possibili`;
-                    }
-                    
-                } else {
-                    // Score < 80 (non dovrebbe apparire nel Magic TOP 5 ma per sicurezza)
-                    advice.confidence = 'MEDIA';
-                    advice.confidenceIcon = '💡';
-                    advice.confidenceColor = 'text-yellow-600 bg-yellow-50';
-                    advice.riskLevel = 'MEDIO';
-                    
-                    advice.entry = `${tip} @${quota.toFixed(2)} - Con cautela`;
-                    advice.timing = `Valutare attentamente`;
-                    advice.plan = `Stake minimo`;
-                    advice.stopLoss = `Exit veloce se andamento negativo`;
-                    advice.reason = `Magic Score ${magicScore} nella media.`;
-                    advice.greenInfo = `Variabile`;
-                }
-                
-                return advice;
-            }
             
             // ==================== STORICO PREVISIONI ====================
             
@@ -3790,9 +3087,27 @@
                 
                 try {
                     const rankingHistoryCol = collection(db, "ranking_history");
-                    await addDoc(rankingHistoryCol, lastGeneratedRanking);
                     
-                    showModal("✅ Salvato!", `Ranking salvato per tracking ML!\nData: ${lastGeneratedRanking.data_partite}\nPartite: ${lastGeneratedRanking.stats.totale_partite}`, () => {});
+                    // CONTROLLO SE ESISTE GIÀ un ranking con stessa data + stesso filtro
+                    const q = query(rankingHistoryCol, 
+                        where("data_partite", "==", lastGeneratedRanking.data_partite),
+                        where("filtro_nome", "==", lastGeneratedRanking.filtro_nome)
+                    );
+                    const snapshot = await getDocs(q);
+                    
+                    if (!snapshot.empty) {
+                        // SOVRASCRIVI il documento esistente
+                        const docId = snapshot.docs[0].id;
+                        const docRef = doc(db, "ranking_history", docId);
+                        await setDoc(docRef, lastGeneratedRanking);
+                        
+                        showModal("✅ Aggiornato!", `Ranking aggiornato (sovrascritto)!\nData: ${lastGeneratedRanking.data_partite}\nFiltro: ${lastGeneratedRanking.filtro_nome}\nPartite: ${lastGeneratedRanking.stats.totale_partite}`, () => {});
+                    } else {
+                        // CREA NUOVO documento
+                        await addDoc(rankingHistoryCol, lastGeneratedRanking);
+                        
+                        showModal("✅ Salvato!", `Ranking salvato per tracking ML!\nData: ${lastGeneratedRanking.data_partite}\nFiltro: ${lastGeneratedRanking.filtro_nome}\nPartite: ${lastGeneratedRanking.stats.totale_partite}`, () => {});
+                    }
                     
                     // Disabilita bottone dopo salvataggio
                     const btn = document.getElementById('save-ranking-btn');
@@ -3883,140 +3198,133 @@
             
             // ==================== RANKING FUNCTIONS ====================
             function calculateScore(partita, legheSet, tipsSet, leaguePerformance = {}, dbCompleto = null) {
-                let legaScore = 0, tipScore = 0, probScore = 0, quotaValid = true;
-                let teamBonus = 0;
+                // V3.4.1 - SCORE SEMPLIFICATO: SOLO statistiche squadre per TIP BASE
                 
-                const lega = (partita.lega || '').toLowerCase().trim();
-                if (legheSet.has(lega)) legaScore = 15;
-                else if (lega.startsWith('eu-')) legaScore = 5;
-                
-                let tipNorm = (partita.tip || '').trim().toUpperCase();
-                if (tipsSet.has(tipNorm)) tipScore = 10;
-                
+                let score = 0;
+                const tipNorm = (partita.tip || '').trim().toUpperCase();
                 const mercato = (partita.mercato || '').toLowerCase().trim();
                 
-                // ANALISI SQUADRE per tip GOL
-                if (dbCompleto && dbCompleto.length > 0 && partita.partita) {
-                    const teams = partita.partita.split(' - ');
-                    if (teams.length === 2) {
-                        const teamHome = teams[0].trim();
-                        const teamAway = teams[1].trim();
+                // Se non ho DB, score 0
+                if (!dbCompleto || dbCompleto.length === 0 || !partita.partita) {
+                    return {
+                        teamBonus: 0,
+                        totalScore: 0,
+                        quotaValid: true
+                    };
+                }
+                
+                const teams = partita.partita.split(' - ');
+                if (teams.length !== 2) {
+                    return {
+                        teamBonus: 0,
+                        totalScore: 0,
+                        quotaValid: true
+                    };
+                }
+                
+                const teamHome = teams[0].trim();
+                const teamAway = teams[1].trim();
+                
+                // ========== OVER (+1.5, +2.5, +3.5, etc) ==========
+                if (tipNorm.startsWith('+') || mercato.includes('numero di gol') || mercato.includes('goal')) {
+                    const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
+                    const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
+                    
+                    if (homeStats.total >= 5 && awayStats.total >= 5) {
+                        const homePerc = (homeStats.count / homeStats.total) * 100;
+                        const awayPerc = (awayStats.count / awayStats.total) * 100;
+                        const avgPerc = (homePerc + awayPerc) / 2;
                         
-                        // Analizza entrambe le squadre
-                        const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
-                        const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
+                        // Score basato SOLO su prolificità squadre
+                        if (avgPerc >= 75) score = 50;
+                        else if (avgPerc >= 65) score = 40;
+                        else if (avgPerc >= 55) score = 30;
+                        else if (avgPerc >= 45) score = 20;
+                        else score = 10;
                         
-                        // Per tip GOL (+1.5, +2.5, etc): conta tendenza gol
-                        if (mercato.includes('numero di gol') || mercato.includes('goal')) {
-                            // Calcola bonus squadre per gol
-                            if (homeStats.total >= 5 && awayStats.total >= 5) {
-                                const homePerc = (homeStats.count / homeStats.total) * 100;
-                                const awayPerc = (awayStats.count / awayStats.total) * 100;
-                                const avgPerc = (homePerc + awayPerc) / 2;
-                                
-                                // Bonus significativo per squadre con buona tendenza
-                                if (avgPerc >= 70) teamBonus = 25;
-                                else if (avgPerc >= 60) teamBonus = 15;
-                                else if (avgPerc >= 50) teamBonus = 5;
-                                else if (avgPerc < 40) teamBonus = -10; // Penalità
+                        // BOOST HT se disponibile
+                        if (partita.info_ht && partita.info_ht.trim() !== '') {
+                            const probMatch = partita.info_ht.match(/(\d+)%/);
+                            if (probMatch) {
+                                const htProb = parseInt(probMatch[1]);
+                                if (htProb >= 75) score += 15;
+                                else if (htProb >= 65) score += 10;
+                                else if (htProb >= 55) score += 5;
                             }
                         }
-                        // Per 1X2: conta forma (già gestito in league performance)
-                        else if (mercato.includes('1x2') || mercato.includes('doppia chance')) {
-                            // Per 1X2 usa statistiche casa/trasferta
-                            if (homeStats.total >= 5) {
-                                const homePerc = (homeStats.count / homeStats.total) * 100;
-                                if (homePerc >= 60) teamBonus += 10;
-                            }
-                            if (awayStats.total >= 5) {
-                                const awayPerc = (awayStats.count / awayStats.total) * 100;
-                                if (awayPerc >= 60) teamBonus += 10;
-                            }
-                        }
                     }
+                    
+                    return {
+                        teamBonus: score,
+                        totalScore: Math.min(100, score),
+                        quotaValid: true
+                    };
                 }
                 
-                let confidenceFactor = 1.0;
-                let recencyFactor = 1.0;
-                
-                if (dbCompleto && dbCompleto.length > 0) {
-                    const leagueMatches = dbCompleto.filter(m => (m.lega || '').toLowerCase().trim() === lega);
-                    const sampleSize = leagueMatches.length;
-                    confidenceFactor = Math.min(1.0, 0.5 + (sampleSize / 500));
+                // ========== UNDER (-2.5, -3.5, etc) ==========
+                if (tipNorm.startsWith('-')) {
+                    const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
+                    const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
                     
-                    const threeMonthsAgo = new Date();
-                    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-                    const recentMatches = leagueMatches.filter(m => {
-                        const matchDate = new Date(m.data || '2000-01-01');
-                        return matchDate >= threeMonthsAgo;
-                    });
-                    if (recentMatches.length >= 10) recencyFactor = 1.2;
-                }
-                
-                if (leaguePerformance[lega]) {
-                    const leagueStats = leaguePerformance[lega];
-                    
-                    if (tipNorm.startsWith('+') && parseFloat(leagueStats.over25Percentage) > 55) {
-                        const overPerc = parseFloat(leagueStats.over25Percentage);
-                        legaScore += Math.min(15, Math.max(0, (overPerc - 55) / 2));
-                    }
-                    
-                    if (tipNorm.startsWith('-') && parseFloat(leagueStats.under25Percentage) > 55) {
-                        const underPerc = parseFloat(leagueStats.under25Percentage);
-                        legaScore += Math.min(15, Math.max(0, (underPerc - 55) / 2));
-                    }
-                    
-                    if (leagueStats.tips[tipNorm]) {
-                        const tipSuccessRate = parseFloat(leagueStats.tips[tipNorm].successRate);
-                        if (tipSuccessRate > 65) {
-                            tipScore += Math.min(20, Math.max(0, (tipSuccessRate - 65)));
-                        } else if (tipSuccessRate > 50) {
-                            tipScore += Math.min(10, Math.max(0, (tipSuccessRate - 50) / 2));
-                        }
-                    }
-                }
-                
-                const quota = parseFloat(partita.quota || 0);
-                if (quota < 1.20) quotaValid = false;
-                
-                const prob = parseFloat((partita.probabilita || 0));
-                if (prob <= 60) probScore = 0;
-                else if (prob <= 75) probScore = 5 + Math.round((prob - 60) * 0.5);
-                else probScore = 15 + Math.min(15, Math.round((prob - 75)));
-                
-                // HT BOOST - PIÙ SIGNIFICATIVO
-                let htBonus = 0;
-                if (partita.info_ht && partita.info_ht.trim() !== '') {
-                    const probMatch = partita.info_ht.match(/(\d+)%/);
-                    if (probMatch) {
-                        const htProb = parseInt(probMatch[1]);
+                    if (homeStats.total >= 5 && awayStats.total >= 5) {
+                        const homePerc = (homeStats.count / homeStats.total) * 100;
+                        const awayPerc = (awayStats.count / awayStats.total) * 100;
+                        const avgPerc = (homePerc + awayPerc) / 2;
                         
-                        // BOOST significativo per Over + HT alto
-                        if (tipNorm.startsWith('+') && htProb >= 65) {
-                            htBonus = Math.round((htProb - 60) * 0.4); // Max +16 punti se htProb=100
-                        }
+                        // Score basato SOLO su squadre "stitiche"
+                        if (avgPerc >= 70) score = 50;
+                        else if (avgPerc >= 60) score = 40;
+                        else if (avgPerc >= 50) score = 30;
+                        else if (avgPerc >= 40) score = 20;
+                        else score = 10;
                         
-                        // PENALITÀ per Under + HT alto
-                        if (tipNorm.startsWith('-') && htProb >= 75) {
-                            htBonus = -15;
+                        // PENALITÀ HT alto (sfavorevole per Under)
+                        if (partita.info_ht && partita.info_ht.trim() !== '') {
+                            const probMatch = partita.info_ht.match(/(\d+)%/);
+                            if (probMatch) {
+                                const htProb = parseInt(probMatch[1]);
+                                if (htProb >= 75) score -= 15;
+                                else if (htProb >= 65) score -= 10;
+                            }
                         }
                     }
+                    
+                    return {
+                        teamBonus: score,
+                        totalScore: Math.max(0, Math.min(100, score)),
+                        quotaValid: true
+                    };
                 }
                 
-                legaScore = Math.round(legaScore * confidenceFactor * recencyFactor);
-                tipScore = Math.round(tipScore * confidenceFactor);
+                // ========== 1X2 / Doppia Chance (forma squadre) ==========
+                if (mercato.includes('1x2') || mercato.includes('doppia chance')) {
+                    const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
+                    const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
+                    
+                    if (homeStats.total >= 5 && awayStats.total >= 5) {
+                        const homePerc = (homeStats.count / homeStats.total) * 100;
+                        const awayPerc = (awayStats.count / awayStats.total) * 100;
+                        const avgPerc = (homePerc + awayPerc) / 2;
+                        
+                        // Score basato SOLO su forma
+                        if (avgPerc >= 70) score = 50;
+                        else if (avgPerc >= 60) score = 40;
+                        else if (avgPerc >= 50) score = 30;
+                        else score = 20;
+                    }
+                    
+                    return {
+                        teamBonus: score,
+                        totalScore: Math.min(100, score),
+                        quotaValid: true
+                    };
+                }
                 
-                const quotaPenalty = quota < 1.15 ? 0.85 : 1.0;
-                const totalScore = Math.round((legaScore + tipScore + probScore + teamBonus + htBonus) * quotaPenalty);
-                
-                return { 
-                    legaScore, 
-                    tipScore, 
-                    probScore: Math.round(probScore),
-                    teamBonus,
-                    htBonus,
-                    totalScore,
-                    quotaValid
+                // Default
+                return {
+                    teamBonus: 0,
+                    totalScore: 0,
+                    quotaValid: true
                 };
             }
             
