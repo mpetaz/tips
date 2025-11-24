@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Mpetaz Tips v3.4.5.3 - Clean Edition</title>
+    <title>⚽ Mpetaz Tips v3.5.2 - Clean Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
@@ -86,7 +86,7 @@
                 <div class="flex justify-between items-center py-4">
                     <div class="flex items-center space-x-3">
                         <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.4.5.3</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.5.2</h1>
                     </div>
                     <nav class="flex space-x-2 flex-wrap">
                         <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
@@ -2579,7 +2579,15 @@
                                                                   data-home-count="${team1Stats.count || 0}"
                                                                   data-home-total="${team1Stats.total || 0}"
                                                                   data-away-count="${team2Stats.count || 0}"
-                                                                  data-away-total="${team2Stats.total || 0}">
+                                                                  data-away-total="${team2Stats.total || 0}"
+                                                                  data-home-perc="${team1Stats.percentage || 0}"
+                                                                  data-away-perc="${team2Stats.percentage || 0}"
+                                                                  data-home-penalty="${team1Stats.penalty || 0}"
+                                                                  data-away-penalty="${team2Stats.penalty || 0}"
+                                                                  data-home-score="${team1Stats.scoreValue || 0}"
+                                                                  data-away-score="${team2Stats.scoreValue || 0}"
+                                                                  data-home-details="${team1Stats.details || ''}"
+                                                                  data-away-details="${team2Stats.details || ''}">
                                                                 ${team1Stats.stats} | ${team2Stats.stats}
                                                             </span>
                                                             <span class="ml-1 text-blue-500 cursor-help tooltip-trigger"
@@ -2590,6 +2598,14 @@
                                                                   data-home-total="${team1Stats.total || 0}"
                                                                   data-away-count="${team2Stats.count || 0}"
                                                                   data-away-total="${team2Stats.total || 0}"
+                                                                  data-home-perc="${team1Stats.percentage || 0}"
+                                                                  data-away-perc="${team2Stats.percentage || 0}"
+                                                                  data-home-penalty="${team1Stats.penalty || 0}"
+                                                                  data-away-penalty="${team2Stats.penalty || 0}"
+                                                                  data-home-score="${team1Stats.scoreValue || 0}"
+                                                                  data-away-score="${team2Stats.scoreValue || 0}"
+                                                                  data-home-details="${team1Stats.details || ''}"
+                                                                  data-away-details="${team2Stats.details || ''}"
                                                                   title="Hover per dettagli">
                                                                 ℹ️
                                                             </span>
@@ -3191,10 +3207,22 @@
                         const docRef = doc(db, "ranking_history", docId);
                         await setDoc(docRef, lastGeneratedRanking);
                         
+                        // v3.5.0: Refresh immediato storico dopo salvataggio
+                        const currentDate = document.getElementById('storico-data-picker')?.value;
+                        if (currentDate) {
+                            await loadStorico(currentDate);
+                        }
+                        
                         showModal("✅ Aggiornato!", `Ranking aggiornato (sovrascritto)!\nData: ${lastGeneratedRanking.data_partite}\nFiltro: ${lastGeneratedRanking.filtro_nome}\nPartite: ${lastGeneratedRanking.stats.totale_partite}`, () => {});
                     } else {
                         // CREA NUOVO documento
                         await addDoc(rankingHistoryCol, lastGeneratedRanking);
+                        
+                        // v3.5.0: Refresh immediato storico dopo salvataggio
+                        const currentDate = document.getElementById('storico-data-picker')?.value;
+                        if (currentDate) {
+                            await loadStorico(currentDate);
+                        }
                         
                         showModal("✅ Salvato!", `Ranking salvato per tracking ML!\nData: ${lastGeneratedRanking.data_partite}\nFiltro: ${lastGeneratedRanking.filtro_nome}\nPartite: ${lastGeneratedRanking.stats.totale_partite}`, () => {});
                     }
@@ -3343,7 +3371,7 @@
             }
             
             function calculateScore(partita, legheSet, tipsSet, leaguePerformance = {}, dbCompleto = null) {
-                // V3.4.1 - SCORE SEMPLIFICATO: SOLO statistiche squadre per TIP BASE
+                // v3.5.0 - SCORE DA SCOREVALUE: usa direttamente score calcolato da analyzeTeamStats
                 
                 let score = 0;
                 const tipNorm = (partita.tip || '').trim().toUpperCase();
@@ -3370,67 +3398,35 @@
                 const teamHome = teams[0].trim();
                 const teamAway = teams[1].trim();
                 
-                // ========== OVER (+1.5, +2.5, +3.5, etc) ==========
-                if (tipNorm.startsWith('+') || mercato.includes('numero di gol') || mercato.includes('goal')) {
-                    const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
-                    const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
+                // Analizza statistiche squadre
+                const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
+                const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
+                
+                // ========== OVER/UNDER (+1.5, +2.5, -2.5, etc) ==========
+                if (tipNorm.startsWith('+') || tipNorm.startsWith('-')) {
+                    // Usa scoreValue DIRETTO da analyzeTeamStats
+                    // Media dei due score
+                    const avgScore = (homeStats.scoreValue + awayStats.scoreValue) / 2;
+                    score = Math.round(avgScore);
                     
-                    if (homeStats.total >= 5 && awayStats.total >= 5) {
-                        const homePerc = (homeStats.count / homeStats.total) * 100;
-                        const awayPerc = (awayStats.count / awayStats.total) * 100;
-                        const avgPerc = (homePerc + awayPerc) / 2;
-                        
-                        // Score basato SOLO su prolificità squadre
-                        if (avgPerc >= 75) score = 50;
-                        else if (avgPerc >= 65) score = 40;
-                        else if (avgPerc >= 55) score = 30;
-                        else if (avgPerc >= 45) score = 20;
-                        else score = 10;
-                        
-                        // BOOST HT se disponibile
-                        if (partita.info_ht && partita.info_ht.trim() !== '') {
-                            const probMatch = partita.info_ht.match(/(\d+)%/);
-                            if (probMatch) {
-                                const htProb = parseInt(probMatch[1]);
-                                if (htProb >= 75) score += 15;
-                                else if (htProb >= 65) score += 10;
-                                else if (htProb >= 55) score += 5;
-                            }
+                    // BOOST HT se disponibile (solo per OVER)
+                    if (tipNorm.startsWith('+') && partita.info_ht && partita.info_ht.trim() !== '') {
+                        const probMatch = partita.info_ht.match(/(\d+)%/);
+                        if (probMatch) {
+                            const htProb = parseInt(probMatch[1]);
+                            if (htProb >= 75) score += 15;
+                            else if (htProb >= 65) score += 10;
+                            else if (htProb >= 55) score += 5;
                         }
                     }
                     
-                    return {
-                        teamBonus: score,
-                        totalScore: Math.min(100, score),
-                        quotaValid: true
-                    };
-                }
-                
-                // ========== UNDER (-2.5, -3.5, etc) ==========
-                if (tipNorm.startsWith('-')) {
-                    const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
-                    const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
-                    
-                    if (homeStats.total >= 5 && awayStats.total >= 5) {
-                        const homePerc = (homeStats.count / homeStats.total) * 100;
-                        const awayPerc = (awayStats.count / awayStats.total) * 100;
-                        const avgPerc = (homePerc + awayPerc) / 2;
-                        
-                        // Score basato SOLO su squadre "stitiche"
-                        if (avgPerc >= 70) score = 50;
-                        else if (avgPerc >= 60) score = 40;
-                        else if (avgPerc >= 50) score = 30;
-                        else if (avgPerc >= 40) score = 20;
-                        else score = 10;
-                        
-                        // PENALITÀ HT alto (sfavorevole per Under)
-                        if (partita.info_ht && partita.info_ht.trim() !== '') {
-                            const probMatch = partita.info_ht.match(/(\d+)%/);
-                            if (probMatch) {
-                                const htProb = parseInt(probMatch[1]);
-                                if (htProb >= 75) score -= 15;
-                                else if (htProb >= 65) score -= 10;
-                            }
+                    // PENALITÀ HT alto (solo per UNDER)
+                    if (tipNorm.startsWith('-') && partita.info_ht && partita.info_ht.trim() !== '') {
+                        const probMatch = partita.info_ht.match(/(\d+)%/);
+                        if (probMatch) {
+                            const htProb = parseInt(probMatch[1]);
+                            if (htProb >= 75) score -= 15;
+                            else if (htProb >= 65) score -= 10;
                         }
                     }
                     
@@ -3441,37 +3437,19 @@
                     };
                 }
                 
-                // ========== 1X2 / Doppia Chance (forma squadre) ==========
-                if (mercato.includes('1x2') || mercato.includes('doppia chance')) {
-                    const homeStats = analyzeTeamStats(teamHome, true, tipNorm, dbCompleto);
-                    const awayStats = analyzeTeamStats(teamAway, false, tipNorm, dbCompleto);
-                    
-                    if (homeStats.total >= 5 && awayStats.total >= 5) {
-                        const homePerc = (homeStats.count / homeStats.total) * 100;
-                        const awayPerc = (awayStats.count / awayStats.total) * 100;
-                        const avgPerc = (homePerc + awayPerc) / 2;
-                        
-                        // Score basato SOLO su forma
-                        if (avgPerc >= 70) score = 50;
-                        else if (avgPerc >= 60) score = 40;
-                        else if (avgPerc >= 50) score = 30;
-                        else score = 20;
-                    }
-                    
-                    return {
-                        teamBonus: score,
-                        totalScore: Math.min(100, score),
-                        quotaValid: true
-                    };
-                }
+                // ========== 1X2 / Doppia Chance ==========
+                // Usa scoreValue DIRETTO da analyzeTeamStats
+                const avgScore = (homeStats.scoreValue + awayStats.scoreValue) / 2;
+                score = Math.round(avgScore);
                 
-                // Default
                 return {
-                    teamBonus: 0,
-                    totalScore: 0,
+                    teamBonus: score,
+                    totalScore: Math.max(0, Math.min(100, score)),
                     quotaValid: true
                 };
             }
+            
+            // ==================== CALCULATE SCORE 0.5 HT ====================
             
             function analyzeLeaguePerformance(dbCompleto) {
                 if (!dbCompleto || dbCompleto.length === 0) return {};
@@ -3545,30 +3523,44 @@
             
             function analyzeTeamStats(teamName, isHome, tip, dbCompleto) {
                 if (!dbCompleto || dbCompleto.length === 0) {
-                    return { color: 'black', stats: '', count: 0, total: 0 };
+                    return { color: 'black', stats: '', count: 0, total: 0, percentage: 0, penalty: 0, scoreValue: 0, details: '' };
                 }
                 
                 const teamNorm = teamName.toLowerCase().trim();
-                const mercato = dbCompleto.find(m => m.tip === tip)?.mercato || '';
                 
-                // NUOVA LOGICA: Diversa per tipo mercato
+                // v3.5.0 NUOVA LOGICA: Calcolo preciso score + penalità
+                const isOverUnder = tip.startsWith('+') || tip.startsWith('-');
+                
                 let relevantMatches = [];
                 
-                if (mercato.toLowerCase().includes('numero di gol')) {
-                    // Per OVER/UNDER: guarda TUTTI i match della squadra (non solo casa/trasferta)
-                    // Conta se la squadra è coinvolta in match con molti/pochi gol
+                // Filtra match ultimi 6 mesi con risultato
+                const sixMonthsAgo = new Date();
+                sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                
+                if (isOverUnder) {
+                    // OVER/UNDER: Tutti i match della squadra (ultimi 15)
                     const allTeamMatches = dbCompleto.filter(row => {
+                        if (!row.risultato || row.risultato.trim() === '') return false;
+                        
+                        const matchDate = new Date(row.data || '2000-01-01');
+                        if (matchDate < sixMonthsAgo) return false;
+                        
                         const team1 = (row.partita || '').split(' - ')[0]?.toLowerCase().trim() || '';
                         const team2 = (row.partita || '').split(' - ').slice(1).join(' - ')?.toLowerCase().trim() || '';
                         return (team1 === teamNorm || team2 === teamNorm);
                     });
                     
                     allTeamMatches.sort((a, b) => new Date(b.data || '2000-01-01') - new Date(a.data || '2000-01-01'));
-                    relevantMatches = allTeamMatches.slice(0, 15); // Ultimi 15 match totali
+                    relevantMatches = allTeamMatches.slice(0, 15);
                     
                 } else {
-                    // Per 1X2/Doppia Chance: guarda casa/trasferta separatamente
+                    // 1X2/DC: Match casa o trasferta (ultimi 5)
                     let locationMatches = dbCompleto.filter(row => {
+                        if (!row.risultato || row.risultato.trim() === '') return false;
+                        
+                        const matchDate = new Date(row.data || '2000-01-01');
+                        if (matchDate < sixMonthsAgo) return false;
+                        
                         const team1 = (row.partita || '').split(' - ')[0]?.toLowerCase().trim() || '';
                         const team2 = (row.partita || '').split(' - ').slice(1).join(' - ')?.toLowerCase().trim() || '';
                         
@@ -3577,14 +3569,28 @@
                     });
                     
                     locationMatches.sort((a, b) => new Date(b.data || '2000-01-01') - new Date(a.data || '2000-01-01'));
-                    relevantMatches = locationMatches.filter(m => m.tip === tip).slice(0, 15);
+                    relevantMatches = locationMatches.slice(0, 5); // Solo ultimi 5 per 1X2/DC
                 }
                 
-                if (relevantMatches.length < 10) {
-                    return { color: 'gray', stats: `(${relevantMatches.length})`, count: 0, total: relevantMatches.length };
+                // Minimo match richiesti
+                const minMatches = isOverUnder ? 5 : 3;
+                if (relevantMatches.length < minMatches) {
+                    return { 
+                        color: 'gray', 
+                        stats: `(${relevantMatches.length})`, 
+                        count: 0, 
+                        total: relevantMatches.length,
+                        percentage: 0,
+                        penalty: 0,
+                        scoreValue: 0,
+                        details: `Dati insufficienti (min ${minMatches})`
+                    };
                 }
                 
                 let successCount = 0;
+                let penalty = 0;
+                let detailsArray = [];
+                
                 relevantMatches.forEach(match => {
                     const risultato = match.risultato || '';
                     const golMatch = risultato.match(/(\d+)\s*-\s*(\d+)/);
@@ -3595,32 +3601,123 @@
                     const golTrasferta = parseInt(golMatch[2]);
                     const golTotali = golCasa + golTrasferta;
                     
+                    const team1 = (match.partita || '').split(' - ')[0]?.toLowerCase().trim() || '';
+                    const isTeamHome = team1 === teamNorm;
+                    
                     let success = false;
+                    
                     if (tip.startsWith('+')) {
+                        // OVER: conta gol totali > soglia
                         const soglia = parseFloat(tip.substring(1));
                         success = golTotali > soglia;
+                        
+                        // Penalità -5 per ogni 0-0
+                        if (golCasa === 0 && golTrasferta === 0) {
+                            penalty += 5;
+                            detailsArray.push(`0-0 (-5 pen)`);
+                        }
+                        
                     } else if (tip.startsWith('-')) {
+                        // UNDER: conta gol totali < soglia
                         const soglia = parseFloat(tip.substring(1));
                         success = golTotali < soglia;
+                        
+                        // Penalità -5 per ogni 4+ gol (se Under 3.5)
+                        if (soglia <= 3.5 && golTotali >= 4) {
+                            penalty += 5;
+                            detailsArray.push(`${golCasa}-${golTrasferta} 4+ gol (-5 pen)`);
+                        }
+                        
+                    } else if (tip === '1') {
+                        // Casa vince (Tip 1)
+                        if (isHome && isTeamHome) {
+                            // Casa FAVORITA: conta vittorie
+                            success = golCasa > golTrasferta;
+                        } else if (!isHome && !isTeamHome) {
+                            // Trasferta SFAVORITA: conta sconfitte
+                            success = golTrasferta < golCasa;
+                        }
+                        
+                    } else if (tip === 'X') {
+                        // Pareggio (Tip X)
+                        // Entrambe contano pareggi
+                        success = golCasa === golTrasferta;
+                        
+                    } else if (tip === '2') {
+                        // Trasferta vince (Tip 2)
+                        if (!isHome && !isTeamHome) {
+                            // Trasferta FAVORITA: conta vittorie
+                            success = golTrasferta > golCasa;
+                        } else if (isHome && isTeamHome) {
+                            // Casa SFAVORITA: conta sconfitte
+                            success = golCasa < golTrasferta;
+                        }
+                        
+                    } else if (tip === '1X') {
+                        // Casa o Pareggio (Tip 1X)
+                        if (isHome && isTeamHome) {
+                            // Casa FAVORITA: conta non-sconfitte (V+P)
+                            success = golCasa >= golTrasferta;
+                        } else if (!isHome && !isTeamHome) {
+                            // Trasferta SFAVORITA: conta sconfitte + pareggi (NON vittorie)
+                            // Logica: vogliamo che NON vinca
+                            success = golTrasferta <= golCasa;
+                        }
+                        
+                    } else if (tip === '12') {
+                        // Casa o Trasferta (no pareggio) (Tip 12)
+                        // Entrambe contano SOLO vittorie
+                        const isVittoria = (isHome && isTeamHome && golCasa > golTrasferta) ||
+                                          (!isHome && !isTeamHome && golTrasferta > golCasa);
+                        success = isVittoria;
+                        
+                        // Penalità -5 per ogni pareggio
+                        if (golCasa === golTrasferta) {
+                            penalty += 5;
+                            detailsArray.push(`${golCasa}-${golTrasferta} pareggio (-5 pen)`);
+                        }
+                        
+                    } else if (tip === 'X2') {
+                        // Pareggio o Trasferta (Tip X2)
+                        if (!isHome && !isTeamHome) {
+                            // Trasferta FAVORITA: conta non-sconfitte (V+P)
+                            success = golTrasferta >= golCasa;
+                        } else if (isHome && isTeamHome) {
+                            // Casa SFAVORITA: conta sconfitte + pareggi (NON vittorie)
+                            // Logica: vogliamo che NON vinca
+                            success = golCasa <= golTrasferta;
+                        }
                     }
                     
                     if (success) successCount++;
                 });
                 
-                const percentage = (successCount / relevantMatches.length) * 100;
+                // Calcola percentuale ESATTA
+                const percentage = relevantMatches.length > 0 ? (successCount / relevantMatches.length) * 100 : 0;
                 
+                // Score value = percentuale - penalità
+                const scoreValue = Math.max(0, Math.round(percentage - penalty));
+                
+                // Colore basato su score finale
                 let color = 'black';
-                if (relevantMatches.length >= 10) {
-                    if (percentage > 70) color = 'green';
-                    else if (percentage >= 50) color = 'yellow';
+                if (relevantMatches.length >= minMatches) {
+                    if (scoreValue >= 70) color = 'green';
+                    else if (scoreValue >= 50) color = 'yellow';
                     else color = 'red';
                 }
+                
+                // Details string
+                const details = detailsArray.length > 0 ? detailsArray.join(', ') : '';
                 
                 return {
                     color: color,
                     stats: `(${successCount}/${relevantMatches.length})`,
                     count: successCount,
-                    total: relevantMatches.length
+                    total: relevantMatches.length,
+                    percentage: Math.round(percentage),
+                    penalty: penalty,
+                    scoreValue: scoreValue,
+                    details: details
                 };
             }
             
@@ -3718,44 +3815,85 @@
                 const awayCount = parseInt(element.dataset.awayCount) || 0;
                 const awayTotal = parseInt(element.dataset.awayTotal) || 0;
                 
-                const homePerc = homeTotal > 0 ? Math.round((homeCount / homeTotal) * 100) : 0;
-                const awayPerc = awayTotal > 0 ? Math.round((awayCount / awayTotal) * 100) : 0;
+                // v3.5.0: Dati estesi da analyzeTeamStats
+                const homePerc = parseInt(element.dataset.homePerc) || (homeTotal > 0 ? Math.round((homeCount / homeTotal) * 100) : 0);
+                const awayPerc = parseInt(element.dataset.awayPerc) || (awayTotal > 0 ? Math.round((awayCount / awayTotal) * 100) : 0);
+                const homePenalty = parseInt(element.dataset.homePenalty) || 0;
+                const awayPenalty = parseInt(element.dataset.awayPenalty) || 0;
+                const homeScore = parseInt(element.dataset.homeScore) || 0;
+                const awayScore = parseInt(element.dataset.awayScore) || 0;
+                const homeDetails = element.dataset.homeDetails || '';
+                const awayDetails = element.dataset.awayDetails || '';
                 
                 const homeColor = homePerc >= 70 ? '🟢' : homePerc >= 50 ? '🟡' : '🔴';
                 const awayColor = awayPerc >= 70 ? '🟢' : awayPerc >= 50 ? '🟡' : '🔴';
                 
-                // Per mercato GOL mostra tendenza gol con spiegazione chiara
+                // Per mercato GOL mostra tendenza gol
                 if (mercato.toLowerCase().includes('gol') || mercato.toLowerCase().includes('goal') || tip.startsWith('+') || tip.startsWith('-')) {
                     const tipLabel = tip.startsWith('+') ? `Over ${tip.substring(1)}` : tip.startsWith('-') ? `Under ${tip.substring(1)}` : tip;
                     
                     // Valutazione complessiva
-                    const avgPerc = (homePerc + awayPerc) / 2;
+                    const avgScore = (homeScore + awayScore) / 2;
                     let verdict = '';
-                    if (avgPerc >= 70) verdict = '<div class="text-green-400 font-bold mt-2">✅ COPPIA PROLIFICA - Ottimo per Over!</div>';
-                    else if (avgPerc >= 55) verdict = '<div class="text-yellow-400 mt-2">💡 Tendenza gol nella media</div>';
-                    else verdict = '<div class="text-red-400 mt-2">⚠️ Squadre poco prolifiche</div>';
+                    if (avgScore >= 70) verdict = '<div class="text-green-400 font-bold mt-2">✅ OTTIMA AFFIDABILITÀ</div>';
+                    else if (avgScore >= 50) verdict = '<div class="text-yellow-400 mt-2">💡 AFFIDABILITÀ MEDIA</div>';
+                    else verdict = '<div class="text-red-400 mt-2">⚠️ BASSA AFFIDABILITÀ</div>';
                     
                     content = `
-                        <div class="font-bold mb-2 text-center">⚽ TENDENZA GOL (${tipLabel})</div>
-                        <div class="space-y-1">
-                            <div>${homeColor} <strong>Casa:</strong> ${homeCount}/${homeTotal} (${homePerc}%)</div>
-                            <div>${awayColor} <strong>Trasferta:</strong> ${awayCount}/${awayTotal} (${awayPerc}%)</div>
+                        <div class="font-bold mb-2 text-center">⚽ ${tipLabel} - DETTAGLIO PRECISO</div>
+                        <div class="space-y-2 text-xs">
+                            <div class="border-b border-gray-700 pb-1">
+                                ${homeColor} <strong>Casa:</strong> ${homeCount}/${homeTotal} match
+                                <div class="pl-4 mt-1">
+                                    • Percentuale: ${homePerc}%
+                                    ${homePenalty > 0 ? `<br>• Penalità: -${homePenalty} punti` : ''}
+                                    ${homeDetails ? `<br>• ${homeDetails}` : ''}
+                                    <br>• <strong>Score finale: ${homeScore}</strong>
+                                </div>
+                            </div>
+                            <div class="pb-1">
+                                ${awayColor} <strong>Trasferta:</strong> ${awayCount}/${awayTotal} match
+                                <div class="pl-4 mt-1">
+                                    • Percentuale: ${awayPerc}%
+                                    ${awayPenalty > 0 ? `<br>• Penalità: -${awayPenalty} punti` : ''}
+                                    ${awayDetails ? `<br>• ${awayDetails}` : ''}
+                                    <br>• <strong>Score finale: ${awayScore}</strong>
+                                </div>
+                            </div>
                         </div>
                         ${verdict}
                         <div class="text-xs mt-2 pt-2 border-t border-gray-700 opacity-75">
-                            🟢 70%+ = Prolifica | 🟡 50-69% = Media | 🔴 <50% = Scarsa
+                            <div><strong>Score medio partita: ${Math.round(avgScore)}</strong></div>
+                            <div class="mt-1">70+ = TOP | 50-69 = BUONO | <50 = SKIP</div>
                         </div>
                     `;
                 } else {
                     // Per 1X2/Doppia Chance
+                    const avgScore = (homeScore + awayScore) / 2;
+                    
                     content = `
-                        <div class="font-bold mb-2 text-center">📈 FORMA SQUADRE</div>
-                        <div class="space-y-1">
-                            <div>${homeColor} <strong>Casa:</strong> ${homeCount}/${homeTotal} (${homePerc}%)</div>
-                            <div>${awayColor} <strong>Trasferta:</strong> ${awayCount}/${awayTotal} (${awayPerc}%)</div>
+                        <div class="font-bold mb-2 text-center">📈 ${tip} - FORMA DETTAGLIATA</div>
+                        <div class="space-y-2 text-xs">
+                            <div class="border-b border-gray-700 pb-1">
+                                ${homeColor} <strong>Casa:</strong> ${homeCount}/${homeTotal} ultimi match
+                                <div class="pl-4 mt-1">
+                                    • Percentuale: ${homePerc}%
+                                    ${homePenalty > 0 ? `<br>• Penalità: -${homePenalty} punti` : ''}
+                                    <br>• <strong>Score: ${homeScore}</strong>
+                                </div>
+                            </div>
+                            <div class="pb-1">
+                                ${awayColor} <strong>Trasferta:</strong> ${awayCount}/${awayTotal} ultimi match
+                                <div class="pl-4 mt-1">
+                                    • Percentuale: ${awayPerc}%
+                                    ${awayPenalty > 0 ? `<br>• Penalità: -${awayPenalty} punti` : ''}
+                                    <br>• <strong>Score: ${awayScore}</strong>
+                                </div>
+                            </div>
                         </div>
                         <div class="text-xs mt-2 pt-2 border-t border-gray-700 opacity-75">
-                            🟢 70%+ = OTTIMA | 🟡 50-69% = MEDIA | 🔴 <50% = SCARSA
+                            <div><strong>Score medio: ${Math.round(avgScore)}</strong></div>
+                            <div class="mt-1">80+ = OTTIMA | 60-79 = BUONA | <60 = INCERTA</div>
                         </div>
                     `;
                 }
