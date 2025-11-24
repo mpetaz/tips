@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Mpetaz Tips v3.5.4 - Clean Edition</title>
+    <title>⚽ Mpetaz Tips v3.5.3 - Clean Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
@@ -86,7 +86,7 @@
                 <div class="flex justify-between items-center py-4">
                     <div class="flex items-center space-x-3">
                         <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.5.4</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.5.3</h1>
                     </div>
                     <nav class="flex space-x-2 flex-wrap">
                         <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
@@ -2232,35 +2232,6 @@
                     
                     await batch.commit();
                     
-                    // v3.5.4: SE RISULTATI, cancella partite senza risultato della stessa data
-                    if (type === 'results' && dataToUpload.length > 0) {
-                        const uploadDate = dataToUpload[0].data;
-                        console.log(`[CLEANUP] Pulizia partite senza risultato per data: ${uploadDate}`);
-                        
-                        // Trova TUTTE le partite della data senza risultato
-                        const matchesToDelete = allMatches.filter(m => 
-                            m.data === uploadDate && (!m.risultato || m.risultato.trim() === '')
-                        );
-                        
-                        if (matchesToDelete.length > 0) {
-                            console.log(`[CLEANUP] Trovate ${matchesToDelete.length} partite da cancellare`);
-                            
-                            // Cancella in batch
-                            const deleteBatch = writeBatch(db);
-                            matchesToDelete.forEach(match => {
-                                if (match.id) {
-                                    deleteBatch.delete(doc(matchesCollection, match.id));
-                                    deletedCount++;
-                                }
-                            });
-                            
-                            await deleteBatch.commit();
-                            console.log(`[CLEANUP] ✅ ${deletedCount} partite senza risultato cancellate!`);
-                        } else {
-                            console.log(`[CLEANUP] Nessuna partita da cancellare`);
-                        }
-                    }
-                    
                     // SE RISULTATI: aggiorna ranking salvati con esiti
                     let performanceReport = null;
                     if (type === 'results' && dataToUpload.length > 0) {
@@ -2269,7 +2240,7 @@
                     }
                     
                     let successMsg = type === 'results' && deletedCount > 0
-                        ? `✅ ${dataToUpload.length} risultati caricati!\n🧹 ${deletedCount} partite senza risultato eliminate (DB pulito!)`
+                        ? `${dataToUpload.length} partite caricate! (${deletedCount} vecchie senza risultato eliminate)`
                         : `${dataToUpload.length} partite caricate/aggiornate!`;
                     
                     // Aggiungi report performance se disponibile
