@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Mpetaz Tips v3.5.2 - Clean Edition</title>
+    <title>⚽ Mpetaz Tips v3.5.3 - Clean Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
@@ -86,7 +86,7 @@
                 <div class="flex justify-between items-center py-4">
                     <div class="flex items-center space-x-3">
                         <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.5.2</h1>
+                        <h1 class="text-xl font-bold text-gray-900">Mpetaz Tips v3.5.3</h1>
                     </div>
                     <nav class="flex space-x-2 flex-wrap">
                         <button data-page="page-dashboard" class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
@@ -216,7 +216,18 @@
                 
                 <!-- Match List -->
                 <div id="match-list-container" class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-                    <h3 class="text-xl font-bold mb-4">Partite filtrate (<span id="filtered-count">0</span>)</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold">Partite filtrate (<span id="filtered-count">0</span>)</h3>
+                        <div class="flex items-center space-x-2">
+                            <label class="text-sm font-medium text-gray-700">Ordina per:</label>
+                            <select id="dashboard-sort-select" class="p-2 border rounded-lg text-sm">
+                                <option value="data-desc">📅 Data (recente)</option>
+                                <option value="orario-asc">⏰ Orario (cronologico)</option>
+                                <option value="lega">Lega</option>
+                                <option value="quota">Quota</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="max-h-[60vh] overflow-y-auto custom-scrollbar">
                         <table class="w-full text-sm text-left">
                             <thead class="bg-gray-100 text-xs uppercase sticky top-0">
@@ -372,6 +383,20 @@
                     <button id="generate-ranking-btn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:opacity-90">
                         <i class="fa-solid fa-magic mr-2"></i>Applica e Genera Ranking
                     </button>
+                </div>
+                
+                <!-- Toggle Visualizzazione v3.5.3 -->
+                <div id="ranking-view-toggle" class="mb-4 hidden">
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex items-center space-x-2">
+                            <button id="view-by-tip-btn" class="flex-1 py-2 px-4 rounded-lg font-semibold transition-all bg-blue-600 text-white">
+                                <i class="fa-solid fa-chart-bar mr-2"></i>Per Tip e Ranking
+                            </button>
+                            <button id="view-by-time-btn" class="flex-1 py-2 px-4 rounded-lg font-semibold transition-all bg-gray-200 text-gray-700 hover:bg-gray-300">
+                                <i class="fa-solid fa-clock mr-2"></i>Per Orario
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Risultati Ranking -->
@@ -1137,7 +1162,7 @@
                 });
             }
             
-            function applyFiltersAndRender() {
+            function applyFiltersAndRender(customSort = null) {
                 const selectedLeagues = Array.from(leagueFiltersGrid.querySelectorAll('input.league-checkbox:checked')).map(cb => cb.value);
                 const selectedTips = Array.from(tipFiltersContainer.querySelectorAll('.tip-button.active')).map(btn => btn.dataset.tip);
                 const [probMin, probMax] = probabilitySliderEl.noUiSlider.get().map(v => parseInt(v));
@@ -1166,7 +1191,7 @@
                     return true;
                 });
                 
-                sortAndRenderMatches();
+                sortAndRenderMatches(customSort);
                 updateStatsDisplay(filteredMatches);
             }
             
@@ -1190,16 +1215,42 @@
                 `;
             }
             
-            function sortAndRenderMatches() {
-                const { column, direction } = sortState;
-                const sorted = [...filteredMatches].sort((a, b) => {
-                    const valA = a[column];
-                    const valB = b[column];
-                    let comparison = 0;
-                    if (typeof valA === 'string') comparison = valA.localeCompare(valB);
-                    else comparison = valA - valB;
-                    return direction === 'asc' ? comparison : -comparison;
-                });
+            function sortAndRenderMatches(customSort = null) {
+                let sorted;
+                
+                // v3.5.3: Custom sort da dropdown
+                if (customSort) {
+                    const sortSelect = document.getElementById('dashboard-sort-select');
+                    const sortValue = customSort || (sortSelect ? sortSelect.value : 'data-desc');
+                    
+                    sorted = [...filteredMatches].sort((a, b) => {
+                        if (sortValue === 'orario-asc') {
+                            // Ordina per orario cronologico
+                            const timeA = a.time || '99:99';
+                            const timeB = b.time || '99:99';
+                            return timeA.localeCompare(timeB);
+                        } else if (sortValue === 'data-desc') {
+                            return new Date(b.data || '2000-01-01') - new Date(a.data || '2000-01-01');
+                        } else if (sortValue === 'lega') {
+                            return (a.lega || '').localeCompare(b.lega || '');
+                        } else if (sortValue === 'quota') {
+                            return (a.quota || 0) - (b.quota || 0);
+                        }
+                        return 0;
+                    });
+                } else {
+                    // Sort normale da header click
+                    const { column, direction } = sortState;
+                    sorted = [...filteredMatches].sort((a, b) => {
+                        const valA = a[column];
+                        const valB = b[column];
+                        let comparison = 0;
+                        if (typeof valA === 'string') comparison = valA.localeCompare(valB);
+                        else comparison = valA - valB;
+                        return direction === 'asc' ? comparison : -comparison;
+                    });
+                }
+                
                 renderMatchList(sorted);
                 updateSortIcons();
             }
@@ -2353,6 +2404,11 @@
             });
             
             // ==================== RANKING ====================
+            
+            // v3.5.3: State globale per visualizzazione ranking (DEVE essere qui!)
+            let currentRankingView = 'by-tip'; // 'by-tip' o 'by-time'
+            let currentRankingData = null; // Salva dati ranking per toggle
+            
             document.getElementById('generate-ranking-btn').addEventListener('click', async () => {
                 const rankingDate = document.getElementById('ranking-date').value;
                 const maxMatches = parseInt(document.getElementById('ranking-max-matches').value);
@@ -2486,146 +2542,6 @@
                         console.log(`Loaded ${loadedTimes} match times for ranking`);
                     }
                     
-                    // Render ranking per tip
-                    const tipBlocks = Object.keys(byTip).sort().map(tip => {
-                        const matches = byTip[tip];
-                        
-                        // Titolo dinamico per BEST 0.5 HT
-                        const sectionTitle = selectedFilterId === 'BEST_05HT' 
-                            ? '⚡ BEST 0.5 HT' 
-                            : `📊 ${tip}`;
-                        const sectionSubtitle = selectedFilterId === 'BEST_05HT'
-                            ? `${matches.length} partite selezionate automaticamente`
-                            : `${matches.length} partite (max ${maxMatches} per tip)`;
-                        
-                        return `
-                            <div class="bg-white p-6 rounded-xl shadow mb-6">
-                                <h3 class="text-2xl font-bold mb-3">${sectionTitle}</h3>
-                                <div class="text-sm text-gray-600 mb-4">
-                                    ${sectionSubtitle}
-                                </div>
-                                <div class="space-y-3">
-                                    ${matches.map((m, idx) => {
-                                        const [team1, team2] = m.partita.split(' - ');
-                                        const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
-                                        const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
-                                        
-                                        // HT indicator
-                                        let htIndicator = '';
-                                        if (m.info_ht && m.info_ht.trim() !== '') {
-                                            const probMatch = m.info_ht.match(/(\d+)%/);
-                                            if (probMatch) {
-                                                const htProb = parseInt(probMatch[1]);
-                                                if (htProb >= 70) {
-                                                    htIndicator = `<div class="text-xs mt-1"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">⚡ HT: ${m.info_ht}</span></div>`;
-                                                } else if (htProb >= 55) {
-                                                    htIndicator = `<div class="text-xs mt-1"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">💡 HT: ${m.info_ht}</span></div>`;
-                                                } else {
-                                                    htIndicator = `<div class="text-xs mt-1"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">📊 HT: ${m.info_ht}</span></div>`;
-                                                }
-                                            } else {
-                                                // Se info_ht presente ma formato diverso
-                                                htIndicator = `<div class="text-xs mt-1"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">📊 HT: ${m.info_ht}</span></div>`;
-                                            }
-                                        }
-                                        
-                                        // Orario display
-                                        let timeDisplay = '';
-                                        if (m.time && m.time.trim() !== '') {
-                                            timeDisplay = `<div class="text-xs mt-1"><span class="text-gray-600 font-bold">⏰ ${m.time}</span></div>`;
-                                        }
-                                        
-                                        // Bollino Betfair (con flag 0.5 HT se filtro attivo + stats squadre)
-                                        const betfairBadge = generateBetfairBadge(m, selectedFilterId === 'BEST_05HT', team1Stats, team2Stats);
-                                        let betfairDisplay = '';
-                                        if (betfairBadge) {
-                                            const icon = selectedFilterId === 'BEST_05HT' ? '⚡' : '🟣';
-                                            betfairDisplay = `<div class="mt-2"><span class="px-3 py-1 rounded-full text-xs font-bold border ${betfairBadge.color}">${icon} ${betfairBadge.text}</span></div>`;
-                                        }
-                                        
-                                        // Formato display TIP FT chiaro
-                                        const tipDisplay = `${m.tip} FT`;
-                                        
-                                        return `
-                                            <div class="border rounded-lg p-4 ${(m.score || 0) < 30 ? 'bg-red-50 border-red-200' : 'bg-white hover:bg-gray-50'}">
-                                                <div class="flex justify-between items-start mb-3">
-                                                    <div class="flex-1">
-                                                        <div class="flex justify-between items-start">
-                                                            <div class="font-bold text-lg">
-                                                                ${idx + 1}. 
-                                                                <span class="team-${team1Stats.color}">${team1}</span>
-                                                                - 
-                                                                <span class="team-${team2Stats.color}">${team2}</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="text-sm text-gray-600 flex items-center gap-2">
-                                                            ${m.time && m.time.trim() !== '' ? `<span class="text-gray-900 font-bold">⏰ ${m.time}</span> | ` : ''}
-                                                            ${m.lega}
-                                                        </div>
-                                                        <div class="text-sm mt-1">
-                                                            <span class="bg-blue-100 px-2 py-1 rounded text-xs font-semibold">${tipDisplay}</span>
-                                                            <span class="ml-2 font-bold">@${m.quota.toFixed(2)}</span>
-                                                            <span class="ml-2 text-gray-500">${m.probabilita}%</span>
-                                                        </div>
-                                                        ${htIndicator}
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <div class="score-badge">${m.score || 0}</div>
-                                                        <div class="text-xs text-gray-500 mt-1 relative inline-block">
-                                                            <span class="tooltip-trigger cursor-help"
-                                                                  data-tooltip-type="stats"
-                                                                  data-mercato="${m.mercato || ''}"
-                                                                  data-tip="${m.tip || ''}"
-                                                                  data-home-count="${team1Stats.count || 0}"
-                                                                  data-home-total="${team1Stats.total || 0}"
-                                                                  data-away-count="${team2Stats.count || 0}"
-                                                                  data-away-total="${team2Stats.total || 0}"
-                                                                  data-home-perc="${team1Stats.percentage || 0}"
-                                                                  data-away-perc="${team2Stats.percentage || 0}"
-                                                                  data-home-penalty="${team1Stats.penalty || 0}"
-                                                                  data-away-penalty="${team2Stats.penalty || 0}"
-                                                                  data-home-score="${team1Stats.scoreValue || 0}"
-                                                                  data-away-score="${team2Stats.scoreValue || 0}"
-                                                                  data-home-details="${team1Stats.details || ''}"
-                                                                  data-away-details="${team2Stats.details || ''}">
-                                                                ${team1Stats.stats} | ${team2Stats.stats}
-                                                            </span>
-                                                            <span class="ml-1 text-blue-500 cursor-help tooltip-trigger"
-                                                                  data-tooltip-type="stats"
-                                                                  data-mercato="${m.mercato || ''}"
-                                                                  data-tip="${m.tip || ''}"
-                                                                  data-home-count="${team1Stats.count || 0}"
-                                                                  data-home-total="${team1Stats.total || 0}"
-                                                                  data-away-count="${team2Stats.count || 0}"
-                                                                  data-away-total="${team2Stats.total || 0}"
-                                                                  data-home-perc="${team1Stats.percentage || 0}"
-                                                                  data-away-perc="${team2Stats.percentage || 0}"
-                                                                  data-home-penalty="${team1Stats.penalty || 0}"
-                                                                  data-away-penalty="${team2Stats.penalty || 0}"
-                                                                  data-home-score="${team1Stats.scoreValue || 0}"
-                                                                  data-away-score="${team2Stats.scoreValue || 0}"
-                                                                  data-home-details="${team1Stats.details || ''}"
-                                                                  data-away-details="${team2Stats.details || ''}"
-                                                                  title="Hover per dettagli">
-                                                                ℹ️
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- BOLLINO BETFAIR -->
-                                                ${betfairDisplay}
-                                                
-                                                <!-- WARNING SCORE BASSO -->
-                                                ${(m.score || 0) < 30 ? '<div class="mt-2"><span class="bg-red-500 text-white text-xs px-2 py-1 rounded font-bold">⚠️ Score Basso - Poco Affidabile</span></div>' : ''}
-                                            </div>
-                                        `;
-                                    }).join('')}
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                    
                     // SALVA DATI PER TRACKING
                     lastGeneratedRanking = {
                         timestamp: new Date().toISOString(),
@@ -2653,65 +2569,346 @@
                         }));
                     });
                     
-                    resultsContainer.innerHTML = `
-                        <div class="mb-6 bg-gradient-to-r from-purple-500 to-blue-500 text-white p-6 rounded-xl shadow">
-                            <h2 class="text-3xl font-bold mb-2">🏆 Ranking ${rankingDate}</h2>
-                            <div class="text-lg mb-1">📊 Filtro: <span class="font-bold">${filterName}</span></div>
-                            <div class="text-sm opacity-90 mb-3">
-                                ✅ ${rankedMatches.length} partite totali su ${todayMatches.length} filtrate •                                 
-                                ${Object.keys(byTip).length} tip diverse
-                            </div>
-                            <button id="save-ranking-btn" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md mr-3">
-                                <i class="fa-solid fa-save mr-2"></i>Salva Ranking per Tracking ML
-                            </button>
-                            <button id="export-csv-btn" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md">
-                                <i class="fa-solid fa-download mr-2"></i>Esporta CSV Strategie
-                            </button>
-                        </div>
-                        ${tipBlocks}
-                    `;
+                    // v3.5.3: Salva dati per toggle visualizzazione
+                    currentRankingData = {
+                        byTip,
+                        rankingDate,
+                        filterName,
+                        rankedMatches,
+                        todayMatches,
+                        selectedFilterId,
+                        maxMatches
+                    };
                     
-                    // Event listener per salva ranking
-                    document.getElementById('save-ranking-btn').addEventListener('click', saveRankingForTracking);
+                    // v3.5.3: Render default (per tip)
+                    currentRankingView = 'by-tip';
+                    renderRankingByTip(byTip, rankingDate, filterName, rankedMatches, todayMatches, selectedFilterId, maxMatches);
                     
-                    // Event listener per export CSV
-                    document.getElementById('export-csv-btn').addEventListener('click', () => {
-                        const csvData = [];
-                        csvData.push(['Data', 'Lega', 'Partita', 'Tip', 'Quota', 'Prob%', 'HT', 'Ora', 'Score', 'Betfair'].join(','));
-                        
-                        Object.keys(byTip).forEach(tip => {
-                            byTip[tip].forEach(m => {
-                                const betfairBadge = generateBetfairBadge(m);
-                                const betfairText = betfairBadge ? betfairBadge.text : 'N/A';
-                                const htInfo = m.info_ht || '-';
-                                const time = m.time || '-';
-                                
-                                csvData.push([
-                                    m.data,
-                                    `"${m.lega}"`,
-                                    `"${m.partita}"`,
-                                    m.tip,
-                                    m.quota.toFixed(2),
-                                    m.probabilita,
-                                    `"${htInfo}"`,
-                                    time,
-                                    m.score,
-                                    `"${betfairText}"`
-                                ].join(','));
-                            });
-                        });
-                        
-                        const csvContent = csvData.join('\n');
-                        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.download = `strategie_${rankingDate}_${filterName.replace(/\s+/g, '_')}.csv`;
-                        link.click();
-                    });
                 } catch(e) {
                     console.error('Error:', e);
                     resultsContainer.innerHTML = `<div class="bg-red-50 p-6 rounded-xl text-center">❌ Errore: ${e.message}</div>`;
                 }
+            });
+            
+            // ==================== v3.5.3: VISUALIZZAZIONE RANKING & ORDINAMENTO ====================
+            
+            // v3.5.3: Funzione setup tooltip listeners (riattiva dopo re-render)
+            function setupTooltipListeners() {
+                // Tooltip già gestiti da event delegation globale nel codice esistente
+                // Questa funzione è placeholder per compatibilità
+            }
+            
+            // Funzione render ranking per tip (default)
+            function renderRankingByTip(byTip, rankingDate, filterName, rankedMatches, todayMatches, selectedFilterId, maxMatches) {
+                const resultsContainer = document.getElementById('ranking-results');
+                const toggleContainer = document.getElementById('ranking-view-toggle');
+                
+                // Mostra toggle
+                toggleContainer.classList.remove('hidden');
+                
+                // Render tip blocks (codice esistente)
+                const tipBlocks = Object.keys(byTip).sort().map(tip => {
+                    const matches = byTip[tip];
+                    const sectionTitle = selectedFilterId === 'BEST_05HT' ? '⚡ BEST 0.5 HT' : `📊 ${tip}`;
+                    const sectionSubtitle = selectedFilterId === 'BEST_05HT'
+                        ? `${matches.length} partite selezionate automaticamente`
+                        : `${matches.length} partite (max ${maxMatches} per tip)`;
+                    
+                    return `
+                        <div class="bg-white p-6 rounded-xl shadow mb-6">
+                            <h3 class="text-2xl font-bold mb-3">${sectionTitle}</h3>
+                            <div class="text-sm text-gray-600 mb-4">${sectionSubtitle}</div>
+                            <div class="space-y-3">
+                                ${matches.map((m, idx) => renderMatchCard(m, idx, selectedFilterId)).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                resultsContainer.innerHTML = `
+                    <div class="mb-6 bg-gradient-to-r from-purple-500 to-blue-500 text-white p-6 rounded-xl shadow">
+                        <h2 class="text-3xl font-bold mb-2">🏆 Ranking ${rankingDate}</h2>
+                        <div class="text-lg mb-1">📊 Filtro: <span class="font-bold">${filterName}</span></div>
+                        <div class="text-sm opacity-90 mb-3">
+                            ✅ ${rankedMatches.length} partite totali su ${todayMatches.length} filtrate • ${Object.keys(byTip).length} tip diverse
+                        </div>
+                        <button id="save-ranking-btn" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md mr-3">
+                            <i class="fa-solid fa-save mr-2"></i>Salva Ranking per Tracking ML
+                        </button>
+                        <button id="export-csv-btn" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md">
+                            <i class="fa-solid fa-download mr-2"></i>Esporta CSV Strategie
+                        </button>
+                    </div>
+                    ${tipBlocks}
+                `;
+                
+                // Re-attach event listeners
+                document.getElementById('save-ranking-btn').addEventListener('click', saveRankingForTracking);
+                document.getElementById('export-csv-btn').addEventListener('click', exportRankingCSV);
+                
+                // Riattiva tooltips
+                setupTooltipListeners();
+            }
+            
+            // Funzione render ranking per orario
+            function renderRankingByTime(byTip, rankingDate, filterName, rankedMatches, todayMatches, selectedFilterId) {
+                const resultsContainer = document.getElementById('ranking-results');
+                const toggleContainer = document.getElementById('ranking-view-toggle');
+                
+                // Mostra toggle
+                toggleContainer.classList.remove('hidden');
+                
+                // Flatten e ordina per orario
+                const allMatches = Object.values(byTip).flat();
+                const matchesByTime = {};
+                
+                allMatches.forEach(m => {
+                    const timeKey = m.time && m.time.trim() !== '' ? m.time : '⏰ Orario non disponibile';
+                    if (!matchesByTime[timeKey]) matchesByTime[timeKey] = [];
+                    matchesByTime[timeKey].push(m);
+                });
+                
+                // Ordina keys per orario
+                const sortedTimes = Object.keys(matchesByTime).sort((a, b) => {
+                    if (a === '⏰ Orario non disponibile') return 1;
+                    if (b === '⏰ Orario non disponibile') return -1;
+                    return a.localeCompare(b);
+                });
+                
+                const timeBlocks = sortedTimes.map(time => {
+                    const matches = matchesByTime[time];
+                    // Ordina per score dentro ogni orario
+                    matches.sort((a, b) => b.score - a.score);
+                    
+                    return `
+                        <div class="bg-white p-6 rounded-xl shadow mb-6">
+                            <h3 class="text-2xl font-bold mb-3">⏰ ${time}</h3>
+                            <div class="text-sm text-gray-600 mb-4">${matches.length} partite</div>
+                            <div class="space-y-3">
+                                ${matches.map((m, idx) => renderMatchCard(m, idx, selectedFilterId, true)).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                resultsContainer.innerHTML = `
+                    <div class="mb-6 bg-gradient-to-r from-purple-500 to-blue-500 text-white p-6 rounded-xl shadow">
+                        <h2 class="text-3xl font-bold mb-2">🏆 Ranking ${rankingDate}</h2>
+                        <div class="text-lg mb-1">📊 Filtro: <span class="font-bold">${filterName}</span></div>
+                        <div class="text-sm opacity-90 mb-3">
+                            ✅ ${rankedMatches.length} partite totali su ${todayMatches.length} filtrate
+                        </div>
+                        <button id="save-ranking-btn" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md mr-3">
+                            <i class="fa-solid fa-save mr-2"></i>Salva Ranking per Tracking ML
+                        </button>
+                        <button id="export-csv-btn" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-100 transition-all shadow-md">
+                            <i class="fa-solid fa-download mr-2"></i>Esporta CSV Strategie
+                        </button>
+                    </div>
+                    ${timeBlocks}
+                `;
+                
+                // Re-attach event listeners
+                document.getElementById('save-ranking-btn').addEventListener('click', saveRankingForTracking);
+                document.getElementById('export-csv-btn').addEventListener('click', exportRankingCSV);
+                
+                // Riattiva tooltips
+                setupTooltipListeners();
+            }
+            
+            // Funzione render singola card match (riutilizzabile)
+            function renderMatchCard(m, idx, selectedFilterId, showTip = false) {
+                const [team1, team2] = m.partita.split(' - ');
+                const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
+                const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
+                
+                // HT indicator
+                let htIndicator = '';
+                if (m.info_ht && m.info_ht.trim() !== '') {
+                    const probMatch = m.info_ht.match(/(\d+)%/);
+                    if (probMatch) {
+                        const htProb = parseInt(probMatch[1]);
+                        if (htProb >= 70) {
+                            htIndicator = `<div class="text-xs mt-1"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">⚡ HT: ${m.info_ht}</span></div>`;
+                        } else if (htProb >= 55) {
+                            htIndicator = `<div class="text-xs mt-1"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">💡 HT: ${m.info_ht}</span></div>`;
+                        } else {
+                            htIndicator = `<div class="text-xs mt-1"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded">📊 HT: ${m.info_ht}</span></div>`;
+                        }
+                    }
+                }
+                
+                // Betfair badge
+                const betfairBadge = generateBetfairBadge(m, selectedFilterId === 'BEST_05HT', team1Stats, team2Stats);
+                let betfairDisplay = '';
+                if (betfairBadge) {
+                    const icon = selectedFilterId === 'BEST_05HT' ? '⚡' : '🟣';
+                    betfairDisplay = `<div class="mt-2"><span class="px-3 py-1 rounded-full text-xs font-bold border ${betfairBadge.color}">${icon} ${betfairBadge.text}</span></div>`;
+                }
+                
+                // Formato display TIP FT
+                const tipDisplay = showTip ? `${m.tip} FT` : `${m.tip} FT`;
+                
+                return `
+                    <div class="border rounded-lg p-4 ${(m.score || 0) < 30 ? 'bg-red-50 border-red-200' : 'bg-white hover:bg-gray-50'}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <div class="font-bold text-lg">
+                                        ${idx + 1}. 
+                                        <span class="team-${team1Stats.color}">${team1}</span>
+                                        - 
+                                        <span class="team-${team2Stats.color}">${team2}</span>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-600 flex items-center gap-2">
+                                    ${m.time && m.time.trim() !== '' ? `<span class="text-gray-900 font-bold">⏰ ${m.time}</span> | ` : ''}
+                                    ${m.lega}
+                                </div>
+                                <div class="text-sm mt-1">
+                                    <span class="bg-blue-100 px-2 py-1 rounded text-xs font-semibold">${tipDisplay}</span>
+                                    <span class="ml-2 font-bold">@${m.quota.toFixed(2)}</span>
+                                    <span class="ml-2 text-gray-500">${m.probabilita}%</span>
+                                </div>
+                                ${htIndicator}
+                            </div>
+                            <div class="text-right">
+                                <div class="score-badge">${m.score || 0}</div>
+                                <div class="text-xs text-gray-500 mt-1 relative inline-block">
+                                    <span class="tooltip-trigger cursor-help"
+                                          data-tooltip-type="stats"
+                                          data-mercato="${m.mercato || ''}"
+                                          data-tip="${m.tip || ''}"
+                                          data-home-count="${team1Stats.count || 0}"
+                                          data-home-total="${team1Stats.total || 0}"
+                                          data-away-count="${team2Stats.count || 0}"
+                                          data-away-total="${team2Stats.total || 0}"
+                                          data-home-perc="${team1Stats.percentage || 0}"
+                                          data-away-perc="${team2Stats.percentage || 0}"
+                                          data-home-penalty="${team1Stats.penalty || 0}"
+                                          data-away-penalty="${team2Stats.penalty || 0}"
+                                          data-home-score="${team1Stats.scoreValue || 0}"
+                                          data-away-score="${team2Stats.scoreValue || 0}"
+                                          data-home-details="${team1Stats.details || ''}"
+                                          data-away-details="${team2Stats.details || ''}">
+                                        ${team1Stats.stats} | ${team2Stats.stats}
+                                    </span>
+                                    <span class="ml-1 text-blue-500 cursor-help tooltip-trigger"
+                                          data-tooltip-type="stats"
+                                          data-mercato="${m.mercato || ''}"
+                                          data-tip="${m.tip || ''}"
+                                          data-home-count="${team1Stats.count || 0}"
+                                          data-home-total="${team1Stats.total || 0}"
+                                          data-away-count="${team2Stats.count || 0}"
+                                          data-away-total="${team2Stats.total || 0}"
+                                          data-home-perc="${team1Stats.percentage || 0}"
+                                          data-away-perc="${team2Stats.percentage || 0}"
+                                          data-home-penalty="${team1Stats.penalty || 0}"
+                                          data-away-penalty="${team2Stats.penalty || 0}"
+                                          data-home-score="${team1Stats.scoreValue || 0}"
+                                          data-away-score="${team2Stats.scoreValue || 0}"
+                                          data-home-details="${team1Stats.details || ''}"
+                                          data-away-details="${team2Stats.details || ''}"
+                                          title="Hover per dettagli">
+                                        ℹ️
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        ${betfairDisplay}
+                        ${(m.score || 0) < 30 ? '<div class="mt-2"><span class="bg-red-500 text-white text-xs px-2 py-1 rounded font-bold">⚠️ Score Basso - Poco Affidabile</span></div>' : ''}
+                    </div>
+                `;
+            }
+            
+            // Event listeners toggle visualizzazione ranking
+            document.addEventListener('click', (e) => {
+                if (e.target.id === 'view-by-tip-btn' || e.target.closest('#view-by-tip-btn')) {
+                    if (currentRankingView === 'by-tip') return;
+                    currentRankingView = 'by-tip';
+                    
+                    // Update buttons
+                    document.getElementById('view-by-tip-btn').className = 'flex-1 py-2 px-4 rounded-lg font-semibold transition-all bg-blue-600 text-white';
+                    document.getElementById('view-by-time-btn').className = 'flex-1 py-2 px-4 rounded-lg font-semibold transition-all bg-gray-200 text-gray-700 hover:bg-gray-300';
+                    
+                    // Re-render
+                    if (currentRankingData) {
+                        renderRankingByTip(
+                            currentRankingData.byTip,
+                            currentRankingData.rankingDate,
+                            currentRankingData.filterName,
+                            currentRankingData.rankedMatches,
+                            currentRankingData.todayMatches,
+                            currentRankingData.selectedFilterId,
+                            currentRankingData.maxMatches
+                        );
+                    }
+                } else if (e.target.id === 'view-by-time-btn' || e.target.closest('#view-by-time-btn')) {
+                    if (currentRankingView === 'by-time') return;
+                    currentRankingView = 'by-time';
+                    
+                    // Update buttons
+                    document.getElementById('view-by-tip-btn').className = 'flex-1 py-2 px-4 rounded-lg font-semibold transition-all bg-gray-200 text-gray-700 hover:bg-gray-300';
+                    document.getElementById('view-by-time-btn').className = 'flex-1 py-2 px-4 rounded-lg font-semibold transition-all bg-blue-600 text-white';
+                    
+                    // Re-render
+                    if (currentRankingData) {
+                        renderRankingByTime(
+                            currentRankingData.byTip,
+                            currentRankingData.rankingDate,
+                            currentRankingData.filterName,
+                            currentRankingData.rankedMatches,
+                            currentRankingData.todayMatches,
+                            currentRankingData.selectedFilterId
+                        );
+                    }
+                }
+            });
+            
+            // Funzione export CSV ranking
+            function exportRankingCSV() {
+                if (!currentRankingData) return;
+                
+                const csvData = [];
+                csvData.push(['Data', 'Lega', 'Partita', 'Tip', 'Quota', 'Prob%', 'HT', 'Ora', 'Score', 'Betfair'].join(','));
+                
+                Object.keys(currentRankingData.byTip).forEach(tip => {
+                    currentRankingData.byTip[tip].forEach(m => {
+                        const [team1, team2] = m.partita.split(' - ');
+                        const team1Stats = analyzeTeamStats(team1, true, m.tip, allMatches);
+                        const team2Stats = analyzeTeamStats(team2, false, m.tip, allMatches);
+                        const betfairBadge = generateBetfairBadge(m, currentRankingData.selectedFilterId === 'BEST_05HT', team1Stats, team2Stats);
+                        const betfairText = betfairBadge ? betfairBadge.text : 'N/A';
+                        const htInfo = m.info_ht || '-';
+                        const time = m.time || '-';
+                        
+                        csvData.push([
+                            m.data,
+                            `"${m.lega}"`,
+                            `"${m.partita}"`,
+                            m.tip,
+                            m.quota.toFixed(2),
+                            m.probabilita,
+                            htInfo,
+                            time,
+                            m.score,
+                            betfairText
+                        ].join(','));
+                    });
+                });
+                
+                const csvContent = csvData.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `ranking_${currentRankingData.rankingDate}_${currentRankingData.filterName.replace(/\s+/g, '_')}.csv`;
+                link.click();
+            }
+            
+            // Ordinamento Dashboard
+            document.getElementById('dashboard-sort-select')?.addEventListener('change', (e) => {
+                const sortBy = e.target.value;
+                applyFiltersAndRender(sortBy);
             });
             
             // ==================== STORICO PREVISIONI ====================
