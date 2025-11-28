@@ -2022,14 +2022,22 @@
                         });
                     }
 
-                    // 2. Load Custom Strategies
+                    // 2. Load Custom Strategies (ONLY published ones with readable names)
                     const strategiesDoc = await getDoc(doc(db, "system", "client_strategies"));
                     if (strategiesDoc.exists()) {
                         const strategies = strategiesDoc.data();
                         Object.keys(strategies).forEach(key => {
+                            // Skip if it's a random Firebase ID (contains random chars, not a readable name)
+                            // Published strategies should have readable IDs like "magia_ai___"
+                            const isRandomId = /^[A-Z0-9]{20,}$/i.test(key);
+                            if (isRandomId) {
+                                console.log(`[loadClientFilters] Skipping unpublished test strategy: ${key}`);
+                                return;
+                            }
+
                             allClientFilters[key] = {
                                 type: 'strategy',
-                                name: key.replace(/_/g, ' ').toUpperCase(),
+                                name: strategies[key].name || key.replace(/_/g, ' ').toUpperCase(),
                                 ...strategies[key] // Contains leagues, probRange, oddsRange, etc.
                             };
                             select.innerHTML += `<option value="${key}">⚡ ${allClientFilters[key].name}</option>`;
@@ -2116,17 +2124,44 @@
 
                 try {
                     if (filter.type === 'preset') {
-                        // Update system/client_presets
-                        // Standard presets ONLY store leagues (historically). 
-                        // If we want to add sliders support to standard presets, we need to change data structure in DB.
-                        // For now, let's stick to updating leagues for presets to avoid breaking client logic that expects array.
-                        // User requirement: "modifico e automaticamente sul client c'è filtro modificato"
-
+                        // Save COMPLETE filter configuration (leagues, tips, odds, prob)
                         const presetsDocRef = doc(db, "system", "client_presets");
+
+                        const completeFilter = {
+                            leagues: currentLeagues,
+                            tips: currentTips,
+                            odds: currentOdds,
+                            prob: currentProb
+                        };
+
                         await updateDoc(presetsDocRef, {
-                            [selectedKey]: currentLeagues,
+                            [selectedKey]: completeFilter,
                             lastUpdated: Date.now()
                         });
+
+                        // Show loading indicator
+                        const saveBtn = document.querySelector('#save-btn-strategies');
+                        if (saveBtn) {
+                            saveBtn.disabled = true;
+                            saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Ricalcolo in corso...';
+                        }
+
+                        // TRIGGER RECALCULATION: When preset is modified, recalculate rankings for today
+                        console.log(`[Admin] Preset ${selectedKey} modified, triggering recalculation...`);
+                        const today = new Date().toISOString().split('T')[0];
+                        const todayMatches = allMatches.filter(m => m.data === today && !m.risultato);
+
+                        if (todayMatches.length > 0) {
+                            await loadAllMatches(); // Ensure we have latest data
+                            await calculateStrategyRankings(todayMatches, today);
+                            console.log(`[Admin] Rankings recalculated after preset modification`);
+                        }
+
+                        // Restore button
+                        if (saveBtn) {
+                            saveBtn.disabled = false;
+                            saveBtn.innerHTML = '<i class="fa-solid fa-save mr-2"></i>Salva';
+                        }
 
                     } else if (filter.type === 'strategy') {
                         // Update system/client_strategies
@@ -2142,9 +2177,20 @@
                         await updateDoc(strategiesDocRef, {
                             [selectedKey]: updatedStrategy
                         });
+
+                        // TRIGGER RECALCULATION: When custom strategy is modified, recalculate rankings
+                        console.log(`[Admin] Custom strategy ${selectedKey} modified, triggering recalculation...`);
+                        const today = new Date().toISOString().split('T')[0];
+                        const todayMatches = allMatches.filter(m => m.data === today && !m.risultato);
+
+                        if (todayMatches.length > 0) {
+                            await loadAllMatches();
+                            await calculateStrategyRankings(todayMatches, today);
+                            console.log(`[Admin] Rankings recalculated after strategy modification`);
+                        }
                     }
 
-                    showModal("Successo", `Filtro <b>${filter.name}</b> aggiornato su Client!`);
+                    showModal("Successo", `Filtro <b>${filter.name}</b> aggiornato e ranking ricalcolato!`);
 
                     // Reload to ensure local state is synced
                     await loadClientFiltersForAdmin();
@@ -3125,38 +3171,107 @@
                 // Collect ALL strategies (Standard Presets + savedFilters + Public)
                 const allStrategiesMap = {};
 
-                // 1. Add Standard Presets with TYPE-BASED FILTERING (not league lists)
-                // This way filterMatchesByStrategy will use the "type" field to dynamically filter
+                // 1. Load Standard Presets from client_presets (use saved configurations)
+                // This ensures that manual modifications are respected!
+                try {
+                    const presetsDoc = await getDoc(doc(db, "system", "client_presets"));
+                    if (presetsDoc.exists()) {
+                        const presets = presetsDoc.data();
 
-                // Add ALL standard presets
-                allStrategiesMap['all'] = {
-                    name: '📊 ALL',
-                    type: 'all' // Special type: no filtering
-                };
+                        // Helper to extract filter data (handles both old array format and new object format)
+                        const getFilterData = (presetData) => {
+                            if (Array.isArray(presetData)) {
+                                // Old format: just array of leagues
+                                return { leagues: presetData, tips: [], odds: [1.0, 10.0], prob: [0, 100] };
+                            } else if (typeof presetData === 'object') {
+                                // New format: complete filter object
+                                return {
+                                    leagues: presetData.leagues || [],
+                                    tips: presetData.tips || [],
+                                    odds: presetData.odds || [1.0, 10.0],
+                                    prob: presetData.prob || [0, 100]
+                                };
+                            }
+                            return { leagues: [], tips: [], odds: [1.0, 10.0], prob: [0, 100] };
+                        };
 
-                allStrategiesMap['winrate_80'] = {
-                    name: '🔥 WINRATE 80%',
-                    type: 'winrate_80' // Special type: filter by winrate from historical data
-                };
+                        // ALL
+                        const allFilter = getFilterData(presets.all);
+                        allStrategiesMap['all'] = {
+                            name: '📊 ALL',
+                            leagues: allFilter.leagues,
+                            tips: allFilter.tips,
+                            odds: allFilter.odds,
+                            prob: allFilter.prob,
+                            type: 'all'
+                        };
 
-                allStrategiesMap['italia'] = {
-                    name: '🇮🇹 ITALIA',
-                    type: 'italia' // Special type: filter leagues containing "italy" or "ita"
-                };
+                        // WINRATE 80%
+                        const winrate80Filter = getFilterData(presets.winrate_80);
+                        allStrategiesMap['winrate_80'] = {
+                            name: '🔥 WINRATE 80%',
+                            leagues: winrate80Filter.leagues,
+                            tips: winrate80Filter.tips,
+                            odds: winrate80Filter.odds,
+                            prob: winrate80Filter.prob,
+                            type: 'winrate_80'
+                        };
 
-                allStrategiesMap['top_eu'] = {
-                    name: '🌍 TOP EU',
-                    type: 'top_eu' // Special type: filter top EU leagues
-                };
+                        // ITALIA - USE SAVED CONFIG!
+                        const italiaFilter = getFilterData(presets.italia);
+                        allStrategiesMap['italia'] = {
+                            name: '🇮🇹 ITALIA',
+                            leagues: italiaFilter.leagues,
+                            tips: italiaFilter.tips,
+                            odds: italiaFilter.odds,
+                            prob: italiaFilter.prob,
+                            type: 'italia'
+                        };
 
-                allStrategiesMap['cups'] = {
-                    name: '🏆 COPPE',
-                    type: 'cups' // Special type: filter cup competitions
-                };
+                        // TOP EU
+                        const topEuFilter = getFilterData(presets.top_eu);
+                        allStrategiesMap['top_eu'] = {
+                            name: '🌍 TOP EU',
+                            leagues: topEuFilter.leagues,
+                            tips: topEuFilter.tips,
+                            odds: topEuFilter.odds,
+                            prob: topEuFilter.prob,
+                            type: 'top_eu'
+                        };
 
+                        // CUPS
+                        const cupsFilter = getFilterData(presets.cups);
+                        allStrategiesMap['cups'] = {
+                            name: '🏆 COPPE',
+                            leagues: cupsFilter.leagues,
+                            tips: cupsFilter.tips,
+                            odds: cupsFilter.odds,
+                            prob: cupsFilter.prob,
+                            type: 'cups'
+                        };
+
+                        console.log('[calculateStrategyRankings] Loaded complete presets from client_presets:', {
+                            italia: { leagues: italiaFilter.leagues.length, tips: italiaFilter.tips.length },
+                            top_eu: { leagues: topEuFilter.leagues.length, tips: topEuFilter.tips.length }
+                        });
+                    } else {
+                        console.warn('[calculateStrategyRankings] client_presets not found, using empty filters');
+                        // Fallback to empty
+                        const emptyFilter = { leagues: [], tips: [], odds: [1.0, 10.0], prob: [0, 100] };
+                        allStrategiesMap['all'] = { name: '📊 ALL', ...emptyFilter, type: 'all' };
+                        allStrategiesMap['winrate_80'] = { name: '🔥 WINRATE 80%', ...emptyFilter, type: 'winrate_80' };
+                        allStrategiesMap['italia'] = { name: '🇮🇹 ITALIA', ...emptyFilter, type: 'italia' };
+                        allStrategiesMap['top_eu'] = { name: '🌍 TOP EU', ...emptyFilter, type: 'top_eu' };
+                        allStrategiesMap['cups'] = { name: '🏆 COPPE', ...emptyFilter, type: 'cups' };
+                    }
+                } catch (e) {
+                    console.error('[calculateStrategyRankings] Error loading presets:', e);
+                }
+
+                // BEST 0.5 HT (special, no leagues filter)
                 allStrategiesMap['best_05_ht'] = {
                     name: '⚡ BEST 0.5 HT',
-                    type: 'best_05_ht' // Special filtering
+                    type: 'best_05_ht'
                 };
 
                 // 2. Add savedFilters ONLY IF PUBLISHED (published: true checkbox)
@@ -3205,8 +3320,38 @@
                 for (const [stratId, strat] of Object.entries(allStrategiesMap)) {
                     let filteredMatches = [];
 
-                    // TYPE-BASED FILTERING for presets
-                    if (strat.type === 'all') {
+                    // Check if preset has saved leagues (from client_presets)
+                    const hasSavedLeagues = strat.leagues && strat.leagues.length > 0;
+
+                    if (hasSavedLeagues) {
+                        // USE SAVED FILTER CONFIGURATION (manual configurations)
+                        // Apply ALL filters: leagues, tips, odds, prob
+                        filteredMatches = matchesForDate.filter(m => {
+                            // 1. Leagues filter
+                            const matchLega = normalizeLega(m.lega);
+                            if (!strat.leagues.includes(matchLega)) return false;
+
+                            // 2. Tips filter (if specified)
+                            if (strat.tips && strat.tips.length > 0) {
+                                if (!strat.tips.includes(m.tip)) return false;
+                            }
+
+                            // 3. Odds filter
+                            const q = parseFloat(m.quota);
+                            if (strat.odds) {
+                                if (q < strat.odds[0] || q > strat.odds[1]) return false;
+                            }
+
+                            // 4. Probability filter
+                            const prob = parseFloat(m.probabilita);
+                            if (strat.prob && !isNaN(prob)) {
+                                if (prob < strat.prob[0] || prob > strat.prob[1]) return false;
+                            }
+
+                            return true;
+                        });
+                        console.log(`[calculateStrategyRankings] ${strat.name}: Using saved config - Leagues: ${strat.leagues.length}, Tips: ${strat.tips?.length || 0}, Matched: ${filteredMatches.length}`);
+                    } else if (strat.type === 'all') {
                         // ALL: no filtering
                         filteredMatches = matchesForDate;
                     } else if (strat.type === 'italia') {
