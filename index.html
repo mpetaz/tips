@@ -3533,7 +3533,14 @@
 
                     // Carica/aggiorna partite
                     const batch = writeBatch(db);
-                    dataToUpload.forEach(match => {
+                    for (const match of dataToUpload) {
+                        // RETRIEVE TIME FROM CACHE before saving
+                        const cachedTime = await getTimeFromCache(match.data, match.partita);
+                        if (cachedTime) {
+                            match.ora = cachedTime;
+                            console.log(`[SAVE] Adding time ${cachedTime} to ${match.partita}`);
+                        }
+                        
                         if (match.id) {
                             // Update esistente - usa set con merge per evitare errori
                             batch.set(doc(matchesCollection, match.id), match, { merge: true });
@@ -3542,7 +3549,7 @@
                             const docRef = doc(matchesCollection);
                             batch.set(docRef, match);
                         }
-                    });
+                    }
 
                     await batch.commit();
 
