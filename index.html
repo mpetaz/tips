@@ -228,6 +228,11 @@
                             <label class="text-sm font-medium text-gray-700">Periodo:</label>
                             <input type="date" id="filter-date-start" class="p-2 border rounded-lg">
                             <input type="date" id="filter-date-end" class="p-2 border rounded-lg">
+                            <button id="show-no-result-btn"
+                                class="bg-orange-500 text-white px-3 py-2 rounded-lg font-semibold text-sm hover:bg-orange-600 transition shadow-sm ml-2"
+                                title="Mostra solo partite senza risultato">
+                                <i class="fa-solid fa-filter mr-1"></i> Senza Risultato
+                            </button>
                         </div>
                     </div>
 
@@ -1553,6 +1558,20 @@
                 searchInput.addEventListener('input', applyFiltersAndRender);
                 filterDateStart.addEventListener('change', applyFiltersAndRender);
                 filterDateEnd.addEventListener('change', applyFiltersAndRender);
+
+                document.getElementById('show-no-result-btn').addEventListener('click', function () {
+                    showOnlyNoResult = !showOnlyNoResult;
+                    if (showOnlyNoResult) {
+                        this.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+                        this.classList.add('bg-green-600', 'hover:bg-green-700');
+                        this.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Senza Risultato';
+                    } else {
+                        this.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        this.classList.add('bg-orange-500', 'hover:bg-orange-600');
+                        this.innerHTML = '<i class="fa-solid fa-filter mr-1"></i> Senza Risultato';
+                    }
+                    applyFiltersAndRender();
+                });
             }
 
             function categorizeLeague(leagueName) {
@@ -1666,6 +1685,8 @@
                 });
             }
 
+            let showOnlyNoResult = false;
+
             function applyFiltersAndRender(customSort = null) {
                 const selectedLeagues = Array.from(leagueFiltersGrid.querySelectorAll('input.league-checkbox:checked')).map(cb => cb.value);
                 const selectedTips = Array.from(tipFiltersContainer.querySelectorAll('.tip-button.active')).map(btn => btn.dataset.tip);
@@ -1676,6 +1697,10 @@
                 const dateEnd = filterDateEnd.value ? new Date(filterDateEnd.value) : null;
 
                 filteredMatches = allMatches.filter(m => {
+                    if (showOnlyNoResult) {
+                        if (m.risultato && m.risultato.trim() !== '') return false;
+                    }
+
                     if (selectedLeagues.length > 0 && !selectedLeagues.includes(m.lega)) return false;
                     if (selectedTips.length > 0 && !selectedTips.includes(m.tip)) return false;
                     if (m.probabilita < probMin || m.probabilita > probMax) return false;
@@ -3540,7 +3565,7 @@
                             match.ora = cachedTime;
                             console.log(`[SAVE] Adding time ${cachedTime} to ${match.partita}`);
                         }
-                        
+
                         if (match.id) {
                             // Update esistente - usa set con merge per evitare errori
                             batch.set(doc(matchesCollection, match.id), match, { merge: true });
