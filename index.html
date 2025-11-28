@@ -3159,20 +3159,23 @@
                     type: 'best_05_ht' // Special filtering
                 };
 
-                // 2. Add savedFilters (local strategies like "Magic AI")
+                // 2. Add savedFilters ONLY IF PUBLISHED (published: true checkbox)
                 if (savedFilters && savedFilters.length > 0) {
                     savedFilters.forEach(strat => {
-                        if (strat.type === 'local') {
+                        // ONLY include strategies that are marked as published
+                        if (strat.type === 'local' && strat.published === true) {
                             allStrategiesMap[strat.id] = {
                                 name: strat.name,
                                 leagues: strat.state.leagues || [],
                                 tips: strat.state.tips || [],
                                 odds: strat.state.odds || [1.0, 10.0],
                                 prob: strat.state.prob || [0, 100],
-                                type: 'local'
+                                type: 'local',
+                                published: true
                             };
                         }
                     });
+                    console.log(`[calculateStrategyRankings] Added ${Object.keys(allStrategiesMap).filter(k => allStrategiesMap[k].type === 'local').length} published custom strategies`);
                 }
 
                 // 3. Load and add Public Strategies from Firebase
