@@ -175,30 +175,47 @@
                         <img src="logo.png" alt="Tipster-AI Logo" class="h-10 w-10 mr-3 rounded-lg">
                         <h1 class="text-xl font-bold text-gray-900">Tipster-AI Admin</h1>
                     </div>
-                    <nav class="flex space-x-2 flex-wrap">
+                    <nav class="flex flex-wrap gap-2">
                         <button data-page="page-dashboard"
                             class="nav-button bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-blue-700 transition-colors text-sm">
                             <i class="fa-solid fa-chart-bar mr-1"></i>Dashboard
                         </button>
-                        <button data-page="page-oggi"
+
+                        <!-- NEW TABS -->
+                        <button data-page="page-inserisci"
                             class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
-                            <i class="fa-solid fa-calendar-day mr-1"></i>Oggi
+                            <i class="fa-solid fa-file-import mr-1"></i>Inserisci Partite
                         </button>
-                        <button data-page="page-risultati"
+                        <button data-page="page-pronostici"
                             class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
-                            <i class="fa-solid fa-check-circle mr-1"></i>Risultati
+                            <i class="fa-solid fa-trophy mr-1"></i>Pronostici
                         </button>
-                        <button data-page="page-ranking"
+                        <button data-page="page-test"
                             class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
-                            <i class="fa-solid fa-trophy mr-1"></i>Ranking
+                            <i class="fa-solid fa-flask mr-1"></i>Test Strategie
                         </button>
-                        <button data-page="page-storico"
-                            class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
-                            <i class="fa-solid fa-clock-rotate-left mr-1"></i>Storico
-                        </button>
+
                         <button data-page="page-gestione-db"
                             class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
                             <i class="fa-solid fa-database mr-1"></i>Gestione DB
+                        </button>
+
+                        <!-- OLD TABS (HIDDEN - for compatibility) -->
+                        <button data-page="page-oggi" style="display:none"
+                            class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-calendar-day mr-1"></i>Oggi
+                        </button>
+                        <button data-page="page-risultati" style="display:none"
+                            class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-check-circle mr-1"></i>Risultati
+                        </button>
+                        <button data-page="page-ranking" style="display:none"
+                            class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-trophy mr-1"></i>Ranking
+                        </button>
+                        <button data-page="page-storico" style="display:none"
+                            class="nav-button bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm">
+                            <i class="fa-solid fa-clock-rotate-left mr-1"></i>Storico
                         </button>
                     </nav>
                 </div>
@@ -458,7 +475,53 @@
                 </div>
             </div>
 
-            <!-- PAGINA OGGI -->
+            <!-- PAGINA INSERISCI PARTITE (New Unified Interface) -->
+            <div id="page-inserisci" class="page max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-2xl shadow-lg mb-8">
+                    <h1 class="text-3xl font-bold flex items-center gap-3">
+                        <i class="fa-solid fa-file-import"></i>
+                        Inserisci Partite
+                    </h1>
+                    <p class="text-blue-100 mt-2">Carica tips e risultati per il giorno selezionato</p>
+                </div>
+
+                <!-- Quick Navigation -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <button onclick="document.querySelector('[data-page=page-oggi]').click()"
+                        class="bg-blue-500 hover:bg-blue-600 text-white p-6 rounded-xl shadow-lg transition-all transform hover:scale-105">
+                        <i class="fa-solid fa-calendar-plus text-4xl mb-3"></i>
+                        <h3 class="text-xl font-bold mb-2">📥 Carica Tips</h3>
+                        <p class="text-blue-100 text-sm">Carica pronostici per una data specifica</p>
+                    </button>
+
+                    <button onclick="document.querySelector('[data-page=page-risultati]').click()"
+                        class="bg-green-500 hover:bg-green-600 text-white p-6 rounded-xl shadow-lg transition-all transform hover:scale-105">
+                        <i class="fa-solid fa-check-circle text-4xl mb-3"></i>
+                        <h3 class="text-xl font-bold mb-2">✅ Aggiorna Risultati</h3>
+                        <p class="text-green-100 text-sm">Inserisci risultati delle partite giocate</p>
+                    </button>
+                </div>
+
+                <!-- Info -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-start gap-4">
+                        <i class="fa-solid fa-circle-info text-blue-500 text-2xl mt-1"></i>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Come funziona</h3>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                                <li><strong>Carica Tips:</strong> Upload CSV con pronostici (prima dei match)</li>
+                                <li><strong>Aggiungi HT (opzionale):</strong> Dati Over 0.5 HT per boost ranking</li>
+                                <li><strong>Aggiorna Risultati:</strong> Dopo i match, upload CSV risultati</li>
+                                <li><strong>Calcola esiti automatici:</strong> Il sistema determina Vinto/Perso</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGINA OGGI (Old - Keep for compatibility) -->
             <div id="page-oggi" class="page max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
                     <h2 class="text-2xl font-bold mb-4 border-b pb-2">📥 Carica Tips del Giorno</h2>
@@ -513,53 +576,6 @@
                         </div>
 
                         <div id="tips-upload-preview" class="hidden bg-gray-50 p-4 rounded-lg border"></div>
-                    </div>
-                </div>
-
-                <!-- Visualizza Ranking Salvati -->
-                <div
-                    class="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-2xl shadow-md border-2 border-purple-200 mb-6">
-                    <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-line text-purple-600"></i>
-                        📊 Visualizza Ranking Salvati
-                    </h2>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label for="ranking-date-selector" class="block text-sm font-medium text-gray-700 mb-1">
-                                Seleziona Data
-                            </label>
-                            <input type="date" id="ranking-date-selector"
-                                class="w-full p-3 border-2 border-gray-300 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500">
-                        </div>
-                        <div class="flex items-end">
-                            <button id="load-ranking-btn"
-                                class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-lg font-bold hover:opacity-90 transition-opacity">
-                                <i class="fa-solid fa-download mr-2"></i>Carica Ranking
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Lista Strategie del Giorno -->
-                    <div id="ranking-strategies-list" class="hidden">
-                        <h3 class="text-lg font-bold mb-3 text-gray-800">Strategie Disponibili:</h3>
-                        <div id="ranking-strategies-grid"
-                            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
-                            <!-- Populated dynamically -->
-                        </div>
-                    </div>
-
-                    <!-- Dettaglio Partite della Strategia Selezionata -->
-                    <div id="ranking-matches-detail" class="hidden">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800" id="ranking-strategy-name"></h3>
-                            <button id="ranking-back-btn" class="text-sm text-gray-600 hover:text-gray-800 underline">
-                                <i class="fa-solid fa-arrow-left mr-1"></i>Torna alle strategie
-                            </button>
-                        </div>
-                        <div id="ranking-matches-container" class="space-y-3">
-                            <!-- Populated dynamically -->
-                        </div>
                     </div>
                 </div>
 
@@ -684,6 +700,19 @@
 
             <!-- PAGINA STORICO PREVISIONI -->
             <div id="page-storico" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Strategy Management Header -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <i class="fa-solid fa-wand-magic-sparkles text-purple-600 mr-2"></i>
+                            Gestione Strategie
+                        </h2>
+                        <button id="recalc-strategies-btn"
+                            class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition shadow-md flex items-center text-sm">
+                            <i class="fa-solid fa-rotate mr-2"></i> Ricalcola Data Selezionata
+                        </button>
+                    </div>
+                </div>
                 <!-- Selezione Data -->
                 <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 mb-6">
                     <h2 class="text-2xl font-bold mb-4">
@@ -741,159 +770,343 @@
                 </div>
             </div>
 
-            <!-- PAGINA GESTIONE DB -->
-            <div id="page-gestione-db" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- PAGINA PRONOSTICI (Unified with single date selector) -->
+            <div id="page-pronostici" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Header with unified controls -->
+                <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-2xl shadow-lg mb-8">
+                    <h1 class="text-3xl font-bold flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-trophy"></i>
+                        Pronostici
+                    </h1>
 
-                    <!-- LEFT: Mass Find & Replace -->
-                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-                        <h2 class="text-xl font-bold mb-4 text-gray-800"><i
-                                class="fa-solid fa-tools mr-2 text-blue-600"></i>Trova e Sostituisci Massivo</h2>
-                        <p class="text-sm text-gray-500 mb-4">Utile per correggere nomi di leghe o squadre in blocco
-                            (es. "EU-KOR" -> "AS-KOR").</p>
-
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Campo su cui
-                                    agire</label>
-                                <select id="mass-edit-field" class="w-full p-2 border rounded-lg bg-gray-50">
-                                    <option value="lega">Lega</option>
-                                    <option value="partita">Partita (Squadre)</option>
-                                    <option value="tip">Tip</option>
-                                    <option value="mercato">Mercato</option>
-                                </select>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Trova (Valore
-                                        errato)</label>
-                                    <input type="text" id="mass-edit-find" placeholder="es. EU-KOR"
-                                        class="w-full p-2 border rounded-lg">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Sostituisci con
-                                        (Nuovo)</label>
-                                    <input type="text" id="mass-edit-replace" placeholder="es. AS-KOR"
-                                        class="w-full p-2 border rounded-lg">
-                                </div>
-                            </div>
-
-                            <button id="mass-edit-preview-btn"
-                                class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700">
-                                <i class="fa-solid fa-magnifying-glass mr-2"></i>Anteprima Modifiche
-                            </button>
-
-                            <div id="mass-edit-preview" class="hidden bg-gray-50 p-4 rounded-lg border text-sm">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT: Backup & Restore -->
-                    <div class="space-y-6">
-                        <!-- Backup Upload (Moved) -->
-                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-                            <h2 class="text-xl font-bold mb-4 text-gray-800"><i
-                                    class="fa-solid fa-cloud-upload-alt mr-2 text-orange-600"></i>Ripristino /
-                                Aggiornamento</h2>
-                            <div class="border-2 border-orange-200 rounded-lg p-4 bg-orange-50/30">
-                                <label for="backup-csv-file" class="block text-sm font-medium text-gray-700 mb-1">
-                                    <span class="bg-orange-600 text-white text-xs px-2 py-1 rounded mr-2">BACKUP</span>
-                                    File CSV Backup / Totale
-                                </label>
-                                <input type="file" id="backup-csv-file" accept=".csv"
-                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
-                                <div id="backup-file-status" class="mt-2 text-xs text-gray-500 hidden">
-                                    <i class="fa-solid fa-check-circle text-green-500 mr-1"></i>
-                                    <span id="backup-file-name"></span>
-                                </div>
-                            </div>
-                            <div id="backup-upload-preview" class="hidden bg-gray-50 p-4 rounded-lg border mt-4">
-                            </div>
-
-
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Date Selector -->
+                        <div>
+                            <label class="block text-sm font-medium mb-2 opacity-90">Seleziona Data</label>
+                            <input type="date" id="pronostici-unified-date"
+                                class="w-full p-3 border rounded-lg text-gray-900 font-semibold">
                         </div>
 
-                        <!-- Export (Moved Logic) -->
-                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-                            <h2 class="text-xl font-bold mb-4 text-gray-800"><i
-                                    class="fa-solid fa-download mr-2 text-green-600"></i>Backup Database</h2>
-                            <p class="text-sm text-gray-500 mb-4">Scarica tutto il database corrente in CSV (inclusi
-                                ID).</p>
-                            <button id="export-full-db-btn"
-                                class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">
-                                <i class="fa-solid fa-file-csv mr-2"></i>Scarica Backup Completo
+                        <!-- Button 1: Carica Previsioni (calcola + visualizza) -->
+                        <div class="flex items-end">
+                            <button id="pronostici-load-btn"
+                                class="w-full bg-white text-purple-700 px-6 py-3 rounded-lg font-bold transition hover:bg-purple-50 shadow-lg flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-calculator"></i>
+                                Carica Previsioni
                             </button>
                         </div>
 
-                        <!-- Export Storico Partite (NEW) -->
-                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-                            <h2 class="text-xl font-bold mb-4 text-gray-800">
-                                <i class="fa-solid fa-file-export mr-2 text-blue-600"></i>Export Storico Partite (CSV)
-                            </h2>
-                            <p class="text-sm text-gray-500 mb-4">Esporta le partite storiche con risultati e
-                                statistiche complete.</p>
-
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Data Inizio</label>
-                                    <input type="date" id="export-start-date"
-                                        class="w-full p-2 border rounded-lg bg-gray-50">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Data Fine</label>
-                                    <input type="date" id="export-end-date"
-                                        class="w-full p-2 border rounded-lg bg-gray-50">
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="flex items-center gap-2 text-sm">
-                                    <input type="checkbox" id="export-only-results" checked
-                                        class="form-checkbox rounded text-blue-600">
-                                    <span>Solo partite con risultato</span>
-                                </label>
-                            </div>
-
-                            <button id="export-storico-btn"
-                                class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors">
-                                <i class="fa-solid fa-download mr-2"></i>Scarica CSV Storico
+                        <!-- Button 2: Storico Strategie -->
+                        <div class="flex items-end">
+                            <button id="pronostici-history-btn"
+                                class="w-full bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-bold transition shadow-lg flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                Storico Strategie
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Quick Search & Edit Table -->
-                <div class="mt-8 bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800"><i
-                            class="fa-solid fa-search mr-2 text-purple-600"></i>Ricerca e Modifica Rapida DB</h2>
-                    <div class="mb-4">
-                        <input type="text" id="quick-db-search" placeholder="Cerca qualsiasi cosa nel DB..."
-                            class="w-full p-3 border-2 border-purple-100 rounded-lg focus:ring-2 focus:ring-purple-500">
+                <!-- Ranking Section -->
+                <div id="pronostici-ranking-section" class="hidden">
+                    <div
+                        class="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-2xl shadow-md border-2 border-purple-200 mb-6">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-purple-600"></i>
+                            📊 Ranking Salvati
+                        </h2>
+
+                        <!-- Lista Strategie del Giorno -->
+                        <div id="ranking-strategies-list" class="hidden">
+                            <h3 class="text-lg font-bold mb-3 text-gray-800">Strategie Disponibili:</h3>
+                            <div id="ranking-strategies-grid"
+                                class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Dettaglio Partite della Strategia Selezionata -->
+                        <div id="ranking-matches-detail" class="hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-bold text-gray-800" id="ranking-strategy-name"></h3>
+                                <button id="ranking-back-btn"
+                                    class="text-sm text-gray-600 hover:text-gray-800 underline">
+                                    <i class="fa-solid fa-arrow-left mr-1"></i>Torna alle strategie
+                                </button>
+                            </div>
+                            <div id="ranking-matches-container" class="space-y-3">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
                     </div>
-                    <div class="max-h-[500px] overflow-y-auto custom-scrollbar">
-                        <table class="w-full text-sm text-left">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
-                                <tr>
-                                    <th class="px-4 py-3">Data</th>
-                                    <th class="px-4 py-3">Lega</th>
-                                    <th class="px-4 py-3">Partita</th>
-                                    <th class="px-4 py-3">Tip</th>
-                                    <th class="px-4 py-3 text-center">Risultato</th>
-                                    <th class="px-4 py-3 text-center">Azioni</th>
-                                </tr>
-                            </thead>
-                            <tbody id="quick-db-results">
-                                <tr>
-                                    <td colspan="6" class="p-4 text-center text-gray-500">Usa la barra di ricerca
-                                        per trovare record...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                </div>
+
+                <!-- Storico Section -->
+                <div id="pronostici-storico-section" class="hidden">
+                    <!-- Lista Strategie per Data -->
+                    <div id="pronostici-storico-list" class="mb-6">
+                        <div class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-4 rounded-t-xl">
+                            <h3 class="text-xl font-bold" id="pronostici-storico-title">Strategie del --</h3>
+                            <p class="text-sm opacity-90" id="pronostici-storico-count">-- strategie salvate</p>
+                        </div>
+                        <div id="pronostici-storico-container"
+                            class="bg-white rounded-b-xl shadow-md border border-gray-200 p-4">
+                            <!-- Strategie caricate dinamicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Dettaglio Strategia Selezionata -->
+                    <div id="storico-dettaglio" class="hidden mt-6">
+                        <!-- Dettaglio caricato dinamicamente -->
+                    </div>
+
+                    <!-- Stats Globali -->
+                    <div id="storico-stats-globali" class="hidden mt-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                            <h3 class="text-xl font-bold mb-4">📊 Statistiche Globali</h3>
+                            <div id="storico-stats-content" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <!-- Stats caricate dinamicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+    </div>
+
+    <!-- PAGINA TEST STRATEGIE (Placeholder) -->
+    <div id="page-test" class="page max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-gradient-to-r from-orange-600 to-red-600 text-white p-6 rounded-2xl shadow-lg mb-8">
+            <h1 class="text-3xl font-bold flex items-center gap-3">
+                <i class="fa-solid fa-flask"></i>
+                Test Strategie
+            </h1>
+            <p class="text-orange-100 mt-2">⚠️ Modalità Test - I dati non verranno salvati su Firebase</p>
+        </div>
+
+        <div class="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-6 text-center">
+            <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-5xl mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-800 mb-3">In Sviluppo</h2>
+            <p class="text-gray-700 mb-4">
+                Questa sezione permetterà di testare nuove strategie senza salvare su Firebase.
+            </p>
+            <p class="text-sm text-gray-600">
+                Per ora puoi usare <strong>Ranking</strong> per testare configurazioni.
+            </p>
+        </div>
+    </div>
+
+    <!-- PAGINA GESTIONE DB -->
+    <div id="page-gestione-db" class="page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <!-- LEFT: Mass Find & Replace -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                <h2 class="text-xl font-bold mb-4 text-gray-800"><i
+                        class="fa-solid fa-tools mr-2 text-blue-600"></i>Trova e Sostituisci Massivo</h2>
+                <p class="text-sm text-gray-500 mb-4">Utile per correggere nomi di leghe o squadre in blocco
+                    (es. "EU-KOR" -> "AS-KOR").</p>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Campo su cui
+                            agire</label>
+                        <select id="mass-edit-field" class="w-full p-2 border rounded-lg bg-gray-50">
+                            <option value="lega">Lega</option>
+                            <option value="partita">Partita (Squadre)</option>
+                            <option value="tip">Tip</option>
+                            <option value="mercato">Mercato</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Trova (Valore
+                                errato)</label>
+                            <input type="text" id="mass-edit-find" placeholder="es. EU-KOR"
+                                class="w-full p-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sostituisci con
+                                (Nuovo)</label>
+                            <input type="text" id="mass-edit-replace" placeholder="es. AS-KOR"
+                                class="w-full p-2 border rounded-lg">
+                        </div>
+                    </div>
+
+                    <button id="mass-edit-preview-btn"
+                        class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700">
+                        <i class="fa-solid fa-magnifying-glass mr-2"></i>Anteprima Modifiche
+                    </button>
+
+                    <div id="mass-edit-preview" class="hidden bg-gray-50 p-4 rounded-lg border text-sm">
                     </div>
                 </div>
             </div>
 
-        </main>
+            <!-- RIGHT: Backup & Restore -->
+            <div class="space-y-6">
+                <!-- AI KNOWLEDGE BASE MANAGEMENT -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800"><i
+                            class="fa-solid fa-brain mr-2 text-purple-600"></i>Gestione Conoscenza AI</h2>
+                    <p class="text-sm text-gray-500 mb-4">Carica le definizioni statiche delle strategie (es.
+                        quali leghe sono in "Top EU") per l'AI.</p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Seleziona
+                                Strategia</label>
+                            <select id="ai-strat-id" class="w-full p-2 border rounded-lg bg-white">
+                                <option value="">Scegli strategia...</option>
+                                <optgroup label="Preset di Sistema">
+                                    <option value="top_eu">Top EU (Premier, Liga, ecc.)</option>
+                                    <option value="winrate_80">Winrate 80%</option>
+                                    <option value="italia">Campionati Italiani</option>
+                                    <option value="cups">Coppe Europee</option>
+                                    <option value="best_05_ht">Over 0.5 HT Best</option>
+                                </optgroup>
+                                <optgroup label="Strategie Personalizzate" id="ai-custom-strats-group">
+                                    <!-- Populated dynamically -->
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Descrizione AI</label>
+                            <textarea id="ai-strat-desc" placeholder="Descrizione per l'AI..."
+                                class="w-full p-2 border rounded-lg" rows="2"></textarea>
+                        </div>
+                        <div class="border-2 border-purple-200 rounded-lg p-4 bg-purple-50/30">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                File CSV (per estrarre leghe)
+                            </label>
+                            <input type="file" id="ai-csv-file" accept=".csv"
+                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                        </div>
+
+                        <button id="upload-ai-knowledge-btn"
+                            class="w-full bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700">
+                            <i class="fa-solid fa-cloud-upload-alt mr-2"></i>Carica su Firebase
+                        </button>
+                        <div id="ai-upload-status" class="text-sm text-gray-600 hidden"></div>
+                    </div>
+                </div>
+                <!-- Backup Upload (Moved) -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800"><i
+                            class="fa-solid fa-cloud-upload-alt mr-2 text-orange-600"></i>Ripristino /
+                        Aggiornamento</h2>
+                    <div class="border-2 border-orange-200 rounded-lg p-4 bg-orange-50/30">
+                        <label for="backup-csv-file" class="block text-sm font-medium text-gray-700 mb-1">
+                            <span class="bg-orange-600 text-white text-xs px-2 py-1 rounded mr-2">BACKUP</span>
+                            File CSV Backup / Totale
+                        </label>
+                        <input type="file" id="backup-csv-file" accept=".csv"
+                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
+                        <div id="backup-file-status" class="mt-2 text-xs text-gray-500 hidden">
+                            <i class="fa-solid fa-check-circle text-green-500 mr-1"></i>
+                            <span id="backup-file-name"></span>
+                        </div>
+                    </div>
+                    <div id="backup-upload-preview" class="hidden bg-gray-50 p-4 rounded-lg border mt-4">
+                    </div>
+
+
+                </div>
+
+                <!-- Export (Moved Logic) -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800"><i
+                            class="fa-solid fa-download mr-2 text-green-600"></i>Backup Database</h2>
+                    <p class="text-sm text-gray-500 mb-4">Scarica tutto il database corrente in CSV (inclusi
+                        ID).</p>
+                    <button id="export-full-db-btn"
+                        class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">
+                        <i class="fa-solid fa-file-csv mr-2"></i>Scarica Backup Completo
+                    </button>
+                </div>
+
+                <!-- Export Storico Partite (NEW) -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800">
+                        <i class="fa-solid fa-file-export mr-2 text-blue-600"></i>Export Storico Partite (CSV)
+                    </h2>
+                    <p class="text-sm text-gray-500 mb-4">Esporta le partite storiche con risultati e
+                        statistiche complete.</p>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data Inizio</label>
+                            <input type="date" id="export-start-date" class="w-full p-2 border rounded-lg bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data Fine</label>
+                            <input type="date" id="export-end-date" class="w-full p-2 border rounded-lg bg-gray-50">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="checkbox" id="export-only-results" checked
+                                class="form-checkbox rounded text-blue-600">
+                            <span>Solo partite con risultato</span>
+                        </label>
+                    </div>
+
+                    <button id="export-storico-btn"
+                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors">
+                        <i class="fa-solid fa-download mr-2"></i>Scarica CSV Storico
+                    </button>
+                </div>
+
+                <!-- Bulk Recalculate Esito (NEW) -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800">
+                        <i class="fa-solid fa-calculator mr-2 text-yellow-600"></i>Ricalcola Esiti
+                    </h2>
+                    <p class="text-sm text-gray-500 mb-4">Ricalcola automaticamente gli esiti (Vinto/Perso) per
+                        tutte le partite che hanno un risultato ma mancano di esito.</p>
+
+                    <button id="bulk-recalculate-esito-btn"
+                        class="w-full bg-yellow-600 text-white py-3 rounded-lg font-bold hover:bg-yellow-700 transition-colors">
+                        <i class="fa-solid fa-rotate mr-2"></i>Ricalcola Tutti gli Esiti
+                    </button>
+                    <div id="recalc-status" class="hidden mt-3 text-sm"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Search & Edit Table -->
+        <div class="mt-8 bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+            <h2 class="text-xl font-bold mb-4 text-gray-800"><i
+                    class="fa-solid fa-search mr-2 text-purple-600"></i>Ricerca e Modifica Rapida DB</h2>
+            <div class="mb-4">
+                <input type="text" id="quick-db-search" placeholder="Cerca qualsiasi cosa nel DB..."
+                    class="w-full p-3 border-2 border-purple-100 rounded-lg focus:ring-2 focus:ring-purple-500">
+            </div>
+            <div class="max-h-[500px] overflow-y-auto custom-scrollbar">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-3">Data</th>
+                            <th class="px-4 py-3">Lega</th>
+                            <th class="px-4 py-3">Partita</th>
+                            <th class="px-4 py-3">Tip</th>
+                            <th class="px-4 py-3 text-center">Risultato</th>
+                            <th class="px-4 py-3 text-center">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quick-db-results">
+                        <tr>
+                            <td colspan="6" class="p-4 text-center text-gray-500">Usa la barra di ricerca
+                                per trovare record...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    </main>
     </div>
 
     <!-- Modal -->
@@ -909,20 +1122,16 @@
         </div>
     </div>
 
+    <script src="secrets.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, writeBatch, query, where, doc, addDoc, deleteDoc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, writeBatch, query, where, doc, addDoc, deleteDoc, setDoc, getDoc, updateDoc, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
         // ==================== CONFIGURAZIONE FIREBASE CORRETTA ====================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCwAy4QfYlbxj4yBLnho3ZnO2_NaxzbVRQ", // Chiave fornita dall'utente
-            authDomain: "betmines-pronostici.firebaseapp.com",
-            projectId: "betmines-pronostici",
-            storageBucket: "betmines-pronostici.firebasestorage.app",
-            messagingSenderId: "716119578109",
-            appId: "1:716119578109:web:01e8b9dad7b17c91d63594"
-        };
+        // ==================== CONFIGURAZIONE FIREBASE CORRETTA ====================
+        // Config loaded from secrets.js (window.firebaseConfig)
+        const firebaseConfig = window.firebaseConfig;
 
         let db;
         let auth;
@@ -939,6 +1148,7 @@
 
         // ==================== GLOBAL STATE ====================
         let allMatches = [];
+        window.allMatches = allMatches; // Expose to window for global access
         let dataToUpload = [];
         let filteredMatches = [];
         let savedFilters = [];
@@ -1545,9 +1755,11 @@
                     const snapshot = await getDocs(matchesCol);
                     allMatches = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     allMatches.sort((a, b) => new Date(b.data || '2000-01-01') - new Date(a.data || '2000-01-01'));
+                    window.allMatches = allMatches; // Sync global
                 } catch (e) {
                     console.error('Error loading matches:', e);
                     allMatches = [];
+                    window.allMatches = []; // Sync global
                 }
             }
 
@@ -1725,21 +1937,55 @@
                 updateStatsDisplay(filteredMatches);
             }
 
-            function updateStatsDisplay(matches) {
-                console.log(`[updateStatsDisplay] Updating stats for ${matches.length} matches`);
-                // SOLO partite con esito (vinte o perse)
-                const matchesWithOutcome = matches.filter(m => m.esito === 'Vinto' || m.esito === 'Perso');
-                console.log(`[updateStatsDisplay] Matches with outcome: ${matchesWithOutcome.length}`);
-                const won = matchesWithOutcome.filter(m => m.esito === 'Vinto').length;
-                const lost = matchesWithOutcome.filter(m => m.esito === 'Perso').length;
-                const winRate = matchesWithOutcome.length > 0 ? (won / matchesWithOutcome.length) * 100 : 0;
-                const totalStake = matchesWithOutcome.length;
-                const profit = matchesWithOutcome.reduce((acc, m) => acc + (m.esito === 'Vinto' ? m.quota - 1 : -1), 0);
-                const roi = totalStake > 0 ? (profit / totalStake * 100) : 0;
+            function updateStatsDisplay(filteredMatches) {
+                // SMART STATS: 
+                // - If NO filters active: show GLOBAL stats (matching Client App)
+                // - If filters active: show stats for filtered matches
 
+                const selectedLeagues = Array.from(leagueFiltersGrid.querySelectorAll('input.league-checkbox:checked')).map(cb => cb.value);
+                const selectedTips = Array.from(tipFiltersContainer.querySelectorAll('.tip-button.active')).map(btn => btn.dataset.tip);
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const dateStart = filterDateStart.value;
+                const dateEnd = filterDateEnd.value;
+                const [probMin, probMax] = probabilitySliderEl.noUiSlider.get().map(v => parseInt(v));
+                const [oddsMin, oddsMax] = oddsSliderEl.noUiSlider.get().map(v => parseFloat(v));
+
+                // Detect if filters are active
+                const hasActiveFilters =
+                    selectedLeagues.length > 0 ||
+                    selectedTips.length > 0 ||
+                    searchTerm !== '' ||
+                    dateStart || dateEnd ||
+                    showOnlyNoResult ||
+                    probMin > 0 || probMax < 100 ||
+                    oddsMin > 1.0 || oddsMax < 10.0;
+
+                let matchesToCount;
+                if (hasActiveFilters) {
+                    // Use filtered matches
+                    matchesToCount = filteredMatches;
+                    console.log(`[updateStatsDisplay] Filters active - using ${matchesToCount.length} filtered matches`);
+                } else {
+                    // Use global matches with result (matching Client App)
+                    matchesToCount = (window.allMatches || []).filter(m => m.risultato && m.risultato.trim() !== '');
+                    console.log(`[updateStatsDisplay] No filters - using ${matchesToCount.length} global matches with result`);
+                }
+
+                const matchesWithResult = matchesToCount.filter(m => m.risultato && m.risultato.trim() !== '');
+                const won = matchesWithResult.filter(m => m.esito === 'Vinto').length;
+                const lost = matchesWithResult.filter(m => m.esito === 'Perso').length;
+
+                const totalStake = matchesWithResult.length;
+                const winRate = totalStake > 0 ? (won / totalStake) * 100 : 0;
+
+                const matchesWithOutcome = matchesWithResult.filter(m => m.esito === 'Vinto' || m.esito === 'Perso');
+                const profit = matchesWithOutcome.reduce((acc, m) => acc + (m.esito === 'Vinto' ? m.quota - 1 : -1), 0);
+                const roi = matchesWithOutcome.length > 0 ? (profit / matchesWithOutcome.length * 100) : 0;
+
+                const label = hasActiveFilters ? 'Totale (Filtrato)' : 'Totale';
                 const statsContainer = document.getElementById('stats-container');
                 statsContainer.innerHTML = `
-                    <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold text-blue-600">${matchesWithOutcome.length}</div><div class="text-xs text-gray-600">Totale</div></div>
+                    <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold text-blue-600">${totalStake}</div><div class="text-xs text-gray-600">${label}</div></div>
                     <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold text-green-600">${won}</div><div class="text-xs text-gray-600">Vinte</div></div>
                     <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold text-red-600">${lost}</div><div class="text-xs text-gray-600">Perse</div></div>
                     <div class="bg-white p-4 rounded-xl shadow-md border"><div class="text-2xl font-bold ${winRate >= 70 ? 'text-green-600' : 'text-red-600'}">${winRate.toFixed(1)}%</div><div class="text-xs text-gray-600">Winrate</div></div>
@@ -2131,6 +2377,582 @@
                 showModal("Filtro Caricato", `Caricato filtro: <b>${filter.name}</b>.<br>Puoi modificarlo e salvarlo.`);
             }
 
+            // Recalculate Button Handler
+            const recalcBtn = document.getElementById('recalc-strategies-btn');
+            if (recalcBtn) {
+                recalcBtn.addEventListener('click', async () => {
+                    const btn = document.getElementById('recalc-strategies-btn');
+                    const originalText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Calcolo in corso...';
+
+                    try {
+                        // USE THE DATE FROM CALENDAR, NOT ALWAYS TODAY!
+                        // Try new Pronostici tab first, fallback to old Storico tab
+                        const pronosticiDate = document.getElementById('pronostici-date')?.value;
+                        const storicoDate = document.getElementById('storico-date')?.value;
+                        const calendarDate = pronosticiDate || storicoDate;
+                        const targetDate = calendarDate || new Date().toISOString().split('T')[0];
+
+                        console.log(`[Ricalcola Oggi] Recalculating for date: ${targetDate}`);
+
+                        const matchesRef = collection(db, "matches");
+                        const q = query(matchesRef, where("data", "==", targetDate));
+                        const snapshot = await getDocs(q);
+
+                        const targetMatches = [];
+                        snapshot.forEach(doc => targetMatches.push(doc.data()));
+
+                        if (targetMatches.length > 0) {
+                            await calculateStrategyRankings(targetMatches, targetDate);
+                            alert(`✅ Strategie ricalcolate con successo per il ${targetDate}!\n\n${targetMatches.length} partite elaborate.`);
+                        } else {
+                            alert('⚠️ Nessuna partita trovata per oggi.');
+                        }
+                    } catch (e) {
+                        console.error("Error recalculating:", e);
+                        alert('Errore durante il ricalcolo: ' + e.message);
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                });
+            }
+
+            // === PRONOSTICI TAB: 2 SIMPLE BUTTONS ===
+
+            // Button 1: Carica Previsioni (ricalcola + visualizza)
+            const pronosticiLoadBtn = document.getElementById('pronostici-load-btn');
+            if (pronosticiLoadBtn) {
+                pronosticiLoadBtn.addEventListener('click', async () => {
+                    const selectedDate = document.getElementById('pronostici-unified-date').value;
+                    if (!selectedDate) {
+                        alert('⚠️ Seleziona una data!');
+                        return;
+                    }
+
+                    const btn = document.getElementById('pronostici-load-btn');
+                    const originalText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Calcolo in corso...';
+
+                    try {
+                        console.log(`[Pronostici] Calculating for date: ${selectedDate}`);
+
+                        // Step 1: Ricalcola strategie
+                        const matchesRef = collection(db, "matches");
+                        const q = query(matchesRef, where("data", "==", selectedDate));
+                        const snapshot = await getDocs(q);
+
+                        const targetMatches = [];
+                        snapshot.forEach(doc => targetMatches.push(doc.data()));
+
+                        if (targetMatches.length === 0) {
+                            alert(`⚠️ Nessuna partita trovata per il ${selectedDate}.`);
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                            return;
+                        }
+
+                        await calculateStrategyRankings(targetMatches, selectedDate);
+                        console.log('[Pronostici] ✅ Calculation completed, now loading display...');
+
+                        // Step 2: Carica e visualizza ranking
+                        console.log('[Pronostici] Fetching from rankings/' + selectedDate);
+                        const rankingDoc = await getDoc(doc(db, "rankings", selectedDate));
+                        console.log('[Pronostici] Doc exists:', rankingDoc.exists());
+
+                        if (!rankingDoc.exists()) {
+                            alert(`Ranking calcolato ma errore visualizzazione`);
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                            return;
+                        }
+
+                        const savedRankingData = rankingDoc.data();
+                        const strategies = savedRankingData.strategies;
+                        console.log('[Pronostici] Strategies loaded:', Object.keys(strategies).length);
+
+                        // Mostra sezione ranking
+                        console.log('[Pronostici] Showing ranking section...');
+                        document.getElementById('pronostici-ranking-section').classList.remove('hidden');
+                        document.getElementById('pronostici-storico-section').classList.add('hidden');
+
+                        const strategiesGrid = document.getElementById('ranking-strategies-grid');
+                        strategiesGrid.innerHTML = '';
+                        console.log('[Pronostici] Building strategy cards...');
+
+                        Object.keys(strategies).forEach((stratId, index) => {
+                            try {
+                                console.log(`[Pronostici] Creating card ${index + 1}/${Object.keys(strategies).length}: ${stratId}`);
+                                const strat = strategies[stratId];
+
+                                // Calculate stats
+                                const matches = strat.partite_by_tip || strat.matches || [];
+                                const allPartite = Array.isArray(matches) ? matches : Object.values(matches).flat();
+
+                                // HYDRATION: Update esito/risultato from allMatches
+                                // NOTE: Saved rankings don't have 'id', so we use data+partita as key
+                                const globalMatchesMap = new Map((window.allMatches || []).map(m => {
+                                    const key = `${m.data}_${m.partita}`;
+                                    return [key, m];
+                                }));
+
+                                let vinte = 0, perse = 0, void_match = 0;
+                                allPartite.forEach(p => {
+                                    const matchKey = `${p.data}_${p.partita}`;
+                                    const latest = globalMatchesMap.get(matchKey);
+                                    if (latest) {
+                                        p.risultato = latest.risultato || p.risultato;
+                                        p.esito = latest.esito || p.esito;
+                                    }
+
+                                    if (p.esito === 'Vinto') vinte++;
+                                    else if (p.esito === 'Perso') perse++;
+                                    else void_match++;
+                                });
+
+                                const totalResolved = vinte + perse;
+                                const winRate = totalResolved > 0 ? ((vinte / totalResolved) * 100).toFixed(1) : 0;
+
+                                const card = document.createElement('div'); // Changed to div for better control
+                                card.className = `p-4 rounded-xl border-2 cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1 ${strat.magic_type === 'gold' ? 'border-yellow-400 bg-yellow-50' :
+                                    strat.magic_type === 'silver' ? 'border-gray-300 bg-gray-50' :
+                                        'border-purple-100 bg-white hover:border-purple-300'
+                                    }`;
+
+                                card.innerHTML = `
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div class="font-bold text-gray-800 text-lg truncate pr-2" title="${strat.name}">${strat.name}</div>
+                                        <div class="text-xs px-2 py-1 rounded font-bold uppercase tracking-wider ${strat.magic_type === 'gold' ? 'bg-yellow-200 text-yellow-800' :
+                                        strat.magic_type === 'silver' ? 'bg-gray-200 text-gray-700' :
+                                            'bg-purple-100 text-purple-700'
+                                    }">
+                                            ${strat.magic_type || 'STD'}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-3 gap-2 mb-3">
+                                        <div class="bg-white/50 rounded p-2 text-center border border-gray-100">
+                                            <div class="text-xs text-gray-500 uppercase">Partite</div>
+                                            <div class="font-bold text-gray-800 text-lg">${allPartite.length}</div>
+                                        </div>
+                                        <div class="bg-white/50 rounded p-2 text-center border border-gray-100">
+                                            <div class="text-xs text-gray-500 uppercase">Win Rate</div>
+                                            <div class="font-bold ${parseFloat(winRate) >= 70 ? 'text-green-600' : parseFloat(winRate) >= 50 ? 'text-blue-600' : 'text-orange-500'} text-lg">${winRate}%</div>
+                                        </div>
+                                        <div class="bg-white/50 rounded p-2 text-center border border-gray-100">
+                                            <div class="text-xs text-gray-500 uppercase">W / L</div>
+                                            <div class="font-bold text-gray-800 text-lg">
+                                                <span class="text-green-600">${vinte}</span> / <span class="text-red-500">${perse}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center text-xs text-purple-600 font-medium border-t border-purple-100 pt-2 mt-2">
+                                        Clicca per vedere le partite <i class="fa-solid fa-chevron-right ml-1"></i>
+                                    </div>
+                                `;
+                                card.addEventListener('click', () => displayRankingMatches(stratId, strat, savedRankingData));
+                                strategiesGrid.appendChild(card);
+                                console.log(`[Pronostici] Card ${index + 1} created successfully`);
+                            } catch (cardError) {
+                                console.error(`[Pronostici] Error creating card for ${stratId}:`, cardError);
+                            }
+                        });
+
+                        console.log('[Pronostici] All cards created, showing lists...');
+
+                        document.getElementById('ranking-strategies-list').classList.remove('hidden');
+                        document.getElementById('ranking-matches-detail').classList.add('hidden');
+
+                        alert(`✅ Previsioni calcolate per il ${selectedDate}!\n\n${targetMatches.length} partite elaborate.\n${Object.keys(strategies).length} strategie generate.`);
+
+                    } catch (e) {
+                        console.error('[Pronostici] Error:', e);
+                        alert('Errore: ' + e.message);
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                });
+            }
+
+            // Button 2: Storico Strategie
+            const pronosticiHistoryBtn = document.getElementById('pronostici-history-btn');
+            if (pronosticiHistoryBtn) {
+                pronosticiHistoryBtn.addEventListener('click', async () => {
+                    console.log('[Pronostici] Loading history (last 31 days)...');
+
+                    try {
+                        // Hide ranking, show storico
+                        document.getElementById('pronostici-ranking-section').classList.add('hidden');
+
+                        const storicoSection = document.getElementById('pronostici-storico-section');
+                        storicoSection.classList.remove('hidden');
+
+                        // Get last 31 dates (approx 1 month)
+                        const historyRef = collection(db, "ranking_history");
+                        const q = query(historyRef, orderBy("data_partite", "desc"), limit(50)); // Increased limit to handle duplicates
+                        const snapshot = await getDocs(q);
+
+                        if (snapshot.empty) {
+                            alert('Nessuno storico trovato');
+                            return;
+                        }
+
+                        // Update title
+                        document.getElementById('pronostici-storico-title').textContent = `Storico Strategie`;
+                        document.getElementById('pronostici-storico-count').textContent = `Seleziona una data per vedere i dettagli`;
+
+                        // Show section
+                        const listSection = document.getElementById('pronostici-storico-list');
+                        listSection.classList.remove('hidden');
+
+                        // Populate Simple List with DEDUPLICATION
+                        const container = document.getElementById('pronostici-storico-container');
+                        container.innerHTML = '';
+                        container.className = "bg-white rounded-b-xl shadow-md border border-gray-200 overflow-hidden";
+
+                        // Create Header
+                        const header = document.createElement('div');
+                        header.className = "grid grid-cols-3 bg-gray-50 p-4 font-bold text-gray-700 border-b border-gray-200 uppercase text-xs tracking-wider";
+                        header.innerHTML = `
+                            <div>Data</div>
+                            <div class="text-center">Strategie</div>
+                            <div class="text-center">Tot. Partite</div>
+                        `;
+                        container.appendChild(header);
+
+                        // Deduplicate by date
+                        const uniqueDates = new Map();
+
+                        snapshot.forEach(doc => {
+                            const data = doc.data();
+                            const date = data.data_partite || doc.id;
+                            const strategies = data.strategies || [];
+                            const strategiesList = Array.isArray(strategies) ? strategies : Object.values(strategies);
+
+                            // If date already exists, keep the one with more strategies
+                            if (uniqueDates.has(date)) {
+                                const existing = uniqueDates.get(date);
+                                if (strategiesList.length > existing.strategiesList.length) {
+                                    uniqueDates.set(date, { date, strategiesList });
+                                }
+                            } else {
+                                uniqueDates.set(date, { date, strategiesList });
+                            }
+                        });
+
+                        // Render unique rows
+                        uniqueDates.forEach(({ date, strategiesList }) => {
+                            const count = strategiesList.length;
+
+                            // Calculate total matches
+                            let totalMatches = 0;
+                            strategiesList.forEach(s => {
+                                const matches = s.partite_by_tip || s.matches || [];
+                                const matchCount = Array.isArray(matches) ? matches.length : Object.values(matches).flat().length;
+                                totalMatches += matchCount;
+                            });
+
+                            const row = document.createElement('div');
+                            row.className = "grid grid-cols-3 p-4 border-b border-gray-100 hover:bg-purple-50 cursor-pointer transition-colors items-center group";
+                            row.innerHTML = `
+                                <div class="font-bold text-gray-800 group-hover:text-purple-700 flex items-center gap-2">
+                                    <i class="fa-regular fa-calendar text-gray-400 group-hover:text-purple-500"></i>
+                                    ${date}
+                                </div>
+                                <div class="text-center font-semibold text-gray-700">
+                                    <span class="bg-gray-100 text-gray-800 py-1 px-3 rounded-full text-xs">${count}</span>
+                                </div>
+                                <div class="text-center text-gray-600 font-mono">${totalMatches}</div>
+                            `;
+
+                            row.addEventListener('click', () => {
+                                renderStoricoStrategiesForDate(date, strategiesList);
+                            });
+
+                            container.appendChild(row);
+                        });
+
+                        console.log('[Pronostici] History list loaded successfully!');
+
+                    } catch (e) {
+                        console.error('[Pronostici] Error loading history:', e);
+                        alert('Errore: ' + e.message);
+                    }
+                });
+            }
+
+            function renderStoricoStrategiesForDate(date, strategiesList) {
+                // Update header
+                document.getElementById('pronostici-storico-title').innerHTML = `
+                    <button id="back-to-history-btn" class="mr-3 hover:text-purple-200 transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    Strategie del ${date}
+                `;
+                document.getElementById('pronostici-storico-count').textContent = `${strategiesList.length} strategie salvate`;
+
+                const container = document.getElementById('pronostici-storico-container');
+                container.innerHTML = '';
+
+                // Add Back Button Logic
+                document.getElementById('back-to-history-btn').addEventListener('click', () => {
+                    document.getElementById('pronostici-history-btn').click();
+                });
+
+                // Ensure grid layout for strategies
+                container.className = "bg-white rounded-b-xl shadow-md border border-gray-200 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
+
+                // Hydration Map (using data+partita as key)
+                const globalMatchesMap = new Map((window.allMatches || []).map(m => {
+                    const key = `${m.data}_${m.partita}`;
+                    return [key, m];
+                }));
+
+                strategiesList.forEach((ranking, index) => {
+                    const partiteByTip = ranking.partite_by_tip || ranking.matches || [];
+                    const allPartite = Array.isArray(partiteByTip) ? partiteByTip : Object.values(partiteByTip).flat();
+
+                    let vinte = 0, perse = 0, void_match = 0;
+                    allPartite.forEach(p => {
+                        // HYDRATE using data+partita key
+                        const matchKey = `${p.data}_${p.partita}`;
+                        const latest = globalMatchesMap.get(matchKey);
+                        if (latest) {
+                            p.risultato = latest.risultato || p.risultato;
+                            p.esito = latest.esito || p.esito;
+                        }
+
+                        if (p.esito === 'Vinto') vinte++;
+                        else if (p.esito === 'Perso') perse++;
+                        else void_match++;
+                    });
+
+                    const totalResolved = vinte + perse;
+                    const winRate = totalResolved > 0 ? ((vinte / totalResolved) * 100).toFixed(1) : 0;
+
+                    const card = document.createElement('div');
+                    card.className = `p-4 rounded-xl border-2 cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1 ${ranking.magic_type === 'gold' ? 'border-yellow-400 bg-yellow-50' :
+                        ranking.magic_type === 'silver' ? 'border-gray-300 bg-gray-50' :
+                            'border-purple-100 bg-white hover:border-purple-300'
+                        }`;
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="font-bold text-gray-800 text-lg truncate pr-2" title="${ranking.filtro_nome || ranking.name}">${ranking.filtro_nome || ranking.name || `Strategia ${index + 1}`}</div>
+                            <div class="text-xs px-2 py-1 rounded font-bold uppercase tracking-wider ${ranking.magic_type === 'gold' ? 'bg-yellow-200 text-yellow-800' :
+                            ranking.magic_type === 'silver' ? 'bg-gray-200 text-gray-700' :
+                                'bg-purple-100 text-purple-700'
+                        }">
+                                ${ranking.magic_type || 'STD'}
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-2 mb-3">
+                            <div class="bg-white/50 rounded p-2 text-center border border-gray-100">
+                                <div class="text-xs text-gray-500 uppercase">Partite</div>
+                                <div class="font-bold text-gray-800 text-lg">${allPartite.length}</div>
+                            </div>
+                            <div class="bg-white/50 rounded p-2 text-center border border-gray-100">
+                                <div class="text-xs text-gray-500 uppercase">Win Rate</div>
+                                <div class="font-bold ${parseFloat(winRate) >= 70 ? 'text-green-600' : parseFloat(winRate) >= 50 ? 'text-blue-600' : 'text-orange-500'} text-lg">${winRate}%</div>
+                            </div>
+                            <div class="bg-white/50 rounded p-2 text-center border border-gray-100">
+                                <div class="text-xs text-gray-500 uppercase">W / L</div>
+                                <div class="font-bold text-gray-800 text-lg">
+                                    <span class="text-green-600">${vinte}</span> / <span class="text-red-500">${perse}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center text-xs text-purple-600 font-medium border-t border-purple-100 pt-2 mt-2">
+                            Clicca per vedere le partite <i class="fa-solid fa-chevron-right ml-1"></i>
+                        </div>
+                    `;
+
+                    // Add click listener to show matches
+                    card.addEventListener('click', () => {
+                        displayRankingMatches(ranking.name || `Strategia ${index}`, ranking, { strategies: { [index]: ranking } });
+                        // We need to ensure the ranking section is visible for the modal/list to appear if it uses that container
+                        // Or we can render it in a modal. 
+                        // The existing displayRankingMatches populates 'ranking-matches-container' and shows 'ranking-matches-detail'
+                        // We need to make sure those elements are visible even if we are in "Storico" mode.
+
+                        document.getElementById('pronostici-storico-list').classList.add('hidden');
+
+                        // We'll reuse the ranking-matches-detail container but move it or ensure it's visible
+                        const detailSection = document.getElementById('ranking-matches-detail');
+                        detailSection.classList.remove('hidden');
+
+                        // Hack: Move detail section to be visible in Storico context if needed, 
+                        // or just hide storico list and show detail.
+                        // The current structure has 'ranking-matches-detail' inside 'pronostici-ranking-section' which is hidden.
+                        // We should move 'ranking-matches-detail' OUT of 'pronostici-ranking-section' or clone it.
+                        // For now, let's unhide the parent ranking section TEMPORARILY but hide the ranking list
+
+                        document.getElementById('pronostici-ranking-section').classList.remove('hidden');
+                        document.getElementById('ranking-strategies-list').classList.add('hidden');
+                        document.getElementById('pronostici-storico-section').classList.add('hidden');
+
+                        // Override back button behavior
+                        const backBtn = document.getElementById('ranking-back-btn');
+                        const newBackBtn = backBtn.cloneNode(true);
+                        backBtn.parentNode.replaceChild(newBackBtn, backBtn);
+
+                        newBackBtn.addEventListener('click', () => {
+                            document.getElementById('ranking-matches-detail').classList.add('hidden');
+                            document.getElementById('pronostici-ranking-section').classList.add('hidden');
+                            document.getElementById('pronostici-storico-section').classList.remove('hidden');
+                            document.getElementById('pronostici-storico-list').classList.remove('hidden');
+                        });
+                    });
+
+                    container.appendChild(card);
+                });
+            }
+
+            // Helper function for displaying ranking matches
+            function displayRankingMatches(stratId, strat, savedRankingData) {
+                document.getElementById('ranking-strategy-name').textContent = strat.name;
+                const container = document.getElementById('ranking-matches-container');
+                container.innerHTML = '';
+
+                const matches = strat.partite_by_tip || strat.matches || [];
+                const allMatches = Array.isArray(matches) ? matches : Object.values(matches).flat();
+
+                // Hydration Map (using data+partita as key)
+                const globalMatchesMap = new Map((window.allMatches || []).map(m => {
+                    const key = `${m.data}_${m.partita}`;
+                    return [key, m];
+                }));
+
+                if (allMatches.length === 0) {
+                    container.innerHTML = '<div class="text-gray-500 text-center py-8">Nessuna partita per questa strategia</div>';
+                } else {
+                    allMatches.forEach((m, idx) => {
+                        // HYDRATE using data+partita key
+                        const matchKey = `${m.data}_${m.partita}`;
+                        const latest = globalMatchesMap.get(matchKey);
+                        if (latest) {
+                            m.risultato = latest.risultato || m.risultato;
+                            m.esito = latest.esito || m.esito;
+                        }
+
+                        const card = document.createElement('div');
+
+                        // SIMPLIFIED VIEW FOR COMPLETED MATCHES
+                        if (m.risultato && m.esito) {
+                            const isWin = m.esito === 'Vinto';
+                            const isLoss = m.esito === 'Perso';
+                            const bgColor = isWin ? 'bg-green-100 border-green-300' : isLoss ? 'bg-red-100 border-red-300' : 'bg-yellow-100 border-yellow-300';
+                            const textColor = isWin ? 'text-green-900' : isLoss ? 'text-red-900' : 'text-yellow-900';
+
+                            card.className = `p-4 rounded-lg shadow border-2 ${bgColor} transition-all`;
+                            card.innerHTML = `
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-lg ${textColor}">${m.partita || m.match}</div>
+                                        <div class="text-sm opacity-75 ${textColor}">${m.lega || m.league}</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-2xl font-bold ${textColor}">${m.risultato}</div>
+                                        <div class="text-sm font-bold uppercase tracking-wider ${textColor}">${m.esito}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 flex items-center gap-2">
+                                    <span class="bg-white/50 px-2 py-1 rounded text-sm font-bold ${textColor}">${m.tip}</span>
+                                    <span class="bg-white/50 px-2 py-1 rounded text-sm ${textColor}">@${m.quota}</span>
+                                </div>
+                            `;
+                        } else {
+                            // STANDARD DETAILED VIEW
+                            card.className = 'bg-white p-4 rounded-lg shadow border border-gray-200 hover:shadow-md transition-all';
+
+                            // Badges Logic
+                            let indicationBadge = '';
+                            if (m.indication) {
+                                indicationBadge = `<span class="${m.indication.bg} ${m.indication.color} px-3 py-1 rounded-full text-xs font-bold">${m.indication.text}</span>`;
+                            }
+
+                            let betfairBadge = '';
+                            if (m.betfairBadge && m.betfairBadge.text) {
+                                betfairBadge = `<div class="mt-2 text-xs ${m.betfairBadge.color}">${m.betfairBadge.text}</div>`;
+                            }
+
+                            // Result Logic (Partial)
+                            const resultBadge = m.risultato ? `<div class="text-sm font-bold bg-gray-100 px-2 py-1 rounded">${m.risultato}</div>` : '';
+                            const esitoBadge = m.esito ? `<div class="px-2 py-1 rounded text-xs font-bold ${m.esito === 'Vinto' ? 'bg-green-100 text-green-800' : m.esito === 'Perso' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}">${m.esito}</div>` : '';
+
+                            card.innerHTML = `
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-2xl font-bold text-purple-600">#${idx + 1}</span>
+                                    <span class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-1 rounded-full text-lg font-bold">
+                                        ${m.score || 0}
+                                    </span>
+                                </div>
+                                
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="text-lg font-bold text-gray-800 mb-1">${m.partita || m.match}</div>
+                                        <div class="text-sm text-gray-600 mb-2">${m.lega || m.league}</div>
+                                    </div>
+                                    <div class="flex flex-col items-end gap-1">
+                                        ${resultBadge}
+                                        ${esitoBadge}
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">${m.tip}</span>
+                                    <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-semibold">@${m.quota}</span>
+                                    ${m.ora ? `<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-semibold">🕐 ${m.ora}</span>` : ''}
+                                </div>
+                                
+                                ${indicationBadge ? `<div class="mb-2">${indicationBadge}</div>` : ''}
+                                ${betfairBadge}
+                                
+                                ${m.teamStats && m.teamStats.home && m.teamStats.away ? `
+                                    <div class="mt-3 pt-3 border-t border-gray-200">
+                                        <div class="text-xs font-bold text-gray-700 mb-2">Statistiche Squadre:</div>
+                                        <div class="grid grid-cols-2 gap-2 text-xs">
+                                            <div class="bg-blue-50 p-2 rounded">
+                                                <div class="font-semibold">Casa: ${m.teamStats.home.count}/${m.teamStats.home.total}</div>
+                                                <div class="${m.teamStats.home.color === 'green' ? 'text-green-600' : m.teamStats.home.color === 'red' ? 'text-red-600' : 'text-yellow-600'} font-bold">
+                                                    ${m.teamStats.home.percentage}%
+                                                </div>
+                                            </div>
+                                            <div class="bg-blue-50 p-2 rounded">
+                                                <div class="font-semibold">Trasferta: ${m.teamStats.away.count}/${m.teamStats.away.total}</div>
+                                                <div class="${m.teamStats.away.color === 'green' ? 'text-green-600' : m.teamStats.away.color === 'red' ? 'text-red-600' : 'text-yellow-600'} font-bold">
+                                                    ${m.teamStats.away.percentage}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            `;
+                        }
+
+                        container.appendChild(card);
+                    });
+                }
+
+                document.getElementById('ranking-strategies-list').classList.add('hidden');
+                document.getElementById('ranking-matches-detail').classList.remove('hidden');
+            }
+
+            // Back button for ranking
+            const rankingBackBtn = document.getElementById('ranking-back-btn');
+            if (rankingBackBtn) {
+                rankingBackBtn.addEventListener('click', () => {
+                    document.getElementById('ranking-strategies-list').classList.remove('hidden');
+                    document.getElementById('ranking-matches-detail').classList.add('hidden');
+                });
+            }
+
             async function handleSaveClientFilter() {
                 const selectedKey = document.getElementById('client-filters-select').value;
                 if (!selectedKey) {
@@ -2302,15 +3124,34 @@
                     select.innerHTML = '<option value="">Seleziona...</option>' + localFilters.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
                 }
 
-                // Popola dropdown Ranking con TUTTO (Local + Public + Special)
+                // Popola dropdown Ranking con TUTTO (Local + Public + Special + Standard Presets)
                 const rankingSelect = document.getElementById('ranking-filter-select');
                 if (rankingSelect) {
+                    // Fetch Standard Presets first
+                    let standardPresets = [];
+                    try {
+                        const presetsDoc = await getDoc(doc(db, "system", "client_presets"));
+                        if (presetsDoc.exists()) {
+                            const data = presetsDoc.data();
+                            standardPresets = Object.keys(data).map(key => ({
+                                id: key,
+                                name: data[key].name || key,
+                                type: 'preset'
+                            }));
+                        }
+                    } catch (e) {
+                        console.error("Error loading standard presets:", e);
+                    }
+
                     rankingSelect.innerHTML = '<option value="">Nessun filtro (tutte le partite)</option>' +
                         '<option value="BEST_05HT" style="background: linear-gradient(to right, #fef3c7, #fde68a); font-weight: bold;">⚡ BEST 0.5 HT (Auto)</option>' +
-                        savedFilters.map(f => {
-                            const icon = f.type === 'public' ? '🌍' : '👤';
-                            return `<option value="${f.id}">${icon} ${f.name}</option>`;
-                        }).join('');
+                        standardPresets.map(f => `<option value="${f.id}">🔒 ${f.name}</option>`).join('') +
+                        savedFilters
+                            .filter(f => !standardPresets.some(sp => sp.id === f.id)) // Deduplicate
+                            .map(f => {
+                                const icon = f.type === 'public' ? '🌍' : '👤';
+                                return `<option value="${f.id}">${icon} ${f.name}</option>`;
+                            }).join('');
                 }
             };
 
@@ -2759,17 +3600,17 @@
                     // Badge dinamico basato su prolificità
                     if (avgProlificita >= 75) {
                         betfairBadge = {
-                            text: 'Betfair Back Over 2.5',
+                            text: 'Trading Back Over 2.5',
                             color: 'bg-yellow-100 text-yellow-700 border-yellow-300'
                         };
                     } else if (avgProlificita >= 60) {
                         betfairBadge = {
-                            text: 'Betfair Back Over 1.5',
+                            text: 'Trading Back Over 1.5',
                             color: 'bg-yellow-100 text-yellow-700 border-yellow-300'
                         };
                     } else if (avgProlificita < 50 && avgProlificita >= 30) {
                         betfairBadge = {
-                            text: 'Betfair Lay Under 2.5',
+                            text: 'Trading Lay Under 2.5',
                             color: 'bg-yellow-100 text-yellow-700 border-yellow-300'
                         };
                     }
@@ -2778,28 +3619,28 @@
                 // OVER con HT alto + score buono → Back Over 2.5
                 else if (tip.startsWith('+') && htProb >= 70 && score >= 35) {
                     betfairBadge = {
-                        text: 'Betfair Back Over 2.5',
+                        text: 'Trading Back Over 2.5',
                         color: 'bg-purple-100 text-purple-700 border-purple-300'
                     };
                 }
                 // OVER con squadre molto prolifiche → Back Over 2.5
                 else if (tip.startsWith('+') && score >= 45) {
                     betfairBadge = {
-                        text: 'Betfair Back Over 2.5',
+                        text: 'Trading Back Over 2.5',
                         color: 'bg-purple-100 text-purple-700 border-purple-300'
                     };
                 }
                 // UNDER con score buono → Lay Over 2.5
                 else if (tip.startsWith('-') && score >= 40) {
                     betfairBadge = {
-                        text: 'Betfair Lay Over 2.5',
+                        text: 'Trading Lay Over 2.5',
                         color: 'bg-purple-100 text-purple-700 border-purple-300'
                     };
                 }
                 // 1X2 / DC equilibrata → Lay The Draw
                 else if ((tip.includes('X') || tip.includes('12')) && score >= 30) {
                     betfairBadge = {
-                        text: 'Betfair Lay The Draw',
+                        text: 'Trading Lay The Draw',
                         color: 'bg-purple-100 text-purple-700 border-purple-300'
                     };
                 }
@@ -3205,6 +4046,7 @@
 
                         // Helper to extract filter data (handles both old array format and new object format)
                         const getFilterData = (presetData) => {
+                            if (!presetData) return { leagues: [], tips: [], odds: [1.0, 10.0], prob: [0, 100] };
                             if (Array.isArray(presetData)) {
                                 // Old format: just array of leagues
                                 return { leagues: presetData, tips: [], odds: [1.0, 10.0], prob: [0, 100] };
@@ -3443,10 +4285,14 @@
                     // Skip if no matches
                     if (filteredMatches.length === 0) {
                         results[stratId] = {
+                            id: stratId,
+                            filtro_nome: strat.name,
                             name: strat.name,
+                            magic_type: strat.type === 'best_05_ht' ? 'singole' : (strat.type === 'winrate_80' ? 'trading' : 'custom'),
                             lastCalculated: Date.now(),
                             totalMatches: 0,
-                            matches: []
+                            matches: [],
+                            partite_by_tip: {}
                         };
                         continue;
                     }
@@ -3505,11 +4351,22 @@
                     // Sort by score (desc)
                     rankedMatches.sort((a, b) => b.score - a.score);
 
+                    // Group by tip for partite_by_tip
+                    const partite_by_tip = {};
+                    rankedMatches.forEach(m => {
+                        if (!partite_by_tip[m.tip]) partite_by_tip[m.tip] = [];
+                        partite_by_tip[m.tip].push(m);
+                    });
+
                     results[stratId] = {
+                        id: stratId,
+                        filtro_nome: strat.name,
                         name: strat.name,
+                        magic_type: strat.type === 'best_05_ht' ? 'singole' : (strat.type === 'winrate_80' ? 'trading' : 'custom'),
                         lastCalculated: Date.now(),
                         totalMatches: rankedMatches.length,
-                        matches: rankedMatches
+                        matches: rankedMatches,
+                        partite_by_tip: partite_by_tip
                     };
 
                     console.log(`[calculateStrategyRankings] ${strat.name}: ${rankedMatches.length} matches calculated`);
@@ -3517,11 +4374,23 @@
 
                 // Save to Firebase under rankings/{date}
                 try {
+                    const strategiesArray = Object.values(results);
+
+                    // 1. Save to rankings/{date} (Main storage)
                     await setDoc(doc(db, "rankings", targetDate), {
-                        strategies: results,
+                        strategies: strategiesArray,
                         generated: Date.now()
                     });
                     console.log(`[calculateStrategyRankings] Saved to rankings/${targetDate}`);
+
+                    // 2. Save to ranking_history/{date} (For History View)
+                    await setDoc(doc(db, "ranking_history", targetDate), {
+                        data_partite: targetDate,
+                        strategies: strategiesArray,
+                        generated: Date.now()
+                    });
+                    console.log(`[calculateStrategyRankings] Saved to ranking_history/${targetDate}`);
+
                 } catch (e) {
                     console.error("Error saving rankings to Firebase:", e);
                 }
@@ -3810,6 +4679,8 @@
             function parseCSV(text) {
                 const lines = text.split('\n');
                 const headers = lines[0].split(',').map(h => h.trim().replace(/['"]/g, ''));
+                console.log('[parseCSV] Headers found:', headers);
+
                 const data = [];
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
@@ -3818,6 +4689,7 @@
                     headers.forEach((h, idx) => row[h] = values[idx]);
                     data.push(row);
                 }
+                if (data.length > 0) console.log('[parseCSV] First row sample:', data[0]);
                 return data;
             }
 
@@ -3872,39 +4744,57 @@
                         await saveTimeToCache(matchData.data, matchData.partita, ora);
                     }
 
-                    // Calcola esito se risultati
-                    if (type === 'results' && matchData.risultato) {
-                        matchData.esito = calculateOutcome(matchData);
-                    }
-
-                    // CONTROLLO DUPLICATI
-                    const exists = allMatches.find(m =>
+                    // Check duplicates in current batch
+                    const existingIndex = potentialMatches.findIndex(m =>
                         m.data === matchData.data &&
+                        m.lega === matchData.lega &&
                         m.partita === matchData.partita &&
                         m.tip === matchData.tip
                     );
 
-                    if (exists) {
-                        if (type === 'results' && matchData.risultato) {
-                            // Se partita esiste GIÀ CON risultato → duplicato vero
-                            if (exists.risultato && exists.risultato.trim() !== '') {
-                                duplicates++;
-                            } else {
-                                // Partita esiste senza risultato → UPDATE
-                                matchData.id = exists.id;
-                                updates++;
-                                potentialMatches.push(matchData);
-                            }
-                        } else {
-                            // Duplicato vero (tips duplicati o altro)
-                            duplicates++;
-                        }
+                    if (existingIndex >= 0) {
+                        // Update existing match in batch - SMART MERGE
+                        const existing = potentialMatches[existingIndex];
+                        const smartUpdate = { ...existing };
+
+                        // Update fields ONLY if present in new data
+                        if (matchData.ora) smartUpdate.ora = matchData.ora;
+                        if (matchData.quota) smartUpdate.quota = matchData.quota;
+                        if (matchData.probabilita) smartUpdate.probabilita = matchData.probabilita;
+                        if (matchData.info_ht) smartUpdate.info_ht = matchData.info_ht;
+                        if (matchData.risultato) smartUpdate.risultato = matchData.risultato;
+                        if (matchData.esito) smartUpdate.esito = matchData.esito;
+
+                        potentialMatches[existingIndex] = smartUpdate;
+                        updates++;
                     } else {
-                        // Nuova partita
-                        potentialMatches.push(matchData);
+                        // Check against already loaded matches (global)
+                        const globalDuplicate = window.allMatches.find(m =>
+                            m.data === matchData.data &&
+                            m.lega === matchData.lega &&
+                            m.partita === matchData.partita &&
+                            m.tip === matchData.tip
+                        );
+
+                        if (globalDuplicate) {
+                            // Update global duplicate - SMART MERGE
+                            const smartUpdate = { ...globalDuplicate };
+
+                            if (matchData.ora) smartUpdate.ora = matchData.ora;
+                            if (matchData.quota) smartUpdate.quota = matchData.quota;
+                            if (matchData.probabilita) smartUpdate.probabilita = matchData.probabilita;
+                            if (matchData.info_ht) smartUpdate.info_ht = matchData.info_ht;
+                            if (matchData.risultato) smartUpdate.risultato = matchData.risultato;
+                            if (matchData.esito) smartUpdate.esito = matchData.esito;
+
+                            potentialMatches.push(smartUpdate);
+                            updates++;
+                        } else {
+                            // New match
+                            potentialMatches.push(matchData);
+                        }
                     }
                 }
-
                 dataToUpload = potentialMatches;
                 // FIX: HT file should update the TIPS preview box
                 const previewId = (type === 'tips' || type === 'ht') ? 'tips-upload-preview' : 'results-upload-preview';
@@ -4130,18 +5020,90 @@
                 const startLabel = startDate ? formatDateIT(startDate) : 'inizio';
                 const endLabel = endDate ? formatDateIT(endDate) : 'oggi';
                 a.download = `storico_${startLabel}_${endLabel}.csv`.replace(/\//g, '-');
+                document.body.appendChild(a);
                 a.click();
+                document.body.removeChild(a);
                 URL.revokeObjectURL(url);
+            });
 
-                alert(`Export completato! ${filteredMatches.length} partite esportate.`);
+            // Bulk Recalculate Esito
+            document.getElementById('bulk-recalculate-esito-btn').addEventListener('click', async () => {
+                const btn = document.getElementById('bulk-recalculate-esito-btn');
+                const statusDiv = document.getElementById('recalc-status');
+
+                if (!confirm('⚠️ Ricalcolare gli esiti per TUTTE le partite con risultato?\n\nQuesta operazione potrebbe richiedere alcuni secondi.')) {
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Ricalcolo in corso...';
+                statusDiv.classList.remove('hidden');
+                statusDiv.innerHTML = '<i class="fa-solid fa-clock mr-2"></i>Analisi partite...';
+
+                try {
+                    // Find matches with result but no esito
+                    const matchesToFix = allMatches.filter(m =>
+                        m.risultato && m.risultato.trim() !== '' &&
+                        (!m.esito || m.esito.trim() === '')
+                    );
+
+                    if (matchesToFix.length === 0) {
+                        statusDiv.innerHTML = '<div class="text-green-600"><i class="fa-solid fa-check mr-2"></i>Nessuna partita da correggere! Tutti gli esiti sono già presenti.</div>';
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fa-solid fa-rotate mr-2"></i>Ricalcola Tutti gli Esiti';
+                        return;
+                    }
+
+                    statusDiv.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Ricalcolo ${matchesToFix.length} partite...`;
+
+                    // Recalculate esito for each match
+                    const batch = writeBatch(db);
+                    let fixed = 0;
+                    let failed = 0;
+
+                    for (const match of matchesToFix) {
+                        const newEsito = calculateOutcome(match);
+                        if (newEsito && newEsito !== '') {
+                            batch.update(doc(db, "matches", match.id), { esito: newEsito });
+                            // Update local copy
+                            const idx = allMatches.findIndex(m => m.id === match.id);
+                            if (idx >= 0) allMatches[idx].esito = newEsito;
+                            fixed++;
+                        } else {
+                            failed++;
+                            console.warn('[Bulk Recalc] Could not calculate esito for:', match);
+                        }
+                    }
+
+                    await batch.commit();
+                    await loadAllMatches(); // Reload to refresh
+                    applyFiltersAndRender(); // Refresh display
+
+                    statusDiv.innerHTML = `
+                        <div class="bg-green-50 p-3 rounded border border-green-200">
+                            <div class="text-green-800 font-bold"><i class="fa-solid fa-check-circle mr-2"></i>Ricalcolo completato!</div>
+                            <div class="text-sm text-green-700 mt-1">✅ ${fixed} partite corrette</div>
+                            ${failed > 0 ? `<div class="text-sm text-yellow-700">⚠️ ${failed} partite non calcolabili (mercato non riconosciuto)</div>` : ''}
+                        </div>
+                    `;
+
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-rotate mr-2"></i>Ricalcola Tutti gli Esiti';
+                } catch (e) {
+                    console.error('[Bulk Recalc] Error:', e);
+                    statusDiv.innerHTML = `<div class="text-red-600"><i class="fa-solid fa-exclamation-triangle mr-2"></i>Errore: ${e.message}</div>`;
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-rotate mr-2"></i>Ricalcola Tutti gli Esiti';
+                }
             });
 
             // REMOVED DUPLICATE handleUploadConfirmed FUNCTION
             // The correct version is defined above (lines ~2850)
 
             function calculateOutcome(match) {
-                const { mercato, tip, risultato } = match;
-                if (!risultato || !mercato || !tip) return '';
+                const { tip, risultato } = match;
+                if (!risultato || !tip) return '';
+
                 const scores = risultato.split('-').map(s => parseInt(s.trim()));
                 if (scores.length !== 2 || isNaN(scores[0]) || isNaN(scores[1])) return '';
 
@@ -4150,30 +5112,59 @@
                 const normalizedTip = tip.toUpperCase().replace(/\s/g, '');
 
                 try {
-                    switch (mercato.toLowerCase().trim()) {
-                        case '1x2':
-                            if (normalizedTip === '1' && homeScore > awayScore) return 'Vinto';
-                            if (normalizedTip === 'X' && homeScore === awayScore) return 'Vinto';
-                            if (normalizedTip === '2' && homeScore < awayScore) return 'Vinto';
-                            return 'Perso';
-                        case 'doppia chance':
-                            if (normalizedTip === '1X' && homeScore >= awayScore) return 'Vinto';
-                            if (normalizedTip === 'X2' && homeScore <= awayScore) return 'Vinto';
-                            if (normalizedTip === '12' && homeScore !== awayScore) return 'Vinto';
-                            return 'Perso';
-                        case 'numero di gol':
-                            const goalValue = parseFloat(normalizedTip.replace(/[+-]/, '').trim());
-                            if (normalizedTip.startsWith('+') && totalGoals > goalValue) return 'Vinto';
-                            if (normalizedTip.startsWith('-') && totalGoals < goalValue) return 'Vinto';
-                            return 'Perso';
-                        case 'gol/no gol':
-                            if ((normalizedTip === 'GOL' || normalizedTip === 'SI' || normalizedTip === 'SÌ') && (homeScore > 0 && awayScore > 0)) return 'Vinto';
-                            if ((normalizedTip === 'NOGOL' || normalizedTip === 'NO') && (homeScore === 0 || awayScore === 0)) return 'Vinto';
-                            return 'Perso';
-                        default: return '';
+                    // 1X2
+                    if (normalizedTip === '1') return homeScore > awayScore ? 'Vinto' : 'Perso';
+                    if (normalizedTip === 'X') return homeScore === awayScore ? 'Vinto' : 'Perso';
+                    if (normalizedTip === '2') return awayScore > homeScore ? 'Vinto' : 'Perso';
+
+                    // Doppia Chance
+                    if (normalizedTip === '1X') return homeScore >= awayScore ? 'Vinto' : 'Perso';
+                    if (normalizedTip === 'X2') return awayScore >= homeScore ? 'Vinto' : 'Perso';
+                    if (normalizedTip === '12') return homeScore !== awayScore ? 'Vinto' : 'Perso';
+
+                    // Over/Under: +1.5, -2.5, OVER1.5, UNDER2.5, etc.
+                    if (/^[+-]?\d+(\.\d+)?$/.test(normalizedTip) || /^(OVER|UNDER)\d+(\.\d+)?$/i.test(normalizedTip)) {
+                        let threshold;
+                        let isOver;
+
+                        if (normalizedTip.startsWith('OVER')) {
+                            threshold = parseFloat(normalizedTip.replace(/OVER/i, ''));
+                            isOver = true;
+                        } else if (normalizedTip.startsWith('UNDER')) {
+                            threshold = parseFloat(normalizedTip.replace(/UNDER/i, ''));
+                            isOver = false;
+                        } else if (normalizedTip.startsWith('+')) {
+                            threshold = parseFloat(normalizedTip.substring(1));
+                            isOver = true;
+                        } else if (normalizedTip.startsWith('-')) {
+                            threshold = parseFloat(normalizedTip.substring(1));
+                            isOver = false;
+                        } else {
+                            // Just a number - assume Over
+                            threshold = parseFloat(normalizedTip);
+                            isOver = true;
+                        }
+
+                        if (isNaN(threshold)) return '';
+
+                        if (isOver) return totalGoals > threshold ? 'Vinto' : 'Perso';
+                        return totalGoals < threshold ? 'Vinto' : 'Perso';
                     }
+
+                    // Goal/No Goal
+                    if (normalizedTip === 'GOL' || normalizedTip === 'GG' || normalizedTip === 'SI' || normalizedTip === 'SÌ') {
+                        return (homeScore > 0 && awayScore > 0) ? 'Vinto' : 'Perso';
+                    }
+                    if (normalizedTip === 'NOGOL' || normalizedTip === 'NG' || normalizedTip === 'NO') {
+                        return (homeScore === 0 || awayScore === 0) ? 'Vinto' : 'Perso';
+                    }
+
+                    // Unrecognized tip
+                    console.warn(`[calculateOutcome] Unrecognized tip: "${tip}"`);
+                    return '';
+
                 } catch (e) {
-                    console.error('Error:', e);
+                    console.error('[calculateOutcome] Error:', e, 'Match:', match);
                     return '';
                 }
             }
@@ -4207,9 +5198,11 @@
                 document.getElementById('results-days-info').textContent = `Giornate con risultati: ${resultsDates.length}`;
             }
 
-            // ==================== SAVED RANKINGS VIEWER ====================
-            let savedRankingData = null;
 
+            // ==================== SAVED RANKINGS VIEWER (OLD - DISABLED) ====================
+            // let savedRankingData = null;
+
+            /* DISABLED - OLD EVENT LISTENER FOR REMOVED BUTTON
             document.getElementById('load-ranking-btn').addEventListener('click', async () => {
                 const selectedDate = document.getElementById('ranking-date-selector').value;
                 if (!selectedDate) {
@@ -4252,80 +5245,17 @@
                     alert('Errore caricamento ranking: ' + e.message);
                 }
             });
+            */
 
-            function displayRankingMatches(stratId, strat) {
-                document.getElementById('ranking-strategy-name').textContent = strat.name;
-                const container = document.getElementById('ranking-matches-container');
-                container.innerHTML = '';
 
-                if (strat.matches.length === 0) {
-                    container.innerHTML = '<div class="text-gray-500 text-center py-8">Nessuna partita per questa strategia</div>';
-                } else {
-                    strat.matches.forEach((m, idx) => {
-                        const card = document.createElement('div');
-                        card.className = 'bg-white p-4 rounded-lg shadow border border-gray-200';
-
-                        let indicationBadge = '';
-                        if (m.indication) {
-                            indicationBadge = `<span class="${m.indication.bg} ${m.indication.color} px-3 py-1 rounded-full text-xs font-bold">${m.indication.text}</span>`;
-                        }
-
-                        let betfairBadge = '';
-                        if (m.betfairBadge && m.betfairBadge.text) {
-                            betfairBadge = `<div class="mt-2 text-xs ${m.betfairBadge.color}">${m.betfairBadge.text}</div>`;
-                        }
-
-                        card.innerHTML = `
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-2xl font-bold text-purple-600">#${idx + 1}</span>
-                                <span class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-1 rounded-full text-lg font-bold">
-                                    ${m.score}
-                                </span>
-                            </div>
-                            <div class="text-lg font-bold text-gray-800 mb-1">${m.partita}</div>
-                            <div class="text-sm text-gray-600 mb-2">${m.lega}</div>
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">${m.tip}</span>
-                                <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-semibold">@${m.quota}</span>
-                                ${m.ora ? `<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-semibold">🕐 ${m.ora}</span>` : ''}
-                            </div>
-                            ${indicationBadge ? `<div class="mb-2">${indicationBadge}</div>` : ''}
-                            ${betfairBadge}
-                            ${m.teamStats && m.teamStats.home && m.teamStats.away ? `
-                                <div class="mt-3 pt-3 border-t border-gray-200">
-                                    <div class="text-xs font-bold text-gray-700 mb-2">Statistiche Squadre:</div>
-                                    <div class="grid grid-cols-2 gap-2 text-xs">
-                                        <div class="bg-blue-50 p-2 rounded">
-                                            <div class="font-semibold">Casa: ${m.teamStats.home.count}/${m.teamStats.home.total}</div>
-                                            <div class="${m.teamStats.home.color === 'green' ? 'text-green-600' : m.teamStats.home.color === 'red' ? 'text-red-600' : 'text-yellow-600'} font-bold">
-                                                ${m.teamStats.home.percentage}%
-                                            </div>
-                                        </div>
-                                        <div class="bg-blue-50 p-2 rounded">
-                                            <div class="font-semibold">Trasferta: ${m.teamStats.away.count}/${m.teamStats.away.total}</div>
-                                            <div class="${m.teamStats.away.color === 'green' ? 'text-green-600' : m.teamStats.away.color === 'red' ? 'text-red-600' : 'text-yellow-600'} font-bold">
-                                                ${m.teamStats.away.percentage}%
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ` : ''}
-                        `;
-                        container.appendChild(card);
-                    });
-                }
-
-                document.getElementById('ranking-strategies-list').classList.add('hidden');
-                document.getElementById('ranking-matches-detail').classList.remove('hidden');
-            }
 
             document.getElementById('ranking-back-btn').addEventListener('click', () => {
                 document.getElementById('ranking-strategies-list').classList.remove('hidden');
                 document.getElementById('ranking-matches-detail').classList.add('hidden');
             });
 
-            // Set default date to today
-            document.getElementById('ranking-date-selector').valueAsDate = new Date();
+            // Set default date to today (OLD - DISABLED)
+            // document.getElementById('ranking-date-selector').valueAsDate = new Date();
 
             document.getElementById('delete-tips-day-btn').addEventListener('click', async () => {
                 const selectedDate = document.getElementById('delete-tips-date').value;
@@ -4922,11 +5852,11 @@
                 storicoContainer.innerHTML = '<div class="text-center py-4"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Caricamento...</div>';
 
                 try {
-                    const rankingHistoryCol = collection(db, "ranking_history");
-                    const q = query(rankingHistoryCol, where("data_partite", "==", date));
-                    const snapshot = await getDocs(q);
+                    // USE DIRECT getDoc INSTEAD OF QUERY (date is the document ID)
+                    const docRef = doc(db, "ranking_history", date);
+                    const docSnap = await getDoc(docRef);
 
-                    if (snapshot.empty) {
+                    if (!docSnap.exists()) {
                         storicoDateTitle.textContent = `Previsioni del ${date}`;
                         storicoCount.textContent = 'Nessuna previsione salvata';
                         storicoContainer.innerHTML = `
@@ -4939,15 +5869,26 @@
                         return;
                     }
 
-                    const rankings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    const docData = { id: docSnap.id, ...docSnap.data() };
+                    const rankings = [docData]; // Single document array for compatibility
+
+                    // Count total strategies across all documents
+                    let totalStrategies = 0;
+                    rankings.forEach(docData => {
+                        if (Array.isArray(docData.strategies)) {
+                            totalStrategies += docData.strategies.length;
+                        } else if (docData.strategies && typeof docData.strategies === 'object') {
+                            totalStrategies += Object.keys(docData.strategies).length;
+                        }
+                    });
 
                     storicoDateTitle.innerHTML = `Previsioni del ${date} <button id="delete-date-btn" class="ml-3 bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded" title="Cancella tutte le strategie di questa giornata"><i class="fa-solid fa-trash mr-1"></i>Cancella Giornata</button>`;
-                    storicoCount.textContent = `${rankings.length} strategie salvate`;
+                    storicoCount.textContent = `${totalStrategies} strategie salvate`;
 
                     // Event listener cancella giornata
                     document.getElementById('delete-date-btn').addEventListener('click', async (e) => {
                         e.stopPropagation();
-                        if (!confirm(`⚠️ ATTENZIONE!\n\nVuoi cancellare TUTTE le ${rankings.length} strategie del ${date}?\n\nQuesta azione è IRREVERSIBILE e può influenzare il machine learning futuro.`)) return;
+                        if (!confirm(`⚠️ ATTENZIONE!\n\nVuoi cancellare TUTTE le ${totalStrategies} strategie del ${date}?\n\nQuesta azione è IRREVERSIBILE e può influenzare il machine learning futuro.`)) return;
 
                         try {
                             const batch = [];
@@ -4967,34 +5908,58 @@
                     });
 
                     // Calcola stats per ogni strategia
-                    const strategieCards = rankings.map(ranking => {
-                        const allPartite = Object.values(ranking.partite_by_tip).flat();
-                        const vinte = allPartite.filter(p => p.esito === 'Vinto').length;
-                        const perse = allPartite.filter(p => p.esito === 'Perso').length;
-                        const pending = allPartite.filter(p => !p.esito || p.esito === 'PENDING').length;
-                        const totConEsito = vinte + perse;
-                        const winRate = totConEsito > 0 ? Math.round((vinte / totConEsito) * 100) : null;
-
-                        // Determina icona e colore
-                        let icon = '📊';
-                        let bgClass = 'bg-gray-50 hover:bg-gray-100';
-                        let borderClass = 'border-gray-200';
-
-                        if (ranking.magic_type === 'singole') {
-                            icon = '🎯';
-                            bgClass = 'bg-green-50 hover:bg-green-100';
-                            borderClass = 'border-green-300';
-                        } else if (ranking.magic_type === 'trading') {
-                            icon = '📈';
-                            bgClass = 'bg-blue-50 hover:bg-blue-100';
-                            borderClass = 'border-blue-300';
+                    const strategieCards = rankings.flatMap(docData => {
+                        let strategiesList = [];
+                        if (Array.isArray(docData.strategies)) {
+                            strategiesList = docData.strategies;
+                        } else if (docData.strategies && typeof docData.strategies === 'object') {
+                            strategiesList = Object.values(docData.strategies);
                         }
 
-                        // Stats badge
-                        let statsBadge = '';
-                        if (totConEsito > 0) {
-                            const winColor = winRate >= 70 ? 'bg-green-500' : winRate >= 50 ? 'bg-yellow-500' : 'bg-red-500';
-                            statsBadge = `
+                        console.log(`[loadStorico] Document ${docData.id}: ${strategiesList.length} strategies found`);
+                        if (strategiesList.length === 0) return [];
+
+                        return strategiesList.map(ranking => {
+                            // RESILIENT: If partite_by_tip is missing, default to empty array instead of hiding
+                            let allPartite = [];
+                            if (ranking.partite_by_tip) {
+                                allPartite = Object.values(ranking.partite_by_tip).flat();
+                            } else {
+                                console.warn(`[loadStorico] Strategia "${ranking.filtro_nome || ranking.name}" senza partite_by_tip, fallback to matches`);
+                                // Try to use ranking.matches if available (fallback)
+                                if (ranking.matches && Array.isArray(ranking.matches)) {
+                                    allPartite = ranking.matches;
+                                }
+                            }
+
+                            console.log(`[loadStorico] Strategy "${ranking.filtro_nome || ranking.name}": ${allPartite.length} matches`);
+
+                            const vinte = allPartite.filter(p => p.esito === 'Vinto').length;
+                            const perse = allPartite.filter(p => p.esito === 'Perso').length;
+                            const pending = allPartite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                            const totConEsito = vinte + perse;
+                            const winRate = totConEsito > 0 ? Math.round((vinte / totConEsito) * 100) : null;
+
+                            // Determina icona e colore
+                            let icon = '📊';
+                            let bgClass = 'bg-gray-50 hover:bg-gray-100';
+                            let borderClass = 'border-gray-200';
+
+                            if (ranking.magic_type === 'singole') {
+                                icon = '🎯';
+                                bgClass = 'bg-green-50 hover:bg-green-100';
+                                borderClass = 'border-green-300';
+                            } else if (ranking.magic_type === 'trading') {
+                                icon = '📈';
+                                bgClass = 'bg-blue-50 hover:bg-blue-100';
+                                borderClass = 'border-blue-300';
+                            }
+
+                            // Stats badge
+                            let statsBadge = '';
+                            if (totConEsito > 0) {
+                                const winColor = winRate >= 70 ? 'bg-green-500' : winRate >= 50 ? 'bg-yellow-500' : 'bg-red-500';
+                                statsBadge = `
                                 <div class="flex items-center gap-2 mt-2">
                                     <span class="text-green-600 font-bold">${vinte}W</span>
                                     <span class="text-red-600 font-bold">${perse}L</span>
@@ -5002,11 +5967,11 @@
                                     <span class="${winColor} text-white text-xs px-2 py-1 rounded-full font-bold">${winRate}%</span>
                                 </div>
                             `;
-                        } else if (pending > 0) {
-                            statsBadge = `<div class="text-sm text-gray-500 mt-2"><i class="fa-solid fa-clock mr-1"></i>${pending} partite in attesa risultati</div>`;
-                        }
+                            } else if (pending > 0) {
+                                statsBadge = `<div class="text-sm text-gray-500 mt-2"><i class="fa-solid fa-clock mr-1"></i>${pending} partite in attesa risultati</div>`;
+                            }
 
-                        return `
+                            return `
                             <div class="p-4 rounded-lg border-2 ${borderClass} ${bgClass} transition-all storico-strategia-card" 
                                  data-ranking-id="${ranking.id}">
                                 <div class="flex justify-between items-start">
@@ -5027,12 +5992,13 @@
                                                 title="Cancella questa strategia">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
-                                        <div class="text-xs text-gray-500">${new Date(ranking.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}</div>
+                                        <div class="text-xs text-gray-500">${new Date(ranking.lastCalculated || docData.generated).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}</div>
                                         <div class="cursor-pointer text-gray-400 hover:text-gray-600"><i class="fa-solid fa-chevron-right"></i></div>
                                     </div>
                                 </div>
                             </div>
                         `;
+                        }).join('');
                     }).join('');
 
                     storicoContainer.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${strategieCards}</div>`;
@@ -5042,7 +6008,14 @@
                         clickArea.addEventListener('click', () => {
                             const card = clickArea.closest('.storico-strategia-card');
                             const rankingId = card.dataset.rankingId;
-                            const ranking = rankings.find(r => r.id === rankingId);
+                            // Find strategy in nested structure
+                            let ranking = null;
+                            for (const doc of rankings) {
+                                if (doc.strategies) {
+                                    ranking = doc.strategies.find(r => r.id === rankingId);
+                                    if (ranking) break;
+                                }
+                            }
                             if (ranking) showStoricoDettaglio(ranking);
                         });
                     });
@@ -5219,12 +6192,18 @@
                 let totPerse = 0;
                 let totPending = 0;
 
-                rankings.forEach(r => {
-                    const partite = Object.values(r.partite_by_tip).flat();
-                    totPartite += partite.length;
-                    totVinte += partite.filter(p => p.esito === 'Vinto').length;
-                    totPerse += partite.filter(p => p.esito === 'Perso').length;
-                    totPending += partite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                rankings.forEach(docData => {
+                    if (docData.strategies && Array.isArray(docData.strategies)) {
+                        docData.strategies.forEach(r => {
+                            if (r.partite_by_tip) {
+                                const partite = Object.values(r.partite_by_tip).flat();
+                                totPartite += partite.length;
+                                totVinte += partite.filter(p => p.esito === 'Vinto').length;
+                                totPerse += partite.filter(p => p.esito === 'Perso').length;
+                                totPending += partite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                            }
+                        });
+                    }
                 });
 
                 const totConEsito = totVinte + totPerse;
@@ -5310,11 +6289,17 @@
 
                         // Stats aggregate per data
                         let totVinte = 0, totPerse = 0, totPending = 0;
-                        rankings.forEach(r => {
-                            const partite = Object.values(r.partite_by_tip).flat();
-                            totVinte += partite.filter(p => p.esito === 'Vinto').length;
-                            totPerse += partite.filter(p => p.esito === 'Perso').length;
-                            totPending += partite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                        rankings.forEach(docData => {
+                            if (docData.strategies && Array.isArray(docData.strategies)) {
+                                docData.strategies.forEach(strategy => {
+                                    if (strategy.partite_by_tip) {
+                                        const partite = Object.values(strategy.partite_by_tip).flat();
+                                        totVinte += partite.filter(p => p.esito === 'Vinto').length;
+                                        totPerse += partite.filter(p => p.esito === 'Perso').length;
+                                        totPending += partite.filter(p => !p.esito || p.esito === 'PENDING').length;
+                                    }
+                                });
+                            }
                         });
 
                         const totConEsito = totVinte + totPerse;
@@ -5323,7 +6308,11 @@
                         let statsBadge = '';
                         if (winRate !== null) {
                             const winColor = winRate >= 70 ? 'bg-green-500' : winRate >= 50 ? 'bg-yellow-500' : 'bg-red-500';
-                            statsBadge = `<span class="bg-gray-400 text-white text-xs px-2 py-1 rounded-full ml-2">Pending</span>`;
+                            statsBadge = `<span class="${winColor} text-white text-xs px-2 py-1 rounded-full ml-2">${winRate}% (${totVinte}/${totConEsito})</span>`;
+                        }
+
+                        if (totPending > 0) {
+                            statsBadge += `<span class="bg-gray-400 text-white text-xs px-2 py-1 rounded-full ml-2">${totPending} Pending</span>`;
                         }
 
                         return `
@@ -6346,7 +7335,106 @@
             // REMOVED handleSendHistory
             // document.getElementById('send-history-btn')?.addEventListener('click', handleSendHistory);
         }); // Close DOMContentLoaded
+        // ==================== AI KNOWLEDGE BASE UPLOAD ====================
+        const uploadAiBtn = document.getElementById('upload-ai-knowledge-btn');
+
+        // Populate Custom Strategies Dropdown
+        async function populateAiStrategySelect() {
+            const selectGroup = document.getElementById('ai-custom-strats-group');
+            if (!selectGroup) return;
+
+            selectGroup.innerHTML = ''; // Clear
+
+            try {
+                // Use savedFilters loaded from Firestore (via loadSavedFilters)
+                // Ensure savedFilters is populated (it is loaded in init)
+                if (typeof savedFilters !== 'undefined' && savedFilters.length > 0) {
+                    savedFilters.forEach(strat => {
+                        const option = document.createElement('option');
+                        option.value = strat.id; // e.g. "magic_ai_123"
+                        option.textContent = strat.name;
+                        selectGroup.appendChild(option);
+                    });
+                }
+            } catch (e) {
+                console.warn("Error populating AI dropdown:", e);
+            }
+        }
+
+        // Call it after init
+        setTimeout(populateAiStrategySelect, 2000); // Wait for loadSavedFilters
+
+        if (uploadAiBtn) {
+            uploadAiBtn.addEventListener('click', async () => {
+                const stratId = document.getElementById('ai-strat-id').value; // Value from SELECT
+                const desc = document.getElementById('ai-strat-desc').value.trim();
+                const fileInput = document.getElementById('ai-csv-file');
+                const statusEl = document.getElementById('ai-upload-status');
+
+                if (!stratId) {
+                    alert("Inserisci un ID Strategia (es. top_eu)");
+                    return;
+                }
+
+                statusEl.textContent = "Elaborazione in corso...";
+                statusEl.className = "text-sm text-blue-600 block mt-2";
+                statusEl.classList.remove('hidden');
+
+                let uniqueLeagues = [];
+
+                // Helper to save to Firestore
+                const saveToFirestore = async (leagues) => {
+                    try {
+                        const docRef = doc(db, "strategies_metadata", "definitions");
+                        const updateData = {};
+                        updateData[stratId] = {
+                            name: stratId,
+                            description: desc,
+                            leagues: leagues,
+                            lastUpdated: new Date().toISOString()
+                        };
+
+                        await setDoc(docRef, updateData, { merge: true });
+
+                        statusEl.innerHTML = `<i class="fa-solid fa-check-circle text-green-500"></i> Salvato con successo! (${leagues.length} leghe)`;
+                        statusEl.className = "text-sm text-green-600 block mt-2";
+                    } catch (e) {
+                        console.error("Error saving AI knowledge:", e);
+                        statusEl.textContent = "Errore salvataggio: " + e.message;
+                        statusEl.className = "text-sm text-red-600 block mt-2";
+                    }
+                };
+
+                if (fileInput.files.length > 0) {
+                    Papa.parse(fileInput.files[0], {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function (results) {
+                            const leagues = new Set();
+                            results.data.forEach(row => {
+                                if (row.lega) {
+                                    // Clean league name (remove EU-, AS-, etc.)
+                                    const cleanLega = row.lega.replace(/^(EU-|AS-|AF-|NA-|SA-)/, '').trim();
+                                    leagues.add(cleanLega);
+                                }
+                            });
+                            uniqueLeagues = Array.from(leagues).sort();
+                            saveToFirestore(uniqueLeagues);
+                        },
+                        error: function (err) {
+                            statusEl.textContent = "Errore CSV: " + err.message;
+                            statusEl.className = "text-sm text-red-600 block mt-2";
+                        }
+                    });
+                } else {
+                    // Save without leagues (just description update)
+                    saveToFirestore([]);
+                }
+            });
+        }
+
     </script>
+    </div>
 </body>
 
 </html>
