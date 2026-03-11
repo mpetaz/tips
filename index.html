@@ -2,589 +2,736 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Costa Fortuna – Agenda Canarie & Madeira</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Costa Fortuna – Canarie & Madeira</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary:#005f9e;
-      --primary-soft:#e3f2fd;
-      --bg:#f0f2f5;
-      --card:#ffffff;
-      --danger:#b00020;
-      --text:#222;
+      --costa-blue: #004b87;
+      --costa-yellow: #ffcc00;
+      --bg-color: #f4f6f9;
+      --text-main: #1d1d1f;
+      --text-muted: #6e6e73;
+      --card-bg: #ffffff;
+      --danger: #ff3b30;
+      --radius: 20px;
     }
-    *{box-sizing:border-box;}
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
     body {
-      margin:0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      -webkit-font-smoothing: antialiased;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding-bottom: 40px;
     }
+
+    /* --- HEADER --- */
     header {
-      position:sticky;
-      top:0;
-      z-index:20;
-      background:linear-gradient(135deg,#006bb3,#004b80);
-      color:#fff;
-      padding:10px 12px 8px;
+      background: var(--card-bg);
+      padding: 20px 20px 15px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    h1 {
-      font-size:18px;
-      margin:0 0 2px;
+    .header-text h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--costa-blue);
+      letter-spacing: -0.5px;
     }
-    .subtitle {
-      font-size:12px;
-      opacity:0.9;
+    .header-text p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
     }
+    .ship-icon {
+      background: var(--costa-yellow);
+      color: var(--costa-blue);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.4);
+    }
+
+    /* --- MAIN CONTAINER --- */
     main {
-      padding:8px;
-      max-width:520px;   /* perfetto per ~6.2" in verticale */
-      margin:0 auto 32px;
-    }
-    section.card {
-      background:var(--card);
-      border-radius:12px;
-      padding:10px 10px;
-      margin:8px 0;
-      box-shadow:0 1px 3px rgba(0,0,0,0.08);
-    }
-    section.day { margin-top:8px; }
-    h2 {
-      font-size:15px;
-      margin:0 0 6px;
-    }
-    h3 {
-      font-size:14px;
-      margin:8px 0 4px;
-    }
-    .meta {
-      font-size:12px;
-      color:#555;
-      margin-bottom:4px;
-    }
-    .port-name { font-weight:600; }
-    .block { margin:6px 0; }
-    .time-range {
-      font-weight:600;
-      color:var(--primary);
-      font-size:13px;
-      display:block;
-      margin-bottom:2px;
-    }
-    ul {
-      margin:2px 0 2px 16px;
-      padding:0;
-      font-size:13px;
-    }
-    li { margin:1px 0; }
-    a {
-      color:var(--primary);
-      text-decoration:none;
-    }
-    a:hover { text-decoration:underline; }
-    .maps-link {
-      font-size:12px;
-      margin-top:2px;
-      line-height:1.35;
-    }
-    .tip {
-      font-size:11px;
-      color:#777;
-      margin-top:3px;
-    }
-    .danger {
-      color:var(--danger);
-      font-weight:600;
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
-    .btn-row {
-      display:flex;
-      flex-wrap:wrap;
-      gap:4px;
-      margin:4px 0 4px;
+    /* --- INFO & COSTI WIDGET --- */
+    .widget-container {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
     }
-    .btn {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:7px 9px;
-      border-radius:999px;
-      border:none;
-      font-size:12px;
-      font-weight:500;
-      background:var(--primary-soft);
-      color:var(--primary);
-      flex:1 1 46%;
-      min-width:0;
-      text-align:center;
+    .widget-btn {
+      flex: 1;
+      background: var(--card-bg);
+      border: none;
+      padding: 12px 6px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--costa-blue);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
     }
-    .btn.primary {
-      background:#fff;
-      border:1px solid var(--primary);
-    }
-    .btn.danger {
-      background:#ffebee;
-      color:var(--danger);
-      border:1px solid #ffcdd2;
-    }
-    .btn:active { opacity:0.7; }
+    .widget-btn i { font-size: 18px; color: var(--costa-yellow); }
 
-    .hidden { display:none; }
+    /* --- CARDS (GIORNI) --- */
+    .day-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      transition: transform 0.2s;
+    }
+    .day-card:active { transform: scale(0.98); }
 
-    .cost-table {
-      width:100%;
-      border-collapse:collapse;
-      font-size:12px;
-      margin-top:4px;
+    .card-hero {
+      height: 150px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .cost-table th,
-    .cost-table td {
-      border-bottom:1px solid #eee;
-      padding:4px 2px;
-      text-align:left;
-      white-space:nowrap;
+    .card-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
     }
-    .cost-table th { background:#fafafa; font-weight:600; }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      color: white;
+    }
+    .day-badge {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: auto;
+      align-self: flex-start;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+    .card-hero h2 { margin: 0 0 4px; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .time-badge { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 5px; color: #eee; }
 
-    .itinerary-table {
-      width:100%;
-      border-collapse:collapse;
-      font-size:12px;
-      margin-top:4px;
+    .card-body { padding: 16px; }
+    .phase-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--costa-blue);
+      margin: 16px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .itinerary-table th,
-    .itinerary-table td {
-      border-bottom:1px solid #eee;
-      padding:4px 2px;
-      text-align:left;
-    }
-    .itinerary-table th { background:#fafafa; }
+    .phase-title.first { margin-top: 0; }
 
+    /* --- POINTS OF INTEREST (POI) --- */
+    .poi-list { display: flex; flex-direction: column; gap: 12px; }
+    .poi-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f9fbff;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #edf2f7;
+    }
+    .poi-info { flex: 1; padding-right: 10px; }
+    .poi-name { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+    .poi-sub { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
+    
+    .poi-actions { display: flex; gap: 8px; }
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-map { background: #e3f2fd; color: #2196f3; }
+    .btn-info { background: #fff8e1; color: #ffb300; }
+    .action-btn:active { opacity: 0.7; }
+
+    /* --- NOTES & ALERTS --- */
+    .alert-box {
+      background: #ffebee;
+      border-left: 4px solid var(--danger);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #c62828;
+      font-weight: 500;
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+    }
     textarea.notes {
-      width:100%;
-      min-height:60px;
-      font-size:12px;
-      border-radius:8px;
-      border:1px solid #ddd;
-      padding:5px 6px;
-      resize:vertical;
-      margin-top:3px;
+      width: 100%;
+      background: #f4f6f9;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      margin-top: 16px;
+      resize: none;
+      height: 60px;
+      color: var(--text-main);
+    }
+    textarea.notes::placeholder { color: #a1a1a6; }
+
+    /* --- BOTTOM SHEET MODAL (Stile iOS) --- */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .overlay.active { opacity: 1; pointer-events: auto; }
+
+    .bottom-sheet {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 24px;
+      z-index: 101;
+      transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    }
+    .bottom-sheet.active { bottom: 0; }
+    .sheet-handle {
+      width: 40px;
+      height: 5px;
+      background: #ddd;
+      border-radius: 5px;
+      margin: 0 auto 20px;
+    }
+    #modalImage {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    #modalTitle { font-size: 22px; font-weight: 800; margin: 0 0 8px; color: var(--costa-blue); }
+    #modalDesc { font-size: 15px; color: var(--text-muted); line-height: 1.5; margin: 0 0 24px; }
+    .btn-close {
+      width: 100%;
+      background: var(--costa-blue);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
     }
 
-    @media (min-width:700px) {
-      main { max-width:640px; }
-      .btn { flex:0 0 auto; }
-    }
+    /* Utilità nascoste */
+    .hidden-section { display: none; padding: 16px; background: white; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    .hidden-section.active { display: block; }
   </style>
 </head>
 <body>
+
 <header>
-  <h1>Costa Fortuna – Canarie &amp; Madeira</h1>
-  <div class="subtitle">Agenda di sbarco (mobile-friendly)</div>
+  <div class="header-text">
+    <h1>Costa Fortuna</h1>
+    <p>Agenda Canarie & Madeira per te e Cris ❤️</p>
+  </div>
+  <div class="ship-icon">
+    <i class="fa-solid fa-ship"></i>
+  </div>
 </header>
 
 <main>
 
-  <!-- PROGRAMMA CROCIERA CON ORARI -->
-  <section class="card">
-    <h2>Programma crociera</h2>
-    <table class="itinerary-table">
-      <thead>
-        <tr>
-          <th>Giorno</th>
-          <th>Porto</th>
-          <th>Arrivo</th>
-          <th>Partenza</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1 – 23/03</td>
-          <td>Santa Cruz de Tenerife</td>
-          <td>Imbarco</td>
-          <td>21:30</td>
-        </tr>
-        <tr>
-          <td>2 – 24/03</td>
-          <td>Santa Cruz de La Palma</td>
-          <td>08:00</td>
-          <td>20:00</td>
-        </tr>
-        <tr>
-          <td>3 – 25/03</td>
-          <td>San Sebastián de La Gomera</td>
-          <td>08:00</td>
-          <td>18:00</td>
-        </tr>
-        <tr>
-          <td>4 – 26/03</td>
-          <td>Arrecife (Lanzarote)</td>
-          <td>08:00</td>
-          <td>18:00</td>
-        </tr>
-        <tr>
-          <td>5 – 27/03</td>
-          <td>Las Palmas (Gran Canaria)</td>
-          <td>05:00</td>
-          <td>21:00</td>
-        </tr>
-        <tr>
-          <td>6 – 28/03</td>
-          <td>Navigazione</td>
-          <td>–</td>
-          <td>–</td>
-        </tr>
-        <tr>
-          <td>7 – 29/03</td>
-          <td>Funchal (Madeira)</td>
-          <td>07:00</td>
-          <td>17:00</td>
-        </tr>
-        <tr>
-          <td>8 – 30/03</td>
-          <td>Santa Cruz de Tenerife</td>
-          <td>Sbarco</td>
-          <td>Volo 14:05 TFS</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="tip">Orari basati sul dettaglio della tua prenotazione Costa nel pannello MyCosta. Controlla sempre a bordo eventuali variazioni. [page:2]</div>
-  </section>
+  <!-- Pulsanti Rapidi -->
+  <div class="widget-container">
+    <button class="widget-btn" onclick="toggleWidget('voli')">
+      <i class="fa-solid fa-plane"></i> Voli e Transfer
+    </button>
+    <button class="widget-btn" onclick="toggleWidget('itinerario')">
+      <i class="fa-regular fa-calendar-days"></i> Orari Nave
+    </button>
+    <button class="widget-btn" onclick="toggleWidget('costi')">
+      <i class="fa-solid fa-wallet"></i> Costi & Info
+    </button>
+  </div>
 
-  <!-- PANNELLO GENERALE -->
-  <section class="card">
-    <h2>Panoramica &amp; costi</h2>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('costi-section')">
-        💶 Costi indicativi
-      </button>
-      <button class="btn" onclick="toggleSection('note-globali')">
-        📝 Note generali
-      </button>
+  <!-- Contenuti Rapidi Nascosti -->
+  <div id="voli" class="hidden-section">
+    <h3 style="margin-top:0;">Programma Voli (Charter Costa)</h3>
+    <div style="background: #e3f2fd; padding: 12px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--costa-blue);">
+      <p style="margin: 0 0 5px; font-weight: 700; color: var(--costa-blue); font-size: 14px;"><i class="fa-solid fa-plane-departure"></i> Andata: 23 Mar 2026</p>
+      <p style="margin: 0; font-size: 14px; color: var(--text-main);">Milano MXP <b>11:30</b> <i class="fa-solid fa-arrow-right" style="margin:0 5px; color:#999; font-size:12px;"></i> Tenerife TFS <b>15:00</b></p>
     </div>
-
-    <div id="costi-section" class="hidden">
-      <h3>Trasporti (indicativi, per corsa)</h3>
-      <table class="cost-table">
-        <tbody>
-          <tr>
-            <th>Canarie bus urbano</th>
-            <td>1–3 € / persona</td>
-          </tr>
-          <tr>
-            <th>Tenerife → Las Teresitas (910)</th>
-            <td>≈ 1–2 € / persona</td>
-          </tr>
-          <tr>
-            <th>Arrecife ↔ centro/Reducto</th>
-            <td>Bus ~1 € / Taxi 5–10 €</td>
-          </tr>
-          <tr>
-            <th>Las Palmas ↔ Las Canteras</th>
-            <td>Bus 1–2 € / Taxi 7–10 €</td>
-          </tr>
-          <tr>
-            <th>Funchal ↔ Praia Formosa/Lido</th>
-            <td>Bus 1–3 € / Taxi 9–13 €</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="tip">Perfetto per mix bus locali + qualche taxi quando serve velocità.</div>
+    <div style="background: #fff0f0; padding: 12px; border-radius: 12px; border-left: 4px solid var(--danger);">
+      <p style="margin: 0 0 5px; font-weight: 700; color: var(--danger); font-size: 14px;"><i class="fa-solid fa-plane-arrival"></i> Ritorno: 30 Mar 2026</p>
+      <p style="margin: 0; font-size: 14px; color: var(--text-main);">Tenerife TFS <b>14:05</b> <i class="fa-solid fa-arrow-right" style="margin:0 5px; color:#999; font-size:12px;"></i> Milano MXP <b>19:00</b></p>
     </div>
+    <p style="font-size:13px; color:var(--text-muted); margin:12px 0 0; line-height:1.4;"><i class="fa-solid fa-bus"></i> I trasferimenti in bus tra l'aeroporto di Tenerife (TFS) e la nave sono gestiti e inclusi da Costa Crociere.</p>
+  </div>
 
-    <div id="note-globali" class="hidden">
-      <h3>Linee guida veloci</h3>
-      <ul>
-        <li><span class="danger">Regola oro:</span> rientro in porto con ≥ 1h di margine.</li>
-        <li>Preferenza: piedi + bus per esperienza immersiva, taxi solo quando accorcia davvero i tempi.</li>
-      </ul>
-      <label style="font-size:12px;">Note personali generali:</label>
-      <textarea class="notes" placeholder="Es. prenotazioni free tour, app bus, numeri taxi..."></textarea>
+  <div id="itinerario" class="hidden-section">
+    <h3 style="margin-top:0;">Programma di Navigazione</h3>
+    <p style="font-size:13px; color:#666;">Controllate sempre a bordo eventuali variazioni sul Diario di Bordo.</p>
+    <ul style="font-size:14px; padding-left:20px; line-height:1.6;">
+      <li><b>23/03:</b> Tenerife (Imbarco, Partenza 21:30)</li>
+      <li><b>24/03:</b> La Palma (08:00 - 20:00)</li>
+      <li><b>25/03:</b> La Gomera (08:00 - 18:00)</li>
+      <li><b>26/03:</b> Lanzarote (08:00 - 18:00)</li>
+      <li><b>27/03:</b> Gran Canaria (05:00 - 21:00)</li>
+      <li><b>28/03:</b> Navigazione 🌊</li>
+      <li><b>29/03:</b> Madeira (07:00 - 17:00)</li>
+      <li><b>30/03:</b> Tenerife (Sbarco, Volo 14:05)</li>
+    </ul>
+  </div>
+
+  <div id="costi" class="hidden-section">
+    <h3 style="margin-top:0;">Info Trasporti & Regole</h3>
+    <ul style="font-size:14px; padding-left:20px; line-height:1.6; margin-bottom:15px;">
+      <li><b>Regola d'oro:</b> Rientro in nave SEMPRE 1 ora prima della partenza.</li>
+      <li><b>Bus Urbani:</b> Circa 1-3€ a persona. Pagamento spesso contactless a bordo.</li>
+      <li><b>Taxi (Tratte brevi):</b> Da 5 a 15€. Ottimi per guadagnare tempo tra spiaggia e nave.</li>
+    </ul>
+    <textarea class="notes" placeholder="Note globali: app taxi, documenti..."></textarea>
+  </div>
+
+  <!-- ==========================================
+       GIORNO 1: TENERIFE 
+       ========================================== -->
+  <article class="day-card">
+    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1588614959060-4d144f28b207?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+      <div class="hero-content day-badge">Giorno 1 • 23 Marzo</div>
+      <div class="hero-content">
+        <h2>Tenerife</h2>
+        <div class="time-badge"><i class="fa-solid fa-plane-arrival"></i> Atterraggio 15:00 • Nave 21:30</div>
+      </div>
     </div>
-  </section>
-
-  <!-- GIORNO 1 -->
-  <section class="card day" id="giorno1">
-    <div class="meta">Giorno 1 – 23/03 – <span class="port-name">Santa Cruz de Tenerife</span> (partenza 21:30)</div>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('g1-dettagli')">📅 Dettagli</button>
-      <button class="btn" onclick="openGroupLinks([
-        'https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+Tenerife',
-        'https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+Tenerife',
-        'https://www.google.com/maps/search/?api=1&query=Auditorio+de+Tenerife',
-        'https://www.google.com/maps/search/?api=1&query=Playa+de+las+Teresitas'
-      ])">📍 Maps giorno 1</button>
-    </div>
-
-    <div id="g1-dettagli" class="hidden">
-      <div class="block">
-        <span class="time-range">Pomeriggio – Centro a piedi</span>
-        <ul>
-          <li>Porto → Plaza de España → Calle Castillo.</li>
-          <li>Mercado Nuestra Señora de África (se aperto).</li>
-          <li>Eventuale passeggiata verso Auditorio di Tenerife.</li>
-        </ul>
+    
+    <div class="card-body">
+      <div class="phase-title first"><i class="fa-solid fa-suitcase-rolling"></i> Arrivo e Imbarco</div>
+      <div class="poi-list">
+        
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Transfer & Check-in</p>
+            <p class="poi-sub">Dall'aeroporto TFS alla cabina (stima: ore 17:30).</p>
+          </div>
+          <div class="poi-actions">
+            <button class="action-btn btn-info" onclick="openInfo('L\'arrivo in Nave', 'Atterrando alle 15:00, tra bagagli e circa un\'ora di pullman Costa, arriverete al porto verso le 16:30. Finite le procedure di imbarco, sarete in cabina verso le 17:30. Riposatevi e godetevi il primo brindisi!')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <div class="block">
-        <span class="time-range">Opzione mare – Las Teresitas</span>
-        <ul>
-          <li>Bus 910 dalla zona porto/Intercambiador fino a Playa de las Teresitas.</li>
-          <li>Valuta andata bus + ritorno taxi se vuoi guadagnare tempo.</li>
-        </ul>
-        <div class="tip danger">Rientro a bordo ≥ 1h prima della partenza.</div>
+      <div class="phase-title"><i class="fa-solid fa-moon"></i> Passeggiata di Benvenuto</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Plaza de España & Marina</p>
+            <p class="poi-sub">A due passi dalla nave per sgranchirsi le gambe.</p>
+          </div>
+          <div class="poi-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+Tenerife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+            <button class="action-btn btn-info" onclick="openInfo('Quattro passi senza stress', 'Sarete stanchi, quindi niente corse! La nave è attraccata praticamente in centro. Scendete a piedi, attraversate la strada e siete in Plaza de España con il suo grande lago artificiale. Perfetto per una passeggiata rilassante e una prima foto prima di rientrare per cena.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <label style="font-size:12px;">Note giorno 1:</label>
-      <textarea class="notes" placeholder="Es. orari effettivi bus 910, bar per aperitivo..."></textarea>
+      <div class="alert-box">
+        <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i>
+        <span>Tutti a bordo tassativamente 1 ora prima della partenza (entro le 20:30).</span>
+      </div>
+      
+      <textarea class="notes" placeholder="I vostri appunti per il primo giorno..."></textarea>
     </div>
-  </section>
+  </article>
 
-  <!-- GIORNO 2 -->
-  <section class="card day" id="giorno2">
-    <div class="meta">Giorno 2 – 24/03 – <span class="port-name">Santa Cruz de La Palma</span> (08:00–20:00)</div>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('g2-dettagli')">📅 Dettagli</button>
-      <button class="btn" onclick="openGroupLinks([
-        'https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+La+Palma',
-        'https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+La+Palma',
-        'https://www.google.com/maps/search/?api=1&query=Playa+de+Santa+Cruz+de+La+Palma'
-      ])">📍 Maps giorno 2</button>
+  <!-- ==========================================
+       GIORNO 2: LA PALMA
+       ========================================== -->
+  <article class="day-card">
+    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1549880295-8df6225b871c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: top;">
+      <div class="hero-content day-badge">Giorno 2 • 24 Marzo</div>
+      <div class="hero-content">
+        <h2>La Palma</h2>
+        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 20:00 (Sosta Lunga)</div>
+      </div>
     </div>
-
-    <div id="g2-dettagli" class="hidden">
-      <div class="block">
-        <span class="time-range">Mattina – Centro / Free tour</span>
-        <ul>
-          <li>Porto → centro storico a piedi (Plaza de España, Calle O’Daly / Calle Real).</li>
-          <li>Free walking tour se prenotato oppure giro autonomo tra balconi e lungomare.</li>
-        </ul>
+    
+    <div class="card-body">
+      <div class="phase-title first"><i class="fa-solid fa-shoe-prints"></i> Mattina Storica</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Centro e Calle O'Daly</p>
+            <p class="poi-sub">Balconi in legno e architettura coloniale.</p>
+          </div>
+          <div class="poi-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=Calle+O'Daly+Santa+Cruz+de+La+Palma" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+            <button class="action-btn btn-info" onclick="openInfo('Balconi Storici', 'I balconi di Avenida Marítima sono famosi in tutto il mondo. Costruiti in pino canario, un tempo servivano per arieggiare le case. Il centro storico, elegante e acciottolato, vi farà viaggiare nel tempo.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <div class="block">
-        <span class="time-range">Pomeriggio – Spiaggia urbana</span>
-        <ul>
-          <li>A piedi alla spiaggia urbana (sabbia nera) di Santa Cruz de La Palma.</li>
-          <li>Mare + rientro a piedi in porto.</li>
-        </ul>
-        <div class="tip danger">Punta al rientro nave tra le 18:30 e le 19:00.</div>
+      <div class="phase-title"><i class="fa-solid fa-water"></i> Pomeriggio Rilassante</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Playa Urbana</p>
+            <p class="poi-sub">Sabbia nera vulcanica, comoda dal porto.</p>
+          </div>
+          <div class="poi-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+Santa+Cruz+de+La+Palma" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+            <button class="action-btn btn-info" onclick="openInfo('Spiaggia Cittadina', 'È una spiaggia nuovissima, di sabbia nera vulcanica scintillante. Essendo a due passi dal terminal crociere, è perfetta per un bagno pomeridiano senza stress da rientro.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
+      </div>
+      
+      <textarea class="notes" placeholder="Ristorantino provato, nome guida free tour..."></textarea>
+    </div>
+  </article>
+
+  <!-- ==========================================
+       GIORNO 3: LA GOMERA
+       ========================================== -->
+  <article class="day-card">
+    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1538681105587-85640961bf8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+      <div class="hero-content day-badge">Giorno 3 • 25 Marzo</div>
+      <div class="hero-content">
+        <h2>La Gomera</h2>
+        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 18:00</div>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <div class="phase-title first"><i class="fa-solid fa-tree"></i> Esplorazione</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">San Sebastián (Paese)</p>
+            <p class="poi-sub">Piazza, chiesa e storia di Colombo.</p>
+          </div>
+          <div class="poi-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=San+Sebasti%C3%A1n+de+La+Gomera" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+            <button class="action-btn btn-info" onclick="openInfo('Sulle orme di Colombo', 'La Gomera fu l\'ultimo scalo di Cristoforo Colombo prima di attraversare l\'Oceano Atlantico nel 1492. L\'atmosfera qui è ferma nel tempo, molto rilassante e autentica.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <label style="font-size:12px;">Note giorno 2:</label>
-      <textarea class="notes" placeholder="Es. nome guida free tour, ristorante provato..."></textarea>
+      <div class="phase-title"><i class="fa-solid fa-sun"></i> Relax Pomeridiano</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Spiaggia Cittadina</p>
+            <p class="poi-sub">A pochissimi minuti a piedi dal molo.</p>
+          </div>
+          <div class="poi-actions">
+             <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+San+Sebasti%C3%A1n+de+La+Gomera" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+          </div>
+        </div>
+      </div>
+      <textarea class="notes" placeholder="Note per La Gomera..."></textarea>
     </div>
-  </section>
+  </article>
 
-  <!-- GIORNO 3 -->
-  <section class="card day" id="giorno3">
-    <div class="meta">Giorno 3 – 25/03 – <span class="port-name">San Sebastián de La Gomera</span> (08:00–18:00)</div>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('g3-dettagli')">📅 Dettagli</button>
-      <button class="btn" onclick="openGroupLinks([
-        'https://www.google.com/maps/search/?api=1&query=Puerto+de+San+Sebasti%C3%A1n+de+La+Gomera',
-        'https://www.google.com/maps/search/?api=1&query=Playa+de+San+Sebasti%C3%A1n+de+La+Gomera'
-      ])">📍 Maps giorno 3</button>
+  <!-- ==========================================
+       GIORNO 4: LANZAROTE
+       ========================================== -->
+  <article class="day-card">
+    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+      <div class="hero-content day-badge">Giorno 4 • 26 Marzo</div>
+      <div class="hero-content">
+        <h2>Lanzarote (Arrecife)</h2>
+        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 18:00</div>
+      </div>
     </div>
-
-    <div id="g3-dettagli" class="hidden">
-      <div class="block">
-        <span class="time-range">Mattina – Città + mirador (opzionale)</span>
-        <ul>
-          <li>Giro a piedi nel paese (chiesa, piazza, scorci sul porto).</li>
-          <li>Taxi condiviso per un mirador / Garajonay se volete panorami.</li>
-        </ul>
+    
+    <div class="card-body">
+      <div class="phase-title first"><i class="fa-solid fa-camera"></i> Mattina al Charco</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Charco de San Ginés</p>
+            <p class="poi-sub">La "Venezia dell'Atlantico".</p>
+          </div>
+          <div class="poi-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=Charco+de+San+Gines+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+            <button class="action-btn btn-info" onclick="openInfo('Charco de San Ginés', 'Una laguna naturale di acqua di mare proprio in mezzo alla città! Le barchette di legno dei pescatori galleggiano tranquille, circondate da casette bianche e tantissimi bar tipici per delle ottime tapas.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <div class="block">
-        <span class="time-range">Pomeriggio – Playa de San Sebastián</span>
-        <ul>
-          <li>Spiaggia cittadina a pochi minuti a piedi dal porto.</li>
-          <li>Mare + rientro comodissimo a piedi.</li>
-        </ul>
+      <div class="phase-title"><i class="fa-solid fa-water"></i> Mare del Pomeriggio</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Playa del Reducto</p>
+            <p class="poi-sub">Sabbia chiara, mare calmo, palme.</p>
+          </div>
+          <div class="poi-actions">
+             <a href="https://www.google.com/maps/search/?api=1&query=Playa+del+Reducto+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+             <button class="action-btn btn-info" onclick="openInfo('Playa del Reducto', 'La spiaggia principale di Arrecife. Protetta dalle correnti oceaniche, l\'acqua è limpidissima e molto tranquilla. Perfetta per rilassarsi prima di tornare alla nave.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <label style="font-size:12px;">Note giorno 3:</label>
-      <textarea class="notes" placeholder="Es. mirador visitato, costo taxi..."></textarea>
+      <div class="alert-box">
+        <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i>
+        <span>Lasciate la spiaggia verso le 16:00 per un rientro tranquillo.</span>
+      </div>
+      <textarea class="notes" placeholder="Tapas top, bus presi..."></textarea>
     </div>
-  </section>
+  </article>
 
-  <!-- GIORNO 4 -->
-  <section class="card day" id="giorno4">
-    <div class="meta">Giorno 4 – 26/03 – <span class="port-name">Arrecife (Lanzarote)</span> (08:00–18:00)</div>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('g4-dettagli')">📅 Dettagli</button>
-      <button class="btn" onclick="openGroupLinks([
-        'https://www.google.com/maps/search/?api=1&query=Puerto+de+Arrecife+Lanzarote',
-        'https://www.google.com/maps/search/?api=1&query=Charco+de+San+Gines+Arrecife',
-        'https://www.google.com/maps/search/?api=1&query=Playa+del+Reducto+Arrecife'
-      ])">📍 Maps giorno 4</button>
+  <!-- ==========================================
+       GIORNO 5: GRAN CANARIA
+       ========================================== -->
+  <article class="day-card">
+    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: bottom;">
+      <div class="hero-content day-badge">Giorno 5 • 27 Marzo</div>
+      <div class="hero-content">
+        <h2>Gran Canaria</h2>
+        <div class="time-badge"><i class="fa-regular fa-clock"></i> 05:00 - 21:00 (Sosta Extra Lunga)</div>
+      </div>
     </div>
-
-    <div id="g4-dettagli" class="hidden">
-      <div class="block">
-        <span class="time-range">Mattina – Centro Arrecife</span>
-        <ul>
-          <li>Porto → centro (piedi / shuttle / bus / taxi a seconda del molo).</li>
-          <li>Charco de San Ginés, Castillo de San Gabriel, passeggiata in centro.</li>
-        </ul>
+    
+    <div class="card-body">
+      <div class="phase-title first"><i class="fa-solid fa-building-columns"></i> Mattina Culturale</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Quartiere Vegueta e Triana</p>
+            <p class="poi-sub">Centro storico coloniale.</p>
+          </div>
+          <div class="poi-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=Vegueta+Las+Palmas" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+            <button class="action-btn btn-info" onclick="openInfo('Vegueta', 'È il nucleo originario di Las Palmas. Vie acciottolate bellissime, la maestosa Cattedrale di Santa Ana e la Casa di Colombo. Da non perdere il mercato di Vegueta per un po\' di folklore locale!')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <div class="block">
-        <span class="time-range">Pomeriggio – Playa del Reducto</span>
-        <ul>
-          <li>Dal centro a Playa del Reducto a piedi o con bus linea 3.</li>
-          <li>Mare, poi rientro verso porto con ampio margine.</li>
-        </ul>
-        <div class="tip danger">Lascia la spiaggia intorno alle 16:00.</div>
+      <div class="phase-title"><i class="fa-solid fa-martini-glass-citrus"></i> Pomeriggio e Tramonto</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Playa de Las Canteras</p>
+            <p class="poi-sub">Paseo lungomare iconico e spiaggia.</p>
+          </div>
+          <div class="poi-actions">
+             <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+Las+Canteras+Las+Palmas" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+             <button class="action-btn btn-info" onclick="openInfo('Las Canteras', 'Considerata una delle spiagge urbane migliori d\'Europa! Ha una barriera corallina naturale (La Barra) che rende l\'acqua calma. Piena di ristorantini e vita, perfetta per godersi il tramonto prima di imbarcarsi.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
+      </div>
+      <textarea class="notes" placeholder="Ristorante a Las Canteras..."></textarea>
+    </div>
+  </article>
+
+  <!-- ==========================================
+       GIORNO 6: NAVIGAZIONE
+       ========================================== -->
+  <article class="day-card">
+    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1599640842225-85d111c60e6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+      <div class="hero-content day-badge">Giorno 6 • 28 Marzo</div>
+      <div class="hero-content">
+        <h2>In Navigazione</h2>
+        <div class="time-badge"><i class="fa-solid fa-anchor"></i> Verso Madeira</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:15px; line-height:1.5; margin-top:0;">Giornata di totale relax a bordo di Costa Fortuna. Ideale per la spa, la palestra, le piscine o semplicemente per smaltire il cibo e ricaricare le batterie per il Portogallo!</p>
+      <textarea class="notes" placeholder="Attività previste a bordo..."></textarea>
+    </div>
+  </article>
+
+  <!-- ==========================================
+       GIORNO 7: MADEIRA
+       ========================================== -->
+  <article class="day-card">
+    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1588656158097-f58c743e49e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+      <div class="hero-content day-badge">Giorno 7 • 29 Marzo</div>
+      <div class="hero-content">
+        <h2>Madeira (Funchal)</h2>
+        <div class="time-badge"><i class="fa-regular fa-clock"></i> 07:00 - 17:00</div>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <div class="phase-title first"><i class="fa-solid fa-basket-shopping"></i> Mattina in Città</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Mercado dos Lavradores</p>
+            <p class="poi-sub">Colori, fiori e frutti esotici.</p>
+          </div>
+          <div class="poi-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=Mercado+dos+Lavradores+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+            <button class="action-btn btn-info" onclick="openInfo('Mercado dos Lavradores', 'Un tripudio di colori! Le signore in costume tipico vendono fiori stupendi e frutti stranissimi (frutti della passione misti a banana, pomodoro, etc.). Fate attenzione ai prezzi della frutta se decidete di comprarla, ma la visita è imperdibile.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <label style="font-size:12px;">Note giorno 4:</label>
-      <textarea class="notes" placeholder="Es. se hai usato bus o taxi, tempi reali..."></textarea>
-    </div>
-  </section>
-
-  <!-- GIORNO 5 -->
-  <section class="card day" id="giorno5">
-    <div class="meta">Giorno 5 – 27/03 – <span class="port-name">Las Palmas (Gran Canaria)</span> (05:00–21:00)</div>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('g5-dettagli')">📅 Dettagli</button>
-      <button class="btn" onclick="openGroupLinks([
-        'https://www.google.com/maps/search/?api=1&query=Muelle+de+Santa+Catalina+Las+Palmas',
-        'https://www.google.com/maps/search/?api=1&query=Vegueta+Las+Palmas',
-        'https://www.google.com/maps/search/?api=1&query=Playa+de+Las+Canteras+Las+Palmas'
-      ])">📍 Maps giorno 5</button>
-    </div>
-
-    <div id="g5-dettagli" class="hidden">
-      <div class="block">
-        <span class="time-range">Mattina – Vegueta / Triana</span>
-        <ul>
-          <li>Dal Muelle de Santa Catalina bus o taxi verso Vegueta.</li>
-          <li>Giro a piedi in centro storico e Triana.</li>
-        </ul>
+      <div class="phase-title"><i class="fa-solid fa-water-ladder"></i> Pomeriggio Oceanico</div>
+      <div class="poi-list">
+        <div class="poi-item">
+          <div class="poi-info">
+            <p class="poi-name">Zona Lido o Praia Formosa</p>
+            <p class="poi-sub">Piscine di mare o spiaggia scura.</p>
+          </div>
+          <div class="poi-actions">
+             <a href="https://www.google.com/maps/search/?api=1&query=Praia+Formosa+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+             <button class="action-btn btn-info" onclick="openInfo('Zona Lido / Ponta Gorda', 'Madeira ha poche spiagge sabbiose. La zona del Lido offre bellissimi complessi di piscine (spesso di acqua salata oceanica) scavate nella roccia. È il modo più \"local\" ed elegante per farsi il bagno qui.')"><i class="fa-solid fa-info"></i></button>
+          </div>
+        </div>
       </div>
 
-      <div class="block">
-        <span class="time-range">Pomeriggio – Playa de Las Canteras</span>
-        <ul>
-          <li>Spostamento verso Playa de Las Canteras (piedi / bus / taxi).</li>
-          <li>Pranzo sul paseo + mare, rientro comodo verso la nave.</li>
-        </ul>
-        <div class="tip danger">Punta a rientrare alla nave non oltre le 19:30.</div>
+      <div class="alert-box">
+        <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i>
+        <span>Partenza dalla zona mare max alle 15:15. Arrivo in porto entro le 16:00!</span>
       </div>
-
-      <label style="font-size:12px;">Note giorno 5:</label>
-      <textarea class="notes" placeholder="Es. tratto fatto a piedi, chiringuito top..."></textarea>
+      <textarea class="notes" placeholder="Vini assaggiati, funivia presa?"></textarea>
     </div>
-  </section>
+  </article>
 
-  <!-- GIORNO 6 -->
-  <section class="card day" id="giorno6">
-    <div class="meta">Giorno 6 – 28/03 – <span class="port-name">Navigazione</span></div>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('g6-dettagli')">📅 Dettagli</button>
-    </div>
-
-    <div id="g6-dettagli" class="hidden">
-      <div class="block">
-        Giornata di relax a bordo: piscina, palestra, spa, spettacoli. Ottima per smaltire il cibo e ricaricare prima di Funchal.
+  <!-- ==========================================
+       GIORNO 8: TENERIFE (SBARCO)
+       ========================================== -->
+  <article class="day-card" style="margin-bottom: 40px;">
+    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: center;">
+      <div class="hero-content day-badge" style="background: rgba(255,59,48,0.8); border:none;">Ultimo Giorno</div>
+      <div class="hero-content">
+        <h2>Sbarco</h2>
+        <div class="time-badge"><i class="fa-solid fa-plane-departure"></i> Volo Neos ore 14:05</div>
       </div>
-      <label style="font-size:12px;">Note giorno 6:</label>
-      <textarea class="notes" placeholder="Es. orari palestra, ristorante preferito a bordo..."></textarea>
     </div>
-  </section>
-
-  <!-- GIORNO 7 -->
-  <section class="card day" id="giorno7">
-    <div class="meta">Giorno 7 – 29/03 – <span class="port-name">Funchal (Madeira)</span> (07:00–17:00)</div>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('g7-dettagli')">📅 Dettagli</button>
-      <button class="btn" onclick="openGroupLinks([
-        'https://www.google.com/maps/search/?api=1&query=Porto+do+Funchal+Av.+S%C3%A1+Carneiro',
-        'https://www.google.com/maps/search/?api=1&query=Mercado+dos+Lavradores+Funchal',
-        'https://www.google.com/maps/search/?api=1&query=Praia+Formosa+Funchal',
-        'https://www.google.com/maps/search/?api=1&query=Complexo+Balnear+da+Ponta+Gorda+Funchal'
-      ])">📍 Maps giorno 7</button>
-    </div>
-
-    <div id="g7-dettagli" class="hidden">
-      <div class="block">
-        <span class="time-range">Mattina – Centro / Free tour</span>
-        <ul>
-          <li>Porto → centro a piedi (Cattedrale, Praça do Município, Mercado dos Lavradores).</li>
-          <li>Eventuale free walking tour prenotato.</li>
-        </ul>
+    <div class="card-body">
+      <div class="poi-list">
+        <div class="poi-item" style="background: #fff0f0; border-color: #ffcdd2;">
+          <div class="poi-info">
+            <p class="poi-name" style="color:var(--danger);">Navetta Costa per Aeroporto</p>
+            <p class="poi-sub">Arrivo a Milano MXP previsto per le 19:00.</p>
+          </div>
+          <div class="poi-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=Aeropuerto+de+Tenerife+Sur+TFS" target="_blank" class="action-btn btn-map" style="background: #ffebee; color: var(--danger);"><i class="fa-solid fa-plane"></i></a>
+          </div>
+        </div>
       </div>
-
-      <div class="block">
-        <span class="time-range">Pomeriggio – Praia Formosa o Lido</span>
-        <ul>
-          <li>Opzione 1: bus per Praia Formosa (spiaggia sabbia/ciottoli).</li>
-          <li>Opzione 2: zona Lido / Ponta Gorda con piscine e accesso al mare.</li>
-        </ul>
-        <div class="tip danger">Partenza dalla zona mare verso le 15:15 per essere in porto entro ~16:00–16:15.</div>
-      </div>
-
-      <label style="font-size:12px;">Note giorno 7:</label>
-      <textarea class="notes" placeholder="Es. scelta tra Praia Formosa e Lido, costi reali bus/taxi..."></textarea>
+      <p style="font-size:14px; margin-top:16px;">Priorità assoluta: sbarco, recupero bagagli e trasferimento verso l'aeroporto. Meglio arrivare in anticipo al gate per rilassarsi prima del rientro.</p>
     </div>
-  </section>
-
-  <!-- GIORNO 8 -->
-  <section class="card day" id="giorno8">
-    <div class="meta">Giorno 8 – 30/03 – <span class="port-name">Santa Cruz de Tenerife</span> (sbarco, volo 14:05 TFS)</div>
-
-    <div class="btn-row">
-      <button class="btn primary" onclick="toggleSection('g8-dettagli')">📅 Dettagli</button>
-      <button class="btn danger" onclick="openGroupLinks([
-        'https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+Tenerife',
-        'https://www.google.com/maps/search/?api=1&query=Aeropuerto+de+Tenerife+Sur+TFS'
-      ])">✈️ Porto &amp; TFS</button>
-    </div>
-
-    <div id="g8-dettagli" class="hidden">
-      <div class="block">
-        <span class="time-range">Mattina – Sbarco + transfer aeroporto</span>
-        <ul>
-          <li>Gestione sbarco e bagagli.</li>
-          <li>Transfer verso Aeroporto Tenerife Sud (TFS) in tempo per volo 14:05.</li>
-        </ul>
-        <div class="tip danger">Priorità: check-in e controlli, niente piani “tirati” quella mattina.</div>
-      </div>
-
-      <label style="font-size:12px;">Note giorno 8:</label>
-      <textarea class="notes" placeholder="Es. tipo transfer usato, tempi effettivi..."></textarea>
-    </div>
-  </section>
+  </article>
 
 </main>
 
+<!-- ==========================================
+     MODALE INFORMATIVO (BOTTOM SHEET)
+     ========================================== -->
+<div class="overlay" id="overlay" onclick="closeInfo()"></div>
+<div class="bottom-sheet" id="infoSheet">
+  <div class="sheet-handle"></div>
+  <!-- Immagine dinamica opzionale per rendere la modale più viva -->
+  <h3 id="modalTitle">Titolo</h3>
+  <p id="modalDesc">Descrizione del luogo...</p>
+  <button class="btn-close" onclick="closeInfo()">Capito!</button>
+</div>
+
 <script>
-  function toggleSection(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.classList.toggle('hidden');
+  // Gestione sezioni a scomparsa veloci (itinerario, costi)
+  function toggleWidget(id) {
+    const el = document.getElementById(id);
+    if (el.classList.contains('active')) {
+      el.classList.remove('active');
+    } else {
+      // Chiude le altre sezioni aperte (opzionale)
+      document.querySelectorAll('.hidden-section').forEach(sec => sec.classList.remove('active'));
+      el.classList.add('active');
+    }
   }
-  function openGroupLinks(urls) {
-    if (!urls || !urls.length) return;
-    // Su mobile apro il primo nella stessa scheda, gli altri in nuove (se consentito)
-    urls.forEach(function(u, idx){
-      if (idx === 0) {
-        window.location.href = u;
-      } else {
-        window.open(u, '_blank');
-      }
-    });
+
+  // Gestione Modale Bottom Sheet per le Info
+  const overlay = document.getElementById('overlay');
+  const infoSheet = document.getElementById('infoSheet');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDesc = document.getElementById('modalDesc');
+
+  function openInfo(title, description) {
+    modalTitle.innerText = title;
+    modalDesc.innerText = description;
+    
+    // Mostra modale con animazione
+    overlay.classList.add('active');
+    infoSheet.classList.add('active');
   }
+
+  function closeInfo() {
+    overlay.classList.remove('active');
+    infoSheet.classList.remove('active');
+  }
+
+  // Permette di chiudere la modale trascinandola verso il basso (swipe down basilare)
+  let touchstartY = 0;
+  let touchendY = 0;
+
+  infoSheet.addEventListener('touchstart', e => {
+    touchstartY = e.changedTouches[0].screenY;
+  }, {passive: true});
+
+  infoSheet.addEventListener('touchend', e => {
+    touchendY = e.changedTouches[0].screenY;
+    if (touchendY > touchstartY + 50) { // Se l'utente scorre giù di almeno 50px
+      closeInfo();
+    }
+  }, {passive: true});
+
 </script>
 </body>
 </html>
