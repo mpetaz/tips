@@ -2,233 +2,344 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Costa Fortuna – Canarie & Madeira – Agenda Moreno</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Costa Fortuna – Agenda Canarie & Madeira</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
       --primary:#005f9e;
       --primary-soft:#e3f2fd;
-      --bg:#f5f5f5;
+      --bg:#f0f2f5;
       --card:#ffffff;
       --danger:#b00020;
+      --text:#222;
     }
     *{box-sizing:border-box;}
     body {
+      margin:0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin:0; padding:0;
-      background:var(--bg); color:#222;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing: antialiased;
     }
     header {
-      background:var(--primary);
-      color:#fff;
-      padding:16px 14px 10px;
       position:sticky;
       top:0;
-      z-index:10;
+      z-index:20;
+      background:linear-gradient(135deg,#006bb3,#004b80);
+      color:#fff;
+      padding:10px 12px 8px;
     }
-    h1 { font-size:20px; margin:0 0 4px; }
-    h2 { font-size:18px; margin:16px 0 8px; }
-    h3 { font-size:16px; margin:12px 0 4px; }
-    main { padding:10px; max-width:900px; margin:0 auto 40px; }
-
+    h1 {
+      font-size:18px;
+      margin:0 0 2px;
+    }
+    .subtitle {
+      font-size:12px;
+      opacity:0.9;
+    }
+    main {
+      padding:8px;
+      max-width:520px;   /* perfetto per ~6.2" in verticale */
+      margin:0 auto 32px;
+    }
     section.card {
       background:var(--card);
-      border-radius:10px;
-      padding:10px 12px;
+      border-radius:12px;
+      padding:10px 10px;
       margin:8px 0;
       box-shadow:0 1px 3px rgba(0,0,0,0.08);
     }
-    section.day { margin-top:10px; }
-    .meta { font-size:13px; color:#555; margin-bottom:6px; }
+    section.day { margin-top:8px; }
+    h2 {
+      font-size:15px;
+      margin:0 0 6px;
+    }
+    h3 {
+      font-size:14px;
+      margin:8px 0 4px;
+    }
+    .meta {
+      font-size:12px;
+      color:#555;
+      margin-bottom:4px;
+    }
     .port-name { font-weight:600; }
-    .block { margin:8px 0; }
-    .time-range { font-weight:600; color:var(--primary); font-size:14px; }
-    a { color:var(--primary); text-decoration:none; }
+    .block { margin:6px 0; }
+    .time-range {
+      font-weight:600;
+      color:var(--primary);
+      font-size:13px;
+      display:block;
+      margin-bottom:2px;
+    }
+    ul {
+      margin:2px 0 2px 16px;
+      padding:0;
+      font-size:13px;
+    }
+    li { margin:1px 0; }
+    a {
+      color:var(--primary);
+      text-decoration:none;
+    }
     a:hover { text-decoration:underline; }
-    ul { margin:4px 0 4px 18px; padding:0; }
-    li { margin:2px 0; }
-    .tip { font-size:12px; color:#777; margin-top:4px; }
-    .danger { color:var(--danger); font-weight:600; }
-    .maps-link { font-size:13px; margin-top:3px; }
+    .maps-link {
+      font-size:12px;
+      margin-top:2px;
+      line-height:1.35;
+    }
+    .tip {
+      font-size:11px;
+      color:#777;
+      margin-top:3px;
+    }
+    .danger {
+      color:var(--danger);
+      font-weight:600;
+    }
 
     .btn-row {
       display:flex;
       flex-wrap:wrap;
-      gap:6px;
-      margin:4px 0 6px;
+      gap:4px;
+      margin:4px 0 4px;
     }
     .btn {
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:8px 10px;
+      padding:7px 9px;
       border-radius:999px;
       border:none;
-      font-size:13px;
+      font-size:12px;
       font-weight:500;
       background:var(--primary-soft);
       color:var(--primary);
-      min-width:80px;
+      flex:1 1 46%;
+      min-width:0;
+      text-align:center;
     }
-    .btn.small { padding:6px 8px; font-size:12px; }
-    .btn.primary { background:#fff; border:1px solid var(--primary); }
-    .btn.danger { background:#ffebee; color:var(--danger); border:1px solid #ffcdd2; }
+    .btn.primary {
+      background:#fff;
+      border:1px solid var(--primary);
+    }
+    .btn.danger {
+      background:#ffebee;
+      color:var(--danger);
+      border:1px solid #ffcdd2;
+    }
     .btn:active { opacity:0.7; }
-    .btn.full { width:100%; justify-content:flex-start; }
 
     .hidden { display:none; }
 
     .cost-table {
       width:100%;
       border-collapse:collapse;
-      font-size:13px;
-      margin-top:6px;
+      font-size:12px;
+      margin-top:4px;
     }
     .cost-table th,
     .cost-table td {
       border-bottom:1px solid #eee;
-      padding:6px 4px;
+      padding:4px 2px;
       text-align:left;
+      white-space:nowrap;
     }
     .cost-table th { background:#fafafa; font-weight:600; }
 
+    .itinerary-table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .itinerary-table th,
+    .itinerary-table td {
+      border-bottom:1px solid #eee;
+      padding:4px 2px;
+      text-align:left;
+    }
+    .itinerary-table th { background:#fafafa; }
+
     textarea.notes {
       width:100%;
-      min-height:80px;
-      font-size:13px;
+      min-height:60px;
+      font-size:12px;
       border-radius:8px;
       border:1px solid #ddd;
-      padding:6px 8px;
+      padding:5px 6px;
       resize:vertical;
-      margin-top:4px;
+      margin-top:3px;
     }
 
     @media (min-width:700px) {
-      .btn.full { width:auto; }
+      main { max-width:640px; }
+      .btn { flex:0 0 auto; }
     }
   </style>
 </head>
 <body>
 <header>
   <h1>Costa Fortuna – Canarie &amp; Madeira</h1>
-  <div style="font-size:13px;">Agenda di sbarco – Moreno</div>
+  <div class="subtitle">Agenda di sbarco (mobile-friendly)</div>
 </header>
 
 <main>
 
-  <!-- PANNELLO GENERALE: COSTI + NOTE GLOBALI -->
-  <section class="card" id="pannello-generale">
-    <h2>Panoramica veloce</h2>
+  <!-- PROGRAMMA CROCIERA CON ORARI -->
+  <section class="card">
+    <h2>Programma crociera</h2>
+    <table class="itinerary-table">
+      <thead>
+        <tr>
+          <th>Giorno</th>
+          <th>Porto</th>
+          <th>Arrivo</th>
+          <th>Partenza</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1 – 23/03</td>
+          <td>Santa Cruz de Tenerife</td>
+          <td>Imbarco</td>
+          <td>21:30</td>
+        </tr>
+        <tr>
+          <td>2 – 24/03</td>
+          <td>Santa Cruz de La Palma</td>
+          <td>08:00</td>
+          <td>20:00</td>
+        </tr>
+        <tr>
+          <td>3 – 25/03</td>
+          <td>San Sebastián de La Gomera</td>
+          <td>08:00</td>
+          <td>18:00</td>
+        </tr>
+        <tr>
+          <td>4 – 26/03</td>
+          <td>Arrecife (Lanzarote)</td>
+          <td>08:00</td>
+          <td>18:00</td>
+        </tr>
+        <tr>
+          <td>5 – 27/03</td>
+          <td>Las Palmas (Gran Canaria)</td>
+          <td>05:00</td>
+          <td>21:00</td>
+        </tr>
+        <tr>
+          <td>6 – 28/03</td>
+          <td>Navigazione</td>
+          <td>–</td>
+          <td>–</td>
+        </tr>
+        <tr>
+          <td>7 – 29/03</td>
+          <td>Funchal (Madeira)</td>
+          <td>07:00</td>
+          <td>17:00</td>
+        </tr>
+        <tr>
+          <td>8 – 30/03</td>
+          <td>Santa Cruz de Tenerife</td>
+          <td>Sbarco</td>
+          <td>Volo 14:05 TFS</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="tip">Orari basati sul dettaglio della tua prenotazione Costa nel pannello MyCosta. Controlla sempre a bordo eventuali variazioni. [page:2]</div>
+  </section>
+
+  <!-- PANNELLO GENERALE -->
+  <section class="card">
+    <h2>Panoramica &amp; costi</h2>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('costi-section')">
-        💶 Mostra / Nascondi costi indicativi
+      <button class="btn primary" onclick="toggleSection('costi-section')">
+        💶 Costi indicativi
       </button>
-      <button class="btn full" onclick="toggleSection('note-globali')">
-        📝 Note generali viaggio
+      <button class="btn" onclick="toggleSection('note-globali')">
+        📝 Note generali
       </button>
     </div>
 
     <div id="costi-section" class="hidden">
-      <h3>Costi indicativi trasporti (per corsa)</h3>
+      <h3>Trasporti (indicativi, per corsa)</h3>
       <table class="cost-table">
-        <thead>
-          <tr>
-            <th>Luogo</th>
-            <th>Mezzo</th>
-            <th>Indicativo</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
-            <td>Canarie bus urbano</td>
-            <td>Bus</td>
-            <td>1–3 € a persona</td>
+            <th>Canarie bus urbano</th>
+            <td>1–3 € / persona</td>
           </tr>
           <tr>
-            <td>Tenerife → Las Teresitas</td>
-            <td>Bus 910</td>
-            <td>≈ 1–2 € a persona</td>
+            <th>Tenerife → Las Teresitas (910)</th>
+            <td>≈ 1–2 € / persona</td>
           </tr>
           <tr>
-            <td>Arrecife ↔ centro / Reducto</td>
-            <td>Bus o taxi</td>
+            <th>Arrecife ↔ centro/Reducto</th>
             <td>Bus ~1 € / Taxi 5–10 €</td>
           </tr>
           <tr>
-            <td>Las Palmas porto ↔ Las Canteras</td>
-            <td>Bus o taxi</td>
+            <th>Las Palmas ↔ Las Canteras</th>
             <td>Bus 1–2 € / Taxi 7–10 €</td>
           </tr>
           <tr>
-            <td>Funchal ↔ Praia Formosa / Lido</td>
-            <td>Bus o taxi</td>
+            <th>Funchal ↔ Praia Formosa/Lido</th>
             <td>Bus 1–3 € / Taxi 9–13 €</td>
           </tr>
         </tbody>
       </table>
-      <div class="tip">Valori indicativi, perfetti per restare in un budget non esagerato con mix bus + qualche taxi “furbo”.</div>
+      <div class="tip">Perfetto per mix bus locali + qualche taxi quando serve velocità.</div>
     </div>
 
     <div id="note-globali" class="hidden">
-      <h3>Note generali</h3>
+      <h3>Linee guida veloci</h3>
       <ul>
-        <li><span class="danger">Regola oro:</span> rientro in porto con almeno 1h di margine.</li>
-        <li>Preferenza: camminare il più possibile, bus locali per esperienza “immersiva”, taxi solo dove conviene.</li>
+        <li><span class="danger">Regola oro:</span> rientro in porto con ≥ 1h di margine.</li>
+        <li>Preferenza: piedi + bus per esperienza immersiva, taxi solo quando accorcia davvero i tempi.</li>
       </ul>
-      <label style="font-size:13px;">Note personali (modifica direttamente da smartphone):</label>
-      <textarea class="notes" placeholder="Es. prenotazioni free tour, orari bus trovati in loco, nomi bar/ristoranti da provare..."></textarea>
+      <label style="font-size:12px;">Note personali generali:</label>
+      <textarea class="notes" placeholder="Es. prenotazioni free tour, app bus, numeri taxi..."></textarea>
     </div>
   </section>
 
-  <!-- GIORNI: OGNI GIORNO COLLASSABILE CON PULSANTI -->
   <!-- GIORNO 1 -->
   <section class="card day" id="giorno1">
-    <div class="meta">Giorno 1 – 23/03 – <span class="port-name">Santa Cruz de Tenerife</span> (imbarco, partenza 21:30)</div>
+    <div class="meta">Giorno 1 – 23/03 – <span class="port-name">Santa Cruz de Tenerife</span> (partenza 21:30)</div>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('g1-dettagli')">📅 Dettagli giornata</button>
-      <button class="btn full" onclick="openGroupLinks([
+      <button class="btn primary" onclick="toggleSection('g1-dettagli')">📅 Dettagli</button>
+      <button class="btn" onclick="openGroupLinks([
         'https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+Tenerife',
         'https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+Tenerife',
         'https://www.google.com/maps/search/?api=1&query=Auditorio+de+Tenerife',
         'https://www.google.com/maps/search/?api=1&query=Playa+de+las+Teresitas'
-      ])">📍 Apri link Maps principali</button>
+      ])">📍 Maps giorno 1</button>
     </div>
 
     <div id="g1-dettagli" class="hidden">
       <div class="block">
-        <span class="time-range">Pomeriggio – Centro città a piedi</span>
+        <span class="time-range">Pomeriggio – Centro a piedi</span>
         <ul>
-          <li>Dal porto: passeggiata verso Plaza de España e Calle Castillo.</li>
-          <li>Passaggio al Mercado Nuestra Señora de África (se aperto).</li>
-          <li>Eventuale camminata verso Auditorio di Tenerife e lungomare.</li>
+          <li>Porto → Plaza de España → Calle Castillo.</li>
+          <li>Mercado Nuestra Señora de África (se aperto).</li>
+          <li>Eventuale passeggiata verso Auditorio di Tenerife.</li>
         </ul>
-        <div class="maps-link">
-          • Porto:
-          <a href="https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+Tenerife" target="_blank">Apri in Maps</a><br/>
-          • Plaza de España:
-          <a href="https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+Tenerife" target="_blank">Apri in Maps</a><br/>
-          • Auditorio:
-          <a href="https://www.google.com/maps/search/?api=1&query=Auditorio+de+Tenerife" target="_blank">Apri in Maps</a>
-        </div>
       </div>
 
       <div class="block">
-        <span class="time-range">Opzione mare – Playa de las Teresitas</span>
+        <span class="time-range">Opzione mare – Las Teresitas</span>
         <ul>
-          <li>Bus 910 TITSA dal centro/Intercambiador fino a Playa de las Teresitas.</li>
-          <li>Valuta andata in bus e ritorno in taxi se vuoi accorciare i tempi.</li>
+          <li>Bus 910 dalla zona porto/Intercambiador fino a Playa de las Teresitas.</li>
+          <li>Valuta andata bus + ritorno taxi se vuoi guadagnare tempo.</li>
         </ul>
-        <div class="maps-link">
-          • Playa de las Teresitas:
-          <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+las+Teresitas" target="_blank">Apri in Maps</a>
-        </div>
-        <div class="tip danger">Rientro in nave con almeno 1h di margine prima della partenza.</div>
+        <div class="tip danger">Rientro a bordo ≥ 1h prima della partenza.</div>
       </div>
 
-      <label style="font-size:13px;">Note giorno 1:</label>
-      <textarea class="notes" placeholder="Es. orario esatto bus 910 trovato in loco, bar per aperitivo..."></textarea>
+      <label style="font-size:12px;">Note giorno 1:</label>
+      <textarea class="notes" placeholder="Es. orari effettivi bus 910, bar per aperitivo..."></textarea>
     </div>
   </section>
 
@@ -237,44 +348,34 @@
     <div class="meta">Giorno 2 – 24/03 – <span class="port-name">Santa Cruz de La Palma</span> (08:00–20:00)</div>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('g2-dettagli')">📅 Dettagli giornata</button>
-      <button class="btn full" onclick="openGroupLinks([
+      <button class="btn primary" onclick="toggleSection('g2-dettagli')">📅 Dettagli</button>
+      <button class="btn" onclick="openGroupLinks([
         'https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+La+Palma',
         'https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+La+Palma',
         'https://www.google.com/maps/search/?api=1&query=Playa+de+Santa+Cruz+de+La+Palma'
-      ])">📍 Apri link Maps principali</button>
+      ])">📍 Maps giorno 2</button>
     </div>
 
     <div id="g2-dettagli" class="hidden">
       <div class="block">
-        <span class="time-range">08:30–12:30 – Centro storico / Free tour</span>
+        <span class="time-range">Mattina – Centro / Free tour</span>
         <ul>
-          <li>Sbarco e camminata dal porto verso il centro (Plaza de España, Calle O’Daly / Calle Real).</li>
-          <li>Partecipare a free tour (se prenotato) o giro autonomo tra balconi tipici e lungomare.</li>
+          <li>Porto → centro storico a piedi (Plaza de España, Calle O’Daly / Calle Real).</li>
+          <li>Free walking tour se prenotato oppure giro autonomo tra balconi e lungomare.</li>
         </ul>
-        <div class="maps-link">
-          • Porto:
-          <a href="https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+La+Palma" target="_blank">Apri in Maps</a><br/>
-          • Plaza de España:
-          <a href="https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+La+Palma" target="_blank">Apri in Maps</a>
-        </div>
       </div>
 
       <div class="block">
-        <span class="time-range">14:00–18:00 – Spiaggia urbana</span>
+        <span class="time-range">Pomeriggio – Spiaggia urbana</span>
         <ul>
-          <li>Pochi minuti a piedi fino alla spiaggia urbana (sabbia nera) di Santa Cruz de La Palma.</li>
-          <li>Relax mare, bar sul lungomare, rientro a piedi alla nave.</li>
+          <li>A piedi alla spiaggia urbana (sabbia nera) di Santa Cruz de La Palma.</li>
+          <li>Mare + rientro a piedi in porto.</li>
         </ul>
-        <div class="maps-link">
-          • Spiaggia urbana:
-          <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+Santa+Cruz+de+La+Palma" target="_blank">Apri in Maps</a>
-        </div>
-        <div class="tip danger">Rientro verso le 18:30–19:00.</div>
+        <div class="tip danger">Punta al rientro nave tra le 18:30 e le 19:00.</div>
       </div>
 
-      <label style="font-size:13px;">Note giorno 2:</label>
-      <textarea class="notes" placeholder="Es. nome guida free tour, bar consigliato..."></textarea>
+      <label style="font-size:12px;">Note giorno 2:</label>
+      <textarea class="notes" placeholder="Es. nome guida free tour, ristorante provato..."></textarea>
     </div>
   </section>
 
@@ -283,231 +384,185 @@
     <div class="meta">Giorno 3 – 25/03 – <span class="port-name">San Sebastián de La Gomera</span> (08:00–18:00)</div>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('g3-dettagli')">📅 Dettagli giornata</button>
-      <button class="btn full" onclick="openGroupLinks([
+      <button class="btn primary" onclick="toggleSection('g3-dettagli')">📅 Dettagli</button>
+      <button class="btn" onclick="openGroupLinks([
         'https://www.google.com/maps/search/?api=1&query=Puerto+de+San+Sebasti%C3%A1n+de+La+Gomera',
         'https://www.google.com/maps/search/?api=1&query=Playa+de+San+Sebasti%C3%A1n+de+La+Gomera'
-      ])">📍 Apri link Maps principali</button>
+      ])">📍 Maps giorno 3</button>
     </div>
 
     <div id="g3-dettagli" class="hidden">
       <div class="block">
-        <span class="time-range">Mattina – Città + eventuale mirador</span>
+        <span class="time-range">Mattina – Città + mirador (opzionale)</span>
         <ul>
-          <li>Passeggiata a piedi per San Sebastián (chiesa, piazza, scorci sul porto).</li>
-          <li>Se volete un assaggio di panorami, negoziare un taxi per un mirador o zona Garajonay.</li>
+          <li>Giro a piedi nel paese (chiesa, piazza, scorci sul porto).</li>
+          <li>Taxi condiviso per un mirador / Garajonay se volete panorami.</li>
         </ul>
-        <div class="maps-link">
-          • Porto:
-          <a href="https://www.google.com/maps/search/?api=1&query=Puerto+de+San+Sebasti%C3%A1n+de+La+Gomera" target="_blank">Apri in Maps</a>
-        </div>
       </div>
 
       <div class="block">
-        <span class="time-range">Pomeriggio – Spiaggia Playa de San Sebastián</span>
+        <span class="time-range">Pomeriggio – Playa de San Sebastián</span>
         <ul>
-          <li>Spiaggia cittadina di sabbia nera a pochi passi dal paese e dal porto.</li>
-          <li>Relax mare e rientro comodissimo a piedi.</li>
+          <li>Spiaggia cittadina a pochi minuti a piedi dal porto.</li>
+          <li>Mare + rientro comodissimo a piedi.</li>
         </ul>
-        <div class="maps-link">
-          • Playa de San Sebastián:
-          <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+San+Sebasti%C3%A1n+de+La+Gomera" target="_blank">Apri in Maps</a>
-        </div>
       </div>
 
-      <label style="font-size:13px;">Note giorno 3:</label>
-      <textarea class="notes" placeholder="Es. prezzo taxi per mirador, nome mirador visitato..."></textarea>
+      <label style="font-size:12px;">Note giorno 3:</label>
+      <textarea class="notes" placeholder="Es. mirador visitato, costo taxi..."></textarea>
     </div>
   </section>
 
   <!-- GIORNO 4 -->
   <section class="card day" id="giorno4">
-    <div class="meta">Giorno 4 – 26/03 – <span class="port-name">Arrecife, Lanzarote</span> (08:00–18:00)</div>
+    <div class="meta">Giorno 4 – 26/03 – <span class="port-name">Arrecife (Lanzarote)</span> (08:00–18:00)</div>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('g4-dettagli')">📅 Dettagli giornata</button>
-      <button class="btn full" onclick="openGroupLinks([
+      <button class="btn primary" onclick="toggleSection('g4-dettagli')">📅 Dettagli</button>
+      <button class="btn" onclick="openGroupLinks([
         'https://www.google.com/maps/search/?api=1&query=Puerto+de+Arrecife+Lanzarote',
         'https://www.google.com/maps/search/?api=1&query=Charco+de+San+Gines+Arrecife',
         'https://www.google.com/maps/search/?api=1&query=Playa+del+Reducto+Arrecife'
-      ])">📍 Apri link Maps principali</button>
+      ])">📍 Maps giorno 4</button>
     </div>
 
     <div id="g4-dettagli" class="hidden">
       <div class="block">
-        <span class="time-range">09:00–12:30 – Centro Arrecife</span>
+        <span class="time-range">Mattina – Centro Arrecife</span>
         <ul>
-          <li>Porto → centro (piedi, shuttle / bus o taxi secondo distanza).</li>
-          <li>Charco de San Ginés, Castillo de San Gabriel, zona commerciale.</li>
+          <li>Porto → centro (piedi / shuttle / bus / taxi a seconda del molo).</li>
+          <li>Charco de San Ginés, Castillo de San Gabriel, passeggiata in centro.</li>
         </ul>
-        <div class="maps-link">
-          • Porto:
-          <a href="https://www.google.com/maps/search/?api=1&query=Puerto+de+Arrecife+Lanzarote" target="_blank">Apri in Maps</a><br/>
-          • Charco de San Ginés:
-          <a href="https://www.google.com/maps/search/?api=1&query=Charco+de+San+Gines+Arrecife" target="_blank">Apri in Maps</a>
-        </div>
       </div>
 
       <div class="block">
-        <span class="time-range">14:00–17:00 – Spiaggia Playa del Reducto</span>
+        <span class="time-range">Pomeriggio – Playa del Reducto</span>
         <ul>
-          <li>Dal centro a Playa del Reducto (piedi o bus linea 3; taxi se stanchi).</li>
-          <li>Relax mare, poi rientro verso porto con ampio margine.</li>
+          <li>Dal centro a Playa del Reducto a piedi o con bus linea 3.</li>
+          <li>Mare, poi rientro verso porto con ampio margine.</li>
         </ul>
-        <div class="maps-link">
-          • Playa del Reducto:
-          <a href="https://www.google.com/maps/search/?api=1&query=Playa+del+Reducto+Arrecife" target="_blank">Apri in Maps</a>
-        </div>
         <div class="tip danger">Lascia la spiaggia intorno alle 16:00.</div>
       </div>
 
-      <label style="font-size:13px;">Note giorno 4:</label>
-      <textarea class="notes" placeholder="Es. se hai usato bus linea 3 o taxi, costi reali..."></textarea>
+      <label style="font-size:12px;">Note giorno 4:</label>
+      <textarea class="notes" placeholder="Es. se hai usato bus o taxi, tempi reali..."></textarea>
     </div>
   </section>
 
   <!-- GIORNO 5 -->
   <section class="card day" id="giorno5">
-    <div class="meta">Giorno 5 – 27/03 – <span class="port-name">Las Palmas de Gran Canaria</span> (05:00–21:00)</div>
+    <div class="meta">Giorno 5 – 27/03 – <span class="port-name">Las Palmas (Gran Canaria)</span> (05:00–21:00)</div>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('g5-dettagli')">📅 Dettagli giornata</button>
-      <button class="btn full" onclick="openGroupLinks([
+      <button class="btn primary" onclick="toggleSection('g5-dettagli')">📅 Dettagli</button>
+      <button class="btn" onclick="openGroupLinks([
         'https://www.google.com/maps/search/?api=1&query=Muelle+de+Santa+Catalina+Las+Palmas',
         'https://www.google.com/maps/search/?api=1&query=Vegueta+Las+Palmas',
         'https://www.google.com/maps/search/?api=1&query=Playa+de+Las+Canteras+Las+Palmas'
-      ])">📍 Apri link Maps principali</button>
+      ])">📍 Maps giorno 5</button>
     </div>
 
     <div id="g5-dettagli" class="hidden">
       <div class="block">
-        <span class="time-range">08:30–11:30 – Vegueta / Triana</span>
+        <span class="time-range">Mattina – Vegueta / Triana</span>
         <ul>
           <li>Dal Muelle de Santa Catalina bus o taxi verso Vegueta.</li>
-          <li>Giro a piedi tra Cattedrale, stradine storiche e Triana.</li>
+          <li>Giro a piedi in centro storico e Triana.</li>
         </ul>
-        <div class="maps-link">
-          • Porto:
-          <a href="https://www.google.com/maps/search/?api=1&query=Muelle+de+Santa+Catalina+Las+Palmas" target="_blank">Apri in Maps</a><br/>
-          • Vegueta:
-          <a href="https://www.google.com/maps/search/?api=1&query=Vegueta+Las+Palmas" target="_blank">Apri in Maps</a>
-        </div>
       </div>
 
       <div class="block">
-        <span class="time-range">12:00–17:30 – Spiaggia Playa de Las Canteras</span>
+        <span class="time-range">Pomeriggio – Playa de Las Canteras</span>
         <ul>
-          <li>Spostamento verso Playa de Las Canteras (piedi, bus o taxi).</li>
-          <li>Pranzo sul paseo + mare in una delle migliori spiagge urbane.</li>
+          <li>Spostamento verso Playa de Las Canteras (piedi / bus / taxi).</li>
+          <li>Pranzo sul paseo + mare, rientro comodo verso la nave.</li>
         </ul>
-        <div class="maps-link">
-          • Playa de Las Canteras:
-          <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+Las+Canteras+Las+Palmas" target="_blank">Apri in Maps</a>
-        </div>
-        <div class="tip danger">Rientro alla nave non oltre le 19:30.</div>
+        <div class="tip danger">Punta a rientrare alla nave non oltre le 19:30.</div>
       </div>
 
-      <label style="font-size:13px;">Note giorno 5:</label>
-      <textarea class="notes" placeholder="Es. tratto fatto a piedi dal porto a Las Canteras, chiosco preferito..."></textarea>
+      <label style="font-size:12px;">Note giorno 5:</label>
+      <textarea class="notes" placeholder="Es. tratto fatto a piedi, chiringuito top..."></textarea>
     </div>
   </section>
 
-  <!-- GIORNO 6 – NAVIGAZIONE -->
+  <!-- GIORNO 6 -->
   <section class="card day" id="giorno6">
     <div class="meta">Giorno 6 – 28/03 – <span class="port-name">Navigazione</span></div>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('g6-dettagli')">📅 Dettagli giornata</button>
+      <button class="btn primary" onclick="toggleSection('g6-dettagli')">📅 Dettagli</button>
     </div>
 
     <div id="g6-dettagli" class="hidden">
       <div class="block">
-        Giornata di relax a bordo: piscina, palestra, spa, spettacoli. Perfetta per smaltire il cibo della crociera e ricaricare per Funchal.
+        Giornata di relax a bordo: piscina, palestra, spa, spettacoli. Ottima per smaltire il cibo e ricaricare prima di Funchal.
       </div>
-      <label style="font-size:13px;">Note giorno 6:</label>
+      <label style="font-size:12px;">Note giorno 6:</label>
       <textarea class="notes" placeholder="Es. orari palestra, ristorante preferito a bordo..."></textarea>
     </div>
   </section>
 
-  <!-- GIORNO 7 – FUNCHAL -->
+  <!-- GIORNO 7 -->
   <section class="card day" id="giorno7">
-    <div class="meta">Giorno 7 – 29/03 – <span class="port-name">Funchal, Madeira</span> (07:00–17:00)</div>
+    <div class="meta">Giorno 7 – 29/03 – <span class="port-name">Funchal (Madeira)</span> (07:00–17:00)</div>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('g7-dettagli')">📅 Dettagli giornata</button>
-      <button class="btn full" onclick="openGroupLinks([
+      <button class="btn primary" onclick="toggleSection('g7-dettagli')">📅 Dettagli</button>
+      <button class="btn" onclick="openGroupLinks([
         'https://www.google.com/maps/search/?api=1&query=Porto+do+Funchal+Av.+S%C3%A1+Carneiro',
         'https://www.google.com/maps/search/?api=1&query=Mercado+dos+Lavradores+Funchal',
         'https://www.google.com/maps/search/?api=1&query=Praia+Formosa+Funchal',
         'https://www.google.com/maps/search/?api=1&query=Complexo+Balnear+da+Ponta+Gorda+Funchal'
-      ])">📍 Apri link Maps principali</button>
+      ])">📍 Maps giorno 7</button>
     </div>
 
     <div id="g7-dettagli" class="hidden">
       <div class="block">
-        <span class="time-range">08:30–12:30 – Centro storico / Free tour</span>
+        <span class="time-range">Mattina – Centro / Free tour</span>
         <ul>
-          <li>Porto → passeggiata verso centro (Cattedrale, Praça do Município, Mercado dos Lavradores).</li>
-          <li>Partecipazione a free tour se prenotato.</li>
+          <li>Porto → centro a piedi (Cattedrale, Praça do Município, Mercado dos Lavradores).</li>
+          <li>Eventuale free walking tour prenotato.</li>
         </ul>
-        <div class="maps-link">
-          • Porto:
-          <a href="https://www.google.com/maps/search/?api=1&query=Porto+do+Funchal+Av.+S%C3%A1+Carneiro" target="_blank">Apri in Maps</a><br/>
-          • Mercado dos Lavradores:
-          <a href="https://www.google.com/maps/search/?api=1&query=Mercado+dos+Lavradores+Funchal" target="_blank">Apri in Maps</a>
-        </div>
       </div>
 
       <div class="block">
-        <span class="time-range">13:30–16:00 – Mare (Praia Formosa o Lido)</span>
+        <span class="time-range">Pomeriggio – Praia Formosa o Lido</span>
         <ul>
-          <li>Opzione 1: bus verso Praia Formosa (spiaggia sabbia/ciottoli).</li>
-          <li>Opzione 2: zona Lido / Ponta Gorda con piscine in mare.</li>
+          <li>Opzione 1: bus per Praia Formosa (spiaggia sabbia/ciottoli).</li>
+          <li>Opzione 2: zona Lido / Ponta Gorda con piscine e accesso al mare.</li>
         </ul>
-        <div class="maps-link">
-          • Praia Formosa:
-          <a href="https://www.google.com/maps/search/?api=1&query=Praia+Formosa+Funchal" target="_blank">Apri in Maps</a><br/>
-          • Complexo Balnear Ponta Gorda:
-          <a href="https://www.google.com/maps/search/?api=1&query=Complexo+Balnear+da+Ponta+Gorda+Funchal" target="_blank">Apri in Maps</a>
-        </div>
-        <div class="tip danger">Parti dalla spiaggia verso le 15:15 per essere in porto tra 16:00–16:15.</div>
+        <div class="tip danger">Partenza dalla zona mare verso le 15:15 per essere in porto entro ~16:00–16:15.</div>
       </div>
 
-      <label style="font-size:13px;">Note giorno 7:</label>
-      <textarea class="notes" placeholder="Es. free tour usato, scelta tra Praia Formosa e Lido, costi bus/taxi..."></textarea>
+      <label style="font-size:12px;">Note giorno 7:</label>
+      <textarea class="notes" placeholder="Es. scelta tra Praia Formosa e Lido, costi reali bus/taxi..."></textarea>
     </div>
   </section>
 
-  <!-- GIORNO 8 – SBARCO -->
+  <!-- GIORNO 8 -->
   <section class="card day" id="giorno8">
-    <div class="meta">Giorno 8 – 30/03 – <span class="port-name">Santa Cruz de Tenerife</span> (sbarco, volo 14:05 da TFS)</div>
+    <div class="meta">Giorno 8 – 30/03 – <span class="port-name">Santa Cruz de Tenerife</span> (sbarco, volo 14:05 TFS)</div>
 
     <div class="btn-row">
-      <button class="btn primary full" onclick="toggleSection('g8-dettagli')">📅 Dettagli giornata</button>
-      <button class="btn danger full" onclick="openGroupLinks([
+      <button class="btn primary" onclick="toggleSection('g8-dettagli')">📅 Dettagli</button>
+      <button class="btn danger" onclick="openGroupLinks([
         'https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+Tenerife',
         'https://www.google.com/maps/search/?api=1&query=Aeropuerto+de+Tenerife+Sur+TFS'
-      ])">✈️ Porto &amp; Aeroporto Maps</button>
+      ])">✈️ Porto &amp; TFS</button>
     </div>
 
     <div id="g8-dettagli" class="hidden">
       <div class="block">
-        <span class="time-range">Mattina – Sbarco + trasferimento TFS</span>
+        <span class="time-range">Mattina – Sbarco + transfer aeroporto</span>
         <ul>
-          <li>Gestire sbarco, bagagli e transfer verso Aeroporto Tenerife Sud (TFS).</li>
-          <li>Eventuale micro-passeggiata in centro Santa Cruz solo se tempi molto larghi.</li>
+          <li>Gestione sbarco e bagagli.</li>
+          <li>Transfer verso Aeroporto Tenerife Sud (TFS) in tempo per volo 14:05.</li>
         </ul>
-        <div class="maps-link">
-          • Porto:
-          <a href="https://www.google.com/maps/search/?api=1&query=Puerto+de+Santa+Cruz+de+Tenerife" target="_blank">Apri in Maps</a><br/>
-          • Aeroporto TFS:
-          <a href="https://www.google.com/maps/search/?api=1&query=Aeropuerto+de+Tenerife+Sur+TFS" target="_blank">Apri in Maps</a>
-        </div>
-        <div class="tip danger">Priorità assoluta a tempi di check-in e controlli in aeroporto.</div>
+        <div class="tip danger">Priorità: check-in e controlli, niente piani “tirati” quella mattina.</div>
       </div>
 
-      <label style="font-size:13px;">Note giorno 8:</label>
-      <textarea class="notes" placeholder="Es. orario effettivo di sbarco, tipo transfer usato..."></textarea>
+      <label style="font-size:12px;">Note giorno 8:</label>
+      <textarea class="notes" placeholder="Es. tipo transfer usato, tempi effettivi..."></textarea>
     </div>
   </section>
 
@@ -521,8 +576,8 @@
   }
   function openGroupLinks(urls) {
     if (!urls || !urls.length) return;
+    // Su mobile apro il primo nella stessa scheda, gli altri in nuove (se consentito)
     urls.forEach(function(u, idx){
-      // Prima la apro nella stessa scheda, poi eventuali nuove (Android spesso blocca pop-up multipli)
       if (idx === 0) {
         window.location.href = u;
       } else {
