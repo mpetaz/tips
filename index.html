@@ -116,6 +116,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      background-color: var(--costa-blue);
     }
     .card-hero::after {
       content: '';
@@ -175,6 +176,7 @@
       margin-right: 12px;
       flex-shrink: 0;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background-color: var(--costa-blue);
     }
     .poi-info { flex: 1; padding-right: 8px; }
     .poi-name { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--text-main); }
@@ -291,18 +293,19 @@
       padding-bottom: 8px;
       margin-bottom: 8px;
       -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Nasconde scrollbar su Firefox */
+      scrollbar-width: none;
     }
     .modal-gallery::-webkit-scrollbar {
-      display: none; /* Nasconde scrollbar Chrome/Safari */
+      display: none;
     }
     .modal-gallery img {
-      flex: 0 0 88%; /* Mostra un pezzetto della foto successiva per far capire che si scorre */
+      flex: 0 0 88%;
       height: 200px;
       object-fit: cover;
       border-radius: 16px;
       scroll-snap-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background-color: #eee;
     }
     .gallery-hint {
       font-size: 11px;
@@ -333,7 +336,7 @@
     }
     .modal-stat-item i { color: var(--costa-blue); width: 16px; text-align: center; }
 
-    #modalDesc { font-size: 15px; color: #444; line-height: 1.5; margin: 0 0 24px; }
+    #modalDesc { font-size: 15px; color: #444; line-height: 1.5; margin: 0 0 24px; white-space: pre-line; }
     .btn-close {
       width: 100%;
       background: var(--costa-blue);
@@ -421,7 +424,7 @@
        GIORNO 1: TENERIFE 
        ========================================== -->
   <article class="day-card">
-    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1588614959060-4d144f28b207?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+    <div class="card-hero" data-bg-key="g1_hero">
       <div class="hero-content day-badge">Giorno 1 • 23 Marzo</div>
       <div class="hero-content">
         <h2>Tenerife</h2>
@@ -433,7 +436,7 @@
       <div class="phase-title first"><i class="fa-solid fa-suitcase-rolling"></i> Arrivo e Imbarco</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1569949381669-ecf31ae8e613?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Costa Checkin">
+          <img data-src-key="g1_nave" class="poi-thumb" alt="Costa Fortuna Checkin">
           <div class="poi-info">
             <p class="poi-name">Transfer & Check-in</p>
             <p class="poi-sub">Dall'aeroporto TFS alla vostra cabina.</p>
@@ -443,7 +446,7 @@
             </div>
           </div>
           <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('L\'arrivo in Nave', 'Atterrando alle 15:00, tra il ritiro bagagli e circa un\'ora di comodo pullman Costa, arriverete al porto verso le 16:30. Il tempo di fare il check-in e sarete in cabina verso le 17:30. Riposatevi e godetevi il primo brindisi di inizio vacanza!', '', 'Circa 2.5 ore dallo sbarco aereo', 'Bus Costa incluso nel pacchetto')"><i class="fa-solid fa-info"></i></button>
+            <button class="action-btn btn-info" onclick="openInfo('L\'arrivo sulla Nave', '📌 PERCHÉ: È il momento zero, l\'inizio della magia!\n\nAtterrando alle 15:00, tra il ritiro bagagli e circa un\'ora di comodo pullman fornito da Costa, arriverete al porto di Santa Cruz verso le 16:30. Il tempo di fare il check-in e sarete ufficialmente in cabina verso le 17:30. Riposatevi dal volo e godetevi il primissimo brindisi di inizio vacanza sul ponte della Costa Fortuna!', 'g1_nave', 'Circa 2.5 ore dallo sbarco aereo', 'Bus Costa incluso nel pacchetto')"><i class="fa-solid fa-info"></i></button>
           </div>
         </div>
       </div>
@@ -451,7 +454,7 @@
       <div class="phase-title"><i class="fa-solid fa-moon"></i> Passeggiata di Benvenuto</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1616218086438-fb1604a11c81?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Plaza Espana">
+          <img data-src-key="g1_plaza" class="poi-thumb" alt="Plaza Espana">
           <div class="poi-info">
             <p class="poi-name">Plaza de España & Marina</p>
             <p class="poi-sub">Il centro a due passi dal molo nave.</p>
@@ -461,8 +464,7 @@
             </div>
           </div>
           <div class="poi-actions">
-            <!-- Galleria funzionante con foto ad alta velocità -->
-            <button class="action-btn btn-info" onclick="openInfo('Passeggiata Senza Stress', 'Sarete sicuramente stanchi dal viaggio, quindi niente corse! La nave è attraccata praticamente in centro. Scendete a piedi dal molo, attraversate la strada principale e vi ritroverete nell\'enorme Plaza de España con il suo grande lago artificiale. È il posto perfetto per una camminata serale al tramonto e per fare la primissima foto della vacanza sotto l\'insegna gigante di Santa Cruz.', 'https://images.unsplash.com/photo-1616218086438-fb1604a11c81?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80,https://images.unsplash.com/photo-1588614959060-4d144f28b207?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '1 - 1.5 ore max', 'A piedi dalla nave (circa 5-10 minuti a seconda di dove attracca esatto)')"><i class="fa-solid fa-info"></i></button>
+            <button class="action-btn btn-info" onclick="openInfo('Passeggiata Senza Stress', '📌 PERCHÉ L\'ABBIAMO INSERITA: Perché sarete stanchi dal volo, ma avrete tantissima voglia di sentire l\'aria delle Canarie!\n\nLa nave è attraccata praticamente in centro. Scendete a piedi dal molo senza fatica, attraversate la strada principale e vi ritroverete nell\'enorme e spettacolare Plaza de España con il suo grande lago artificiale. È il posto perfetto, a \u0022chilometro zero\u0022, per fare la primissima foto serale e brindare in un baretto prima di tornare a bordo per cena.', 'g1_plaza_gal', '1 - 1.5 ore max', 'A piedi dalla nave (circa 5-10 minuti)')"><i class="fa-solid fa-info"></i></button>
             <a href="https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+Tenerife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
@@ -479,7 +481,7 @@
        GIORNO 2: LA PALMA
        ========================================== -->
   <article class="day-card">
-    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1549880295-8df6225b871c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: center;">
+    <div class="card-hero" data-bg-key="g2_hero">
       <div class="hero-content day-badge">Giorno 2 • 24 Marzo</div>
       <div class="hero-content">
         <h2>La Palma</h2>
@@ -491,7 +493,7 @@
       <div class="phase-title first"><i class="fa-solid fa-shoe-prints"></i> Mattina Storica</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1549880295-8df6225b871c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Balconi">
+          <img data-src-key="g2_balconi" class="poi-thumb" alt="Balconi">
           <div class="poi-info">
             <p class="poi-name">Calle O'Daly & Balconi Canari</p>
             <p class="poi-sub">Le celebri case coloniali affacciate sul mare.</p>
@@ -501,7 +503,7 @@
             </div>
           </div>
           <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('I Balconi Storici e Calle O\'Daly', 'Il centro di Santa Cruz de La Palma è una chicca. Usciti dal porto a piedi (circa 10 min), camminate lungo l\'Avenida Marítima per ammirare i famosi Balconi Canari in legno scolpito: un tempo servivano per ventilare le case, oggi sono fioriti e perfetti per le foto. Poi inoltratevi in Calle O\'Daly, la via pedonale principale, elegante, acciottolata e ricca di palazzi storici.', 'https://images.unsplash.com/photo-1549880295-8df6225b871c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Circa 2 ore passeggiando calmi', 'A piedi. Il porto è attaccato alla città.')"><i class="fa-solid fa-info"></i></button>
+            <button class="action-btn btn-info" onclick="openInfo('I Balconi Storici e Calle O\'Daly', '📌 PERCHÉ ANDARCI: Per fare un tuffo nel passato coloniale spagnolo e scattare foto pazzesche!\n\nIl centro di Santa Cruz de La Palma è una chicca assoluta. Usciti dal porto a piedi, camminate sull\'Avenida Marítima per ammirare i famosi \u0022Balconi Canari\u0022: antiche verande in legno finemente intagliato, oggi stracolme di fiori. Poi inoltratevi in Calle O\'Daly, la via pedonale acciottolata super elegante e ricca di piccoli negozi artigianali. Rilassante e romantica.', 'g2_balconi_gal', 'Circa 2 ore passeggiando calmi', 'A piedi. Il porto è attaccato alla città.')"><i class="fa-solid fa-info"></i></button>
             <a href="https://www.google.com/maps/search/?api=1&query=Calle+O'Daly+Santa+Cruz+de+La+Palma" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
@@ -510,7 +512,7 @@
       <div class="phase-title"><i class="fa-solid fa-water"></i> Pomeriggio Rilassante</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1635338162810-77a4561b36e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Playa La Palma">
+          <img data-src-key="g2_playa" class="poi-thumb" alt="Playa La Palma">
           <div class="poi-info">
             <p class="poi-name">Playa de Santa Cruz</p>
             <p class="poi-sub">La nuova immensa spiaggia nera vulcanica.</p>
@@ -520,7 +522,7 @@
             </div>
           </div>
           <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Playa de Santa Cruz de La Palma', 'Inaugurata da poco, questa immensa spiaggia di finissima sabbia nera vulcanica è super scenografica. È letteralmente attaccata al centro storico e al porto crociere. Questo significa che potrete farvi il bagno, prendere il sole e godervi il mare sapendo che la nave è lì a due passi, eliminando ogni ansia da rientro.', 'https://images.unsplash.com/photo-1635338162810-77a4561b36e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Tutto il pomeriggio', '5 minuti a piedi, vicinissima al molo.')"><i class="fa-solid fa-info"></i></button>
+            <button class="action-btn btn-info" onclick="openInfo('Playa de Santa Cruz de La Palma', '📌 PERCHÉ L\'ABBIAMO SCELTA: Zero stress e acqua fantastica!\n\nInaugurata da pochissimo, questa immensa spiaggia di finissima sabbia nera vulcanica è incredibilmente scenografica e pulita. Ma il suo vero superpotere è che si trova letteralmente attaccata al centro storico e al molo. Potrete nuotare, prendere il sole e rilassarvi sapendo che la vostra nave è lì a due passi, eliminando completamente l\'ansia di dover prendere taxi per rientrare in tempo.', 'g2_playa_gal', 'Tutto il pomeriggio', '5 minuti a piedi, vicinissima al molo.')"><i class="fa-solid fa-info"></i></button>
             <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+Santa+Cruz+de+La+Palma" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
@@ -532,7 +534,7 @@
        GIORNO 3: LA GOMERA
        ========================================== -->
   <article class="day-card">
-    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1538681105587-85640961bf8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: top;">
+    <div class="card-hero" data-bg-key="g3_hero">
       <div class="hero-content day-badge">Giorno 3 • 25 Marzo</div>
       <div class="hero-content">
         <h2>La Gomera</h2>
@@ -544,7 +546,7 @@
       <div class="phase-title first"><i class="fa-solid fa-tree"></i> Sulle orme di Colombo</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1538681105587-85640961bf8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Torre Conde">
+          <img data-src-key="g3_torre" class="poi-thumb" alt="Torre Conde">
           <div class="poi-info">
             <p class="poi-name">San Sebastián & Torre del Conde</p>
             <p class="poi-sub">Il tranquillo porticciolo e il borgo storico.</p>
@@ -554,7 +556,7 @@
             </div>
           </div>
           <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('San Sebastián de La Gomera', 'La Gomera è minuscola, selvaggia e stupenda. La cittadina è stata l\'ultimissimo scalo di Cristoforo Colombo prima di scoprire le Americhe nel 1492! Visitate la Casa di Colombo, la piccola Chiesa dell\'Asunción e passeggiate nel parco verde per ammirare la storica Torre del Conde (la fortezza medievale superstite).', 'https://images.unsplash.com/photo-1538681105587-85640961bf8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', '1.5 - 2 ore massimo', 'A piedi. Il molo si innesta direttamente nel paese.')"><i class="fa-solid fa-info"></i></button>
+            <button class="action-btn btn-info" onclick="openInfo('San Sebastián de La Gomera', '📌 PERCHÉ ANDARCI: Per calpestare lo stesso suolo di Cristoforo Colombo!\n\nLa Gomera è un\'isola minuscola, selvaggia e stupenda in cui il tempo sembra essersi fermato. La cittadina è stata l\'ultimissimo porto in cui Colombo ha fatto rifornimento prima di attraversare l\'oceano nel 1492! Visitate la \u0022Casa di Colombo\u0022 e passeggiate nel piccolo parco per ammirare la \u0022Torre del Conde\u0022, una fortezza medievale perfettamente conservata.', 'g3_torre_gal', '1.5 - 2 ore massimo', 'A piedi. Il molo si innesta direttamente nel paese.')"><i class="fa-solid fa-info"></i></button>
             <a href="https://www.google.com/maps/search/?api=1&query=San+Sebasti%C3%A1n+de+La+Gomera" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
@@ -563,7 +565,7 @@
       <div class="phase-title"><i class="fa-solid fa-sun"></i> Relax Pomeridiano</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1510662145379-13537db782dc?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Playa Cueva">
+          <img data-src-key="g3_cueva" class="poi-thumb" alt="Playa Cueva">
           <div class="poi-info">
             <p class="poi-name">Playa de la Cueva</p>
             <p class="poi-sub">Caletta nera protetta dalle scogliere.</p>
@@ -573,7 +575,7 @@
             </div>
           </div>
           <div class="poi-actions">
-             <button class="action-btn btn-info" onclick="openInfo('Playa de la Cueva & Playa di San Sebastián', 'Avete due opzioni vicinissime a piedi dal centro/porto. La Playa de San Sebastián è molto grande e si affaccia sul paese. Ma la vera gemma è Playa de la Cueva (nelle foto): incamminatevi per 5 minuti dietro il porticciolo attraverso un tunnel di roccia e scoprirete questa caletta nera vulcanica incastonata tra falesie scure, con vista in lontananza sul vulcano Teide di Tenerife.', 'https://images.unsplash.com/photo-1510662145379-13537db782dc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Mezza giornata', '5 minuti a piedi dal centro.')"><i class="fa-solid fa-info"></i></button>
+             <button class="action-btn btn-info" onclick="openInfo('Playa de la Cueva', '📌 PERCHÉ L\'ABBIAMO SCELTA: È un piccolo angolo segreto super pittoresco!\n\nInvece della spiaggia principale, vi consiglio questa vera gemma nascosta: incamminatevi per appena 5 minuti dietro il porticciolo, attraversate un breve e caratteristico tunnel scavato nella roccia vulcanica e vi si aprirà davanti questa caletta di sabbia nera e ciottoli. È incastonata tra alte falesie scure, c\'è un ristorantino tipico sopra e offre una vista mozzafiato sul vulcano Teide di Tenerife in lontananza!', 'g3_cueva_gal', 'Mezza giornata', '5 minuti a piedi dal centro.')"><i class="fa-solid fa-info"></i></button>
              <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+la+Cueva+San+Sebasti%C3%A1n" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
@@ -585,7 +587,7 @@
        GIORNO 4: LANZAROTE
        ========================================== -->
   <article class="day-card">
-    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: center;">
+    <div class="card-hero" data-bg-key="g4_hero">
       <div class="hero-content day-badge">Giorno 4 • 26 Marzo</div>
       <div class="hero-content">
         <h2>Lanzarote (Arrecife)</h2>
@@ -594,29 +596,47 @@
     </div>
     
     <div class="card-body">
-      <div class="phase-title first"><i class="fa-solid fa-camera"></i> La Venezia Canariense</div>
+      <div class="phase-title first"><i class="fa-solid fa-camera"></i> Arte e Venezia Canariense</div>
       <div class="poi-list">
+
+        <!-- NUOVO POI: Castillo de San Jose -->
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1626359218698-c9233f26ea13?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Charco San Gines">
+          <img data-src-key="g4_castello" class="poi-thumb" alt="Castillo San Jose">
+          <div class="poi-info">
+            <p class="poi-name">Castillo de San José (MIAC)</p>
+            <p class="poi-sub">Fortezza storica e museo firmato César Manrique.</p>
+            <div class="poi-meta">
+              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 1 ora</span>
+              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 5 min dal molo</span>
+            </div>
+          </div>
+          <div class="poi-actions">
+            <button class="action-btn btn-info" onclick="openInfo('Castillo de San José (MIAC)', '📌 PERCHÉ ANDARCI: Per godersi un caffè con una vista mozzafiato a strapiombo sul mare!\n\nÈ un\'antica fortezza del 1700 salvata dalla rovina dal celebre artista César Manrique. Anche se non siete fan dell\'arte contemporanea, l\'interno è una meraviglia architettonica. Il ristorante ha un\'immensa vetrata panoramica curva inserita nella roccia vulcanica che affaccia sull\'oceano. Trovandosi esattamente a metà strada tra la nave e il centro città, è la prima tappa strategica perfetta della giornata.', 'g4_castello_gal', 'Circa 1 ora', 'Taxi dal molo (5 min) o 15-20 min a piedi dal porto Mármoles.')"><i class="fa-solid fa-info"></i></button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Castillo+de+San+Jose+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+          </div>
+        </div>
+
+        <div class="poi-item">
+          <img data-src-key="g4_charco" class="poi-thumb" alt="Charco San Gines">
           <div class="poi-info">
             <p class="poi-name">Charco de San Ginés</p>
             <p class="poi-sub">Laguna salata, barchette e ottime tapas.</p>
             <div class="poi-meta">
               <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 5 min / <i class="fa-solid fa-bus"></i> Navetta</span>
+              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 5 min</span>
             </div>
           </div>
           <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Charco de San Ginés', 'Chiamata la \u0022Venezia dell\'Atlantico\u0022, è una magnifica laguna naturale di acqua di mare circondata dalle basse casette bianche tipiche di Lanzarote (in stile César Manrique). Fermatevi in uno dei tanti bar per delle fantastiche tapas guardando le chalnas (le vecchie barchette in legno) che galleggiano tranquille.', 'https://images.unsplash.com/photo-1626359218698-c9233f26ea13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Circa 2 ore', 'Dal molo (Mármoles o La Boca) conviene prendere un Taxi (circa 5-8€, fa guadagnare molto tempo) o la navetta crociera.')"><i class="fa-solid fa-info"></i></button>
+            <button class="action-btn btn-info" onclick="openInfo('Charco de San Ginés', '📌 PERCHÉ L\'ABBIAMO INSERITO: È l\'angolo più pittoresco di tutta Lanzarote, impossibile non innamorarsene!\n\nChiamata la \u0022Venezia dell\'Atlantico\u0022, è una laguna naturale di mare che entra nel centro città. Le vecchie barchette di legno dei pescatori galleggiano tranquille, circondate da passeggiate pedonali e candide casette bianche con porte blu e verdi. Fermatevi assolutamente qui a metà mattina per gustare delle tapas fantastiche all\'aperto.', 'g4_charco_gal', 'Circa 2 ore', 'Dal Castello si raggiunge con una passeggiata pedonale di 15-20 minuti.')"><i class="fa-solid fa-info"></i></button>
             <a href="https://www.google.com/maps/search/?api=1&query=Charco+de+San+Gines+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
       </div>
 
-      <div class="phase-title"><i class="fa-solid fa-water"></i> Mare Caraibico del Pomeriggio</div>
+      <div class="phase-title"><i class="fa-solid fa-water"></i> Pomeriggio: Mare o Piano B?</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Playa Reducto">
+          <img data-src-key="g4_reducto" class="poi-thumb" alt="Playa Reducto">
           <div class="poi-info">
             <p class="poi-name">Playa del Reducto</p>
             <p class="poi-sub">Sabbia finissima e mare quasi sempre calmo.</p>
@@ -626,8 +646,25 @@
             </div>
           </div>
           <div class="poi-actions">
-             <button class="action-btn btn-info" onclick="openInfo('Playa del Reducto', 'La spiaggia di riferimento di Arrecife. È una conca immensa di oltre mezzo chilometro, protetta dalle correnti oceaniche da scogliere naturali al largo: questo significa che l\'acqua è incredibilmente calma, piatta e trasparente (ideale per il nuoto senza troppe onde!). Costeggiata da enormi palme da cocco.', 'https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Fino alle 16:30', '15 minuti a piedi dal Charco de San Ginés lungo una bella passeggiata marittima.')"><i class="fa-solid fa-info"></i></button>
+             <button class="action-btn btn-info" onclick="openInfo('Playa del Reducto', '📌 PERCHÉ L\'ABBIAMO SCELTA: È comodissima ed è un paradiso protetto dalle onde forti!\n\nLa spiaggia di riferimento di Arrecife. È una conca immensa di oltre mezzo chilometro con sabbia dorata. La cosa meravigliosa è che è protetta dalle correnti oceaniche da scogliere naturali coralline al largo: per questo l\'acqua è sempre piatta e trasparente, l\'ideale se volete farvi una bella nuotata rilassante. È ornata da enormi palme da cocco caraibiche.', 'g4_reducto_gal', 'Fino alle 16:30', '15 minuti a piedi dal Charco de San Ginés.')"><i class="fa-solid fa-info"></i></button>
              <a href="https://www.google.com/maps/search/?api=1&query=Playa+del+Reducto+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+          </div>
+        </div>
+
+        <!-- OPZIONE PIANO B: Jameos del Agua -->
+        <div class="poi-item" style="background: #fff8e1; border-color: #ffe082;">
+          <img data-src-key="g4_jameos" class="poi-thumb" alt="Jameos del Agua">
+          <div class="poi-info">
+            <p class="poi-name">Piano B: Jameos del Agua</p>
+            <p class="poi-sub">Tunnel vulcanico e lago sotterraneo.</p>
+            <div class="poi-meta">
+              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2-3 ore tot.</span>
+              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 35-40 min</span>
+            </div>
+          </div>
+          <div class="poi-actions">
+            <button class="action-btn btn-info" onclick="openInfo('Piano B: Jameos del Agua', '📌 PERCHÉ ANDARCI: Per sentirsi come in un film di fantascienza!\n\nSe il tempo è nuvoloso, fate questa escursione. È un\'opera d\'arte surrealista creata dentro un colossale tubo vulcanico crollato. Scenderete in un lago sotterraneo abitato da rarissimi granchietti albini e ciechi, vedrete una piscina bianca abbagliante incastonata nella lava nera e un auditorium naturale. \n\n🚗 COME ANDARCI: Si trova a nord, fuori Arrecife. Prevedete un Taxi (35-40 min). Il trucco vincente per i crocieristi è accordarsi col tassista per farsi aspettare durante l\'ora scarsa di visita, così vi riporterà direttamente alla nave!', 'g4_jameos_gal', 'Circa 2.5 ore (spostamenti inclusi)', 'Taxi (35-40 min a tratta)')"><i class="fa-solid fa-info"></i></button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Jameos+del+Agua+Lanzarote" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
       </div>
@@ -643,7 +680,7 @@
        GIORNO 5: GRAN CANARIA
        ========================================== -->
   <article class="day-card">
-    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: bottom;">
+    <div class="card-hero" data-bg-key="g5_hero">
       <div class="hero-content day-badge">Giorno 5 • 27 Marzo</div>
       <div class="hero-content">
         <h2>Gran Canaria</h2>
@@ -655,17 +692,17 @@
       <div class="phase-title first"><i class="fa-solid fa-building-columns"></i> Cuore Storico</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Vegueta">
+          <img data-src-key="g5_vegueta" class="poi-thumb" alt="Vegueta">
           <div class="poi-info">
             <p class="poi-name">Quartiere Vegueta e Triana</p>
             <p class="poi-sub">Piazze pittoresche e Cattedrale di Santa Ana.</p>
             <div class="poi-meta">
               <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2.5 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-bus"></i> Bus: 15 min / <i class="fa-solid fa-taxi"></i> Taxi: 10 min</span>
+              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 10 min</span>
             </div>
           </div>
           <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Vegueta & Triana', 'Las Palmas è una vera metropoli (la più grande delle Canarie). Il porto (Santa Catalina) è lontano dalla zona vecchia, quindi andateci per primo. Qui troverete Vegueta (fondata nel 1478): bellissime vie acciottolate, i cani di bronzo davanti alla maestosa Cattedrale grigia vulcanica di Santa Ana e la celebre Casa di Colombo.', 'https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Circa 2-3 ore', 'Dal terminal crociere, andate alla stazione bus (Intercambiador) vicinissima e prendete i bus gialli (es. Linea 12 o 1) diretti a Vegueta (1.40€). Oppure un veloce Taxi (circa 10€).')"><i class="fa-solid fa-info"></i></button>
+            <button class="action-btn btn-info" onclick="openInfo('Vegueta & Triana', '📌 PERCHÉ L\'ABBIAMO INSERITA: Perché vi sembrerà di passeggiare nel Sud America coloniale!\n\nLas Palmas è una vera metropoli moderna, ma il suo cuore fondato nel 1478 è Vegueta. Qui passeggerete tra palazzi signorili, cortili alberati in stile \u0022Pirati dei Caraibi\u0022 e potrete ammirare le statue dei cani di bronzo davanti alla favolosa Cattedrale di Santa Ana in pietra vulcanica scura. Fermatevi anche in Calle Triana, una lunga via pedonale stupenda, perfetta per un po\' di shopping.', 'g5_vegueta_gal', 'Circa 2-3 ore', 'Bus (es. Linea 12) o un veloce Taxi (circa 10€) dal porto.')"><i class="fa-solid fa-info"></i></button>
             <a href="https://www.google.com/maps/search/?api=1&query=Vegueta+Las+Palmas" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
@@ -674,7 +711,7 @@
       <div class="phase-title"><i class="fa-solid fa-martini-glass-citrus"></i> Tramonto sull'Oceano</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1550060592-747d6a503525?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Las Canteras">
+          <img data-src-key="g5_canteras" class="poi-thumb" alt="Las Canteras">
           <div class="poi-info">
             <p class="poi-name">Playa de Las Canteras</p>
             <p class="poi-sub">3 km di lungomare con barriera corallina naturale.</p>
@@ -684,7 +721,7 @@
             </div>
           </div>
           <div class="poi-actions">
-             <button class="action-btn btn-info" onclick="openInfo('Playa de Las Canteras', 'Ritenuta all\'unanimità una delle spiagge urbane migliori e più vive d\'Europa! Ha una barriera corallina naturale visibile a occhio nudo (La Barra) che protegge i bagnanti dalle onde. Il lunghissimo Paseo pedonale è pieno di vita, ristoranti e local. Trovatevi un chiringuito per le \u0022papas arrugadas con mojo\u0022 e godetevi un tramonto spettacolare.', 'https://images.unsplash.com/photo-1550060592-747d6a503525?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80,https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Pomeriggio + Aperitivo/Cena', 'Da Vegueta tornate verso la nave. Dal molo crociere, Las Canteras dista solo 15 minuti a piedi attraversando l\'istmo di terra della città.')"><i class="fa-solid fa-info"></i></button>
+             <button class="action-btn btn-info" onclick="openInfo('Playa de Las Canteras', '📌 PERCHÉ ANDARCI: Per vivervi il tramonto più iconico e festaiolo delle Canarie!\n\nÈ ritenuta una delle spiagge urbane migliori e più \u0022vive\u0022 d\'Europa. Il lunghissimo lungomare brulica di gente, artisti, surfisti e ristorantini. In mare c\'è una barriera corallina naturale (visibile a occhio nudo) che protegge i bagnanti. Trovatevi un bel chiringuito, ordinate una birra locale e le \u0022papas arrugadas con mojo\u0022 e aspettate il tramonto. Tanto la nave riparte tardissimo, la serata è vostra!', 'g5_canteras_gal', 'Pomeriggio + Aperitivo/Cena', 'Da Vegueta tornate col bus verso la nave. Dal terminal crociere, dista solo 15 minuti a piedi.')"><i class="fa-solid fa-info"></i></button>
              <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+Las+Canteras+Las+Palmas" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
@@ -701,7 +738,7 @@
        GIORNO 7: MADEIRA
        ========================================== -->
   <article class="day-card">
-    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1588656158097-f58c743e49e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: center;">
+    <div class="card-hero" data-bg-key="g7_hero">
       <div class="hero-content day-badge">Giorno 7 • 29 Marzo</div>
       <div class="hero-content">
         <h2>Madeira (Funchal)</h2>
@@ -713,7 +750,7 @@
       <div class="phase-title first"><i class="fa-solid fa-basket-shopping"></i> La Città Vecchia</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1601620359858-6927a3c3f91d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Mercado Funchal">
+          <img data-src-key="g7_mercado" class="poi-thumb" alt="Mercado Funchal">
           <div class="poi-info">
             <p class="poi-name">Mercado dos Lavradores & Zona Velha</p>
             <p class="poi-sub">Colori esotici, porte dipinte e vino Madeira.</p>
@@ -723,27 +760,81 @@
             </div>
           </div>
           <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Mercado dos Lavradores & Rua de Santa Maria', 'Madeira è il Portogallo mescolato all\'esotico! Passeggiate dal porto fino al \u0022Mercado dos Lavradores\u0022: un tripudio su due piani di fiori (le venditrici vestono l\'abito tipico) e frutti strani. Subito fuori inizia la Zona Velha (la città vecchia), con la \u0022Rua de Santa Maria\u0022, un vicolo le cui porte sono state tutte splendidamente dipinte da artisti locali.', 'https://images.unsplash.com/photo-1601620359858-6927a3c3f91d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Mattinata esplorativa, 2-3 ore', 'A piedi. Una passeggiata in piano di circa 20 min dal terminal crociere seguendo tutto il lungomare (Avenida do Mar).')"><i class="fa-solid fa-info"></i></button>
+            <button class="action-btn btn-info" onclick="openInfo('Mercado dos Lavradores & Rua de Santa Maria', '📌 PERCHÉ L\'ABBIAMO INSERITA: Per immergersi letteralmente nell\'esotismo del Portogallo, perfetto per le vostre foto!\n\nUna comoda passeggiata vi porterà al \u0022Mercado dos Lavradores\u0022: vi accoglieranno venditrici in abiti folcloristici che vendono fiori spettacolari e banchi carichi di frutti che non avete mai visto (es. frutto della passione al sapore di banana!). Appena usciti entrerete nella \u0022Zona Velha\u0022: esplorate \u0022Rua de Santa Maria\u0022, un dedalo in cui ogni singola porta delle case antiche è stata dipinta e trasformata in un\'opera d\'arte da artisti locali.', 'g7_mercado_gal', 'Mattinata esplorativa, 2-3 ore', 'Passeggiata in piano di circa 20 min dal terminal crociere.')"><i class="fa-solid fa-info"></i></button>
             <a href="https://www.google.com/maps/search/?api=1&query=Mercado+dos+Lavradores+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
       </div>
 
-      <div class="phase-title"><i class="fa-solid fa-water-ladder"></i> Tuffo nell'Atlantico</div>
+      <div class="phase-title"><i class="fa-solid fa-camera"></i> Vista Panoramica</div>
+      <div class="poi-list">
+        
+        <!-- Fermata del Bus -->
+        <div class="poi-item">
+          <img data-src-key="g7_bus" class="poi-thumb" alt="Fermata Bus">
+          <div class="poi-info">
+            <p class="poi-name">Fermata Bus (Linee 9 o 12)</p>
+            <p class="poi-sub">Prendete il bus giallo dal lungomare per salire.</p>
+            <div class="poi-meta">
+              <span class="meta-tag"><i class="fa-solid fa-ticket"></i> 1.95€ a bordo</span>
+              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 5 min dal Mercato</span>
+            </div>
+          </div>
+          <div class="poi-actions">
+            <button class="action-btn btn-info" onclick="openInfo('Come prendere il Bus per salire', '📌 PERCHÉ CI SERVE: Per salire a vedere il belvedere risparmiando sui taxi e vivendo un po\' la vita dei locali.\n\nDopo il Mercato, vi basta prendere il bus giallo N° 9 o N° 12 (\u0022Horários do Funchal\u0022). La fermata è su Avenida do Mar (tocca la mappa per arrivarci a piedi). \n💡 TIP FONDAMENTALE: Fate cenno all\'autista per fermarlo. I biglietti si fanno a bordo (1.95€): portatevi per forza MONETE o banconote piccole (max 5€) perché gli autisti si rifiutano di dare il resto per tagli grandi!', 'g7_bus_gal', 'Attesa media 10-15 min', 'A piedi dal mercato')"><i class="fa-solid fa-info"></i></button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Avenida+do+Mar+Teleferico+bus+stop+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+          </div>
+        </div>
+
+        <div class="poi-item">
+          <img data-src-key="g7_miradouro" class="poi-thumb" alt="Pico dos Barcelos">
+          <div class="poi-info">
+            <p class="poi-name">Miradouro do Pico dos Barcelos</p>
+            <p class="poi-sub">Vista spettacolare a 360° su Funchal e l'Oceano.</p>
+            <div class="poi-meta">
+              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 1-1.5 ore</span>
+              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 10m / <i class="fa-solid fa-bus"></i> Bus: 25m</span>
+            </div>
+          </div>
+          <div class="poi-actions">
+            <button class="action-btn btn-info" onclick="openInfo('Miradouro do Pico dos Barcelos', '📌 PERCHÉ L\'ABBIAMO SCELTO: Funchal è costruita a conca verso l\'alto. Da quassù avrete tutta la città letteralmente ai vostri piedi!\n\nUn belvedere mozzafiato a 355 metri d\'altezza, recentemente rinnovato. Oltre all\'anfiteatro della città e al blu infinito dell\'Oceano, in giornate limpide riuscirete a scorgere anche le sagome delle Isole Desertas. Uno scatto fotografico qui è obbligatorio prima di scendere in spiaggia.', 'g7_miradouro_gal', 'Circa 1 ora e mezza', 'Taxi/Bolt (10-15€) o Bus n. 9 e 12 (1.95€)')"><i class="fa-solid fa-info"></i></button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Miradouro+do+Pico+dos+Barcelos+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-title"><i class="fa-solid fa-water-ladder"></i> Pomeriggio: Mare o Piano B?</div>
       <div class="poi-list">
         <div class="poi-item">
-          <img src="https://images.unsplash.com/photo-1563200746-13a4eece03e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="poi-thumb" alt="Lido Madeira">
+          <img data-src-key="g7_lido" class="poi-thumb" alt="Lido Madeira">
           <div class="poi-info">
             <p class="poi-name">Lido Balnear / Praia Formosa</p>
             <p class="poi-sub">Spettacolari piscine nella roccia o spiaggia vulcanica.</p>
             <div class="poi-meta">
               <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 3 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 10 min / <i class="fa-solid fa-bus"></i> Bus: 15m</span>
+              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 10 min</span>
             </div>
           </div>
           <div class="poi-actions">
-             <button class="action-btn btn-info" onclick="openInfo('Piscine del Lido o Praia Formosa?', 'Madeira è un\'isola vulcanica a picco, non ha spiagge sabbiose dorate. Per fare il bagno con stile andate al \u0022Complexo Balnear do Lido\u0022 (ingresso pochi euro): gigantesche piscine di acqua oceanica scavate sulle scogliere attrezzatissime. Alternativa più \u0022wild\u0022: Praia Formosa, un vastissimo e scenografico litorale di ciottoli neri e sabbia vulcanica incastonato sotto altissime falesie.', 'https://images.unsplash.com/photo-1563200746-13a4eece03e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'Dopo pranzo fino alle 15:30', 'Si trovano nella zona turistica Ovest. Dal centro di Funchal (Avenida do Mar) prendete un Bus urbano giallo oppure un velocissimo Taxi (10-12€).')"><i class="fa-solid fa-info"></i></button>
+             <button class="action-btn btn-info" onclick="openInfo('Piscine del Lido o Praia Formosa?', '📌 PERCHÉ ANDARCI: A Madeira non ci sono noiose spiagge dorate piatte, l\'oceano si vive in modo scenografico!\n\nPer un pomeriggio esclusivo, andate al \u0022Complexo Balnear do Lido\u0022: gigantesche piscine attrezzate di acqua oceanica scavate direttamente nella scogliera vulcanica. Se invece cercate l\'avventura pura e l\'Oceano selvaggio, la Praia Formosa vi offre un vastissimo litorale di ciottoli neri e sabbia scura schiacciato da immense falesie.', 'g7_lido_gal', 'Dopo pranzo fino alle 15:30', 'Bus urbano giallo o Taxi (10-12€).')"><i class="fa-solid fa-info"></i></button>
              <a href="https://www.google.com/maps/search/?api=1&query=Complexo+Balnear+do+Lido+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+          </div>
+        </div>
+
+        <!-- OPZIONE PIANO B: Cabo Girão -->
+        <div class="poi-item" style="background: #fff8e1; border-color: #ffe082;">
+          <img data-src-key="g7_cabogirao" class="poi-thumb" alt="Cabo Girao">
+          <div class="poi-info">
+            <p class="poi-name">Piano B (Nuvoloso): Cabo Girão</p>
+            <p class="poi-sub">Skywalk in vetro a 580m sul mare.</p>
+            <div class="poi-meta">
+              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2 ore tot.</span>
+              <span class="meta-tag"><i class="fa-solid fa-car"></i> App Bolt: 25 min</span>
+            </div>
+          </div>
+          <div class="poi-actions">
+            <button class="action-btn btn-info" onclick="openInfo('Piano B: Cabo Girão Skywalk', '📌 PERCHÉ L\'ABBIAMO INSERITO: Se il sole sparisce e fare il bagno non ha senso, provate l\'adrenalina di camminare sul vuoto!\n\nÈ la scogliera più alta d\'Europa (580m). Camminare sulla piattaforma in vetro con le onde che si infrangono a mezzo chilometro sotto i vostri piedi (ingresso 2€) fa girare la testa ma è stupendo.\n\n🚗 COME ANDARCI (USA BOLT): I bus sono lentissimi. Scaricatevi l\'app \u0022Bolt\u0022 (stile Uber, usatissima qui). Costa pochissimo (circa 10-15€ a tratta, molto meno dei taxi). Vi passeranno a prendere in pochi minuti ovunque voi siate!', 'g7_cabogirao_gal', 'Circa 2 ore (spostamenti inclusi)', 'App Bolt (circa 10-15€ a tratta)')"><i class="fa-solid fa-info"></i></button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Cabo+Girao+Skywalk+Madeira" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
           </div>
         </div>
       </div>
@@ -759,7 +850,7 @@
        GIORNO 8: TENERIFE (SBARCO)
        ========================================== -->
   <article class="day-card" style="margin-bottom: 40px;">
-    <div class="card-hero" style="background-image: url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); background-position: center;">
+    <div class="card-hero" data-bg-key="g8_hero">
       <div class="hero-content day-badge" style="background: rgba(255,59,48,0.8); border:none;">Ultimo Giorno</div>
       <div class="hero-content">
         <h2>Sbarco Tenerife</h2>
@@ -791,11 +882,8 @@
 <div class="bottom-sheet" id="infoSheet">
   <div class="sheet-handle"></div>
   
-  <!-- Contenitore della Galleria Fotografica -->
   <div class="gallery-hint" id="galleryHint">👈 scorri le foto 👉</div>
-  <div class="modal-gallery" id="modalGallery">
-    <!-- Le immagini vengono inserite qui dal Javascript -->
-  </div>
+  <div class="modal-gallery" id="modalGallery"></div>
   
   <h3 id="modalTitle">Titolo</h3>
   
@@ -810,6 +898,93 @@
 </div>
 
 <script>
+
+  // =========================================================================
+  // 🚨 IL TUO PANNELLO DI CONTROLLO FOTO 🚨
+  // Sostituisci i link di "placehold.co" qui sotto con i TUOI LINK delle foto!
+  // Suggerimento: caricale su un sito come https://imgbb.com/ e usa il link.
+  // Puoi mettere più di una foto per la galleria separandole con una virgola.
+  // =========================================================================
+  
+  const LE_MIE_FOTO = {
+    // GIORNO 1: TENERIFE
+    "g1_hero": "https://placehold.co/800x400/004b87/FFF?text=Tenerife",
+    "g1_nave": "https://placehold.co/400x400/e3f2fd/004b87?text=Costa+Fortuna",
+    "g1_plaza": "https://placehold.co/400x400/e3f2fd/004b87?text=Plaza+Espana",
+    "g1_plaza_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Plaza+Espana+1,https://placehold.co/800x600/e3f2fd/004b87?text=Plaza+Espana+2",
+
+    // GIORNO 2: LA PALMA
+    "g2_hero": "https://placehold.co/800x400/004b87/FFF?text=La+Palma",
+    "g2_balconi": "https://placehold.co/400x400/e3f2fd/004b87?text=Balconi+Canari",
+    "g2_balconi_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Balconi+1,https://placehold.co/800x600/e3f2fd/004b87?text=Balconi+2",
+    "g2_playa": "https://placehold.co/400x400/e3f2fd/004b87?text=Playa+Santa+Cruz",
+    "g2_playa_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Spiaggia+Nera+1",
+
+    // GIORNO 3: LA GOMERA
+    "g3_hero": "https://placehold.co/800x400/004b87/FFF?text=La+Gomera",
+    "g3_torre": "https://placehold.co/400x400/e3f2fd/004b87?text=Torre+del+Conde",
+    "g3_torre_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Torre+1",
+    "g3_cueva": "https://placehold.co/400x400/e3f2fd/004b87?text=Playa+Cueva",
+    "g3_cueva_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Spiaggia+Vulcanica",
+
+    // GIORNO 4: LANZAROTE
+    "g4_hero": "https://placehold.co/800x400/004b87/FFF?text=Lanzarote",
+    "g4_castello": "https://placehold.co/400x400/e3f2fd/004b87?text=Castillo+San+Jose",
+    "g4_castello_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Fortezza+Arte,https://placehold.co/800x600/e3f2fd/004b87?text=Vetrata+Panoramica",
+    "g4_charco": "https://placehold.co/400x400/e3f2fd/004b87?text=Charco+San+Gines",
+    "g4_charco_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Barchette+1,https://placehold.co/800x600/e3f2fd/004b87?text=Tapas+2",
+    "g4_reducto": "https://placehold.co/400x400/e3f2fd/004b87?text=Playa+Reducto",
+    "g4_reducto_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Sabbia+Dorata",
+    "g4_jameos": "https://placehold.co/400x400/e3f2fd/004b87?text=Jameos+del+Agua",
+    "g4_jameos_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Lago+Sotterraneo,https://placehold.co/800x600/e3f2fd/004b87?text=Piscina+Bianca",
+
+    // GIORNO 5: GRAN CANARIA
+    "g5_hero": "https://placehold.co/800x400/004b87/FFF?text=Gran+Canaria",
+    "g5_vegueta": "https://placehold.co/400x400/e3f2fd/004b87?text=Vegueta",
+    "g5_vegueta_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Cattedrale,https://placehold.co/800x600/e3f2fd/004b87?text=Piazzetta",
+    "g5_canteras": "https://placehold.co/400x400/e3f2fd/004b87?text=Las+Canteras",
+    "g5_canteras_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Lungomare+1,https://placehold.co/800x600/e3f2fd/004b87?text=Tramonto+2",
+
+    // GIORNO 7: MADEIRA
+    "g7_hero": "https://placehold.co/800x400/004b87/FFF?text=Madeira",
+    "g7_mercado": "https://placehold.co/400x400/e3f2fd/004b87?text=Mercado+Lavradores",
+    "g7_mercado_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Fiori+1,https://placehold.co/800x600/e3f2fd/004b87?text=Porte+Dipinte",
+    "g7_bus": "https://placehold.co/400x400/e3f2fd/004b87?text=Fermata+Bus",
+    "g7_bus_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Bus+Giallo",
+    "g7_miradouro": "https://placehold.co/400x400/e3f2fd/004b87?text=Pico+Barcelos",
+    "g7_miradouro_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Panorama+Funchal,https://placehold.co/800x600/e3f2fd/004b87?text=Vista+Baia",
+    "g7_cabogirao": "https://placehold.co/400x400/e3f2fd/004b87?text=Cabo+Girao",
+    "g7_cabogirao_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Skywalk+Vetro,https://placehold.co/800x600/e3f2fd/004b87?text=Strapiombo",
+    "g7_lido": "https://placehold.co/400x400/e3f2fd/004b87?text=Piscine+Lido",
+    "g7_lido_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Bagno+Oceanico",
+
+    // GIORNO 8: SBARCO
+    "g8_hero": "https://placehold.co/800x400/ff3b30/FFF?text=Sbarco+Tenerife"
+  };
+
+  // =========================================================================
+  // Fine Pannello di controllo. (Non toccare il codice sotto!)
+  // =========================================================================
+
+  // Inietta in automatico le foto che hai scelto qui sopra in tutta l'app
+  document.addEventListener("DOMContentLoaded", () => {
+    // Foto di copertina
+    document.querySelectorAll('[data-bg-key]').forEach(el => {
+      const key = el.getAttribute('data-bg-key');
+      if (LE_MIE_FOTO[key]) {
+        el.style.backgroundImage = `url('${LE_MIE_FOTO[key]}')`;
+      }
+    });
+
+    // Foto in miniatura (quadrate)
+    document.querySelectorAll('[data-src-key]').forEach(el => {
+      const key = el.getAttribute('data-src-key');
+      if (LE_MIE_FOTO[key]) {
+        el.src = LE_MIE_FOTO[key];
+      }
+    });
+  });
+
   function toggleWidget(id) {
     const el = document.getElementById(id);
     if (el.classList.contains('active')) {
@@ -829,32 +1004,32 @@
   const modalTime = document.getElementById('modalTime');
   const modalTransport = document.getElementById('modalTransport');
 
-  // Nuova funzione che gestisce la galleria di immagini (separate da virgola)
-  function openInfo(title, description, imgUrlsString, time, transport) {
+  function openInfo(title, description, imgKey, time, transport) {
     modalTitle.innerText = title;
     modalDesc.innerText = description;
     
-    // Pulisce le foto precedenti
     modalGallery.innerHTML = '';
     
+    // Recupera la stringa di foto dalla TUA lista in base alla "chiave" (es: g1_plaza_gal)
+    const imgUrlsString = LE_MIE_FOTO[imgKey];
+
     if (imgUrlsString && imgUrlsString.trim() !== '') {
-      const urls = imgUrlsString.split(','); // Divide i link multipli
+      const urls = imgUrlsString.split(',');
       
       urls.forEach(url => {
         const img = document.createElement('img');
-        img.src = url;
+        img.src = url.trim();
         modalGallery.appendChild(img);
       });
 
       modalGallery.style.display = 'flex';
       
-      // Mostra o nascondi il testo "scorri le foto"
       if(urls.length > 1) {
         galleryHint.style.display = 'block';
-        modalGallery.scrollLeft = 0; // Resetta lo scorrimento
+        modalGallery.scrollLeft = 0;
       } else {
         galleryHint.style.display = 'none';
-        modalGallery.querySelector('img').style.flex = '0 0 100%'; // Se c'è solo 1 foto prende tutto lo spazio
+        modalGallery.querySelector('img').style.flex = '0 0 100%';
       }
 
     } else {
@@ -874,12 +1049,10 @@
     infoSheet.classList.remove('active');
   }
 
-  // Swipe-down per chiudere la modale
   let touchstartY = 0;
   let touchendY = 0;
 
   infoSheet.addEventListener('touchstart', e => {
-    // Evita di chiudere se si sta facendo scrolling orizzontale sulla galleria foto
     if(e.target.tagName.toLowerCase() !== 'img') {
         touchstartY = e.changedTouches[0].screenY;
     }
