@@ -1,1072 +1,891 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <title>Costa Fortuna – Canarie & Madeira</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --costa-blue: #004b87;
-      --costa-yellow: #ffcc00;
-      --bg-color: #f4f6f9;
-      --text-main: #1d1d1f;
-      --text-muted: #6e6e73;
-      --card-bg: #ffffff;
-      --danger: #ff3b30;
-      --radius: 20px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚢 Costa Fortuna • Canarie & Madeira 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --ocean: #0a3d62;
+    --sky: #1e88e5;
+    --sand: #f5e6c8;
+    --coral: #e84393;
+    --gold: #f9a825;
+    --white: #ffffff;
+    --dark: #1a1a2e;
+    --glass: rgba(255,255,255,0.12);
+  }
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      padding-bottom: 40px;
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* --- HEADER --- */
-    header {
-      background: var(--card-bg);
-      padding: 20px 20px 15px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      border-bottom-left-radius: var(--radius);
-      border-bottom-right-radius: var(--radius);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .header-text h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--costa-blue);
-      letter-spacing: -0.5px;
-    }
-    .header-text p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .ship-icon {
-      background: var(--costa-yellow);
-      color: var(--costa-blue);
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.4);
-    }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--dark);
+    color: var(--white);
+    overflow-x: hidden;
+  }
 
-    /* --- MAIN CONTAINER --- */
-    main {
-      padding: 16px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: url('https://images.unsplash.com/photo-1548574505-5e239809ee19?w=1920&q=80') center/cover no-repeat;
+  }
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,61,98,0.55) 0%, rgba(26,26,46,0.85) 100%);
+  }
+  .hero-content { position: relative; z-index: 2; padding: 2rem; }
+  .hero-ship { font-size: 4rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    margin-bottom: 0.5rem;
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 300;
+    opacity: 0.9;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .hero-dates {
+    display: inline-flex;
+    gap: 2rem;
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50px;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    opacity: 0.7;
+    animation: bounce 2s ease-in-out infinite;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
 
-    /* --- INFO & COSTI WIDGET --- */
-    .widget-container {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .widget-btn {
-      flex: 1;
-      background: var(--card-bg);
-      border: none;
-      padding: 12px 6px;
-      border-radius: 16px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--costa-blue);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      text-align: center;
-    }
-    .widget-btn i { font-size: 18px; color: var(--costa-yellow); }
+  /* VOLI BLOCK */
+  .info-band {
+    background: linear-gradient(135deg, var(--ocean), #16213e);
+    padding: 3rem 1.5rem;
+    text-align: center;
+  }
+  .info-band h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--gold);
+  }
+  .flights-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+  }
+  .flight-card {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    min-width: 280px;
+    flex: 1;
+  }
+  .flight-card .label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+  }
+  .flight-route {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .flight-route .arrow { color: var(--sky); font-size: 1.5rem; }
+  .flight-time { font-size: 0.95rem; opacity: 0.75; }
 
-    /* --- CARDS (GIORNI) --- */
-    .day-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      margin-bottom: 24px;
-      overflow: hidden;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-    }
+  .rules-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .rule-pill {
+    background: rgba(249,168,37,0.15);
+    border: 1px solid var(--gold);
+    border-radius: 50px;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 
-    .card-hero {
-      height: 150px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background-color: var(--costa-blue);
-    }
-    .card-hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
-      z-index: 1;
-    }
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      color: white;
-    }
-    .day-badge {
-      background: rgba(255,255,255,0.25);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      padding: 5px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 800;
-      display: inline-block;
-      margin-bottom: auto;
-      align-self: flex-start;
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-    .card-hero h2 { margin: 0 0 4px; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .time-badge { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px; color: #f8f9fa; }
+  /* ITINERARY OVERVIEW */
+  .itinerary-strip {
+    background: #0d1b2a;
+    padding: 2.5rem 1rem;
+    overflow-x: auto;
+  }
+  .itinerary-strip h2 {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin-bottom: 2rem;
+  }
+  .strip-row {
+    display: flex;
+    gap: 0;
+    min-width: max-content;
+    margin: 0 auto;
+    justify-content: center;
+  }
+  .strip-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1.2rem;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    min-width: 110px;
+  }
+  .strip-item:last-child { border-right: none; }
+  .strip-day { font-size: 0.7rem; opacity: 0.5; letter-spacing: 1px; text-transform: uppercase; }
+  .strip-emoji { font-size: 1.8rem; }
+  .strip-name { font-size: 0.85rem; font-weight: 600; text-align: center; }
+  .strip-time { font-size: 0.7rem; opacity: 0.6; text-align: center; }
 
-    .card-body { padding: 16px; }
-    .phase-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--costa-blue);
-      margin: 18px 0 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .phase-title.first { margin-top: 0; }
+  /* DAYS */
+  .day-section { margin-bottom: 0; }
 
-    /* --- POINTS OF INTEREST (POI) CON FOTO --- */
-    .poi-list { display: flex; flex-direction: column; gap: 12px; }
-    .poi-item {
-      display: flex;
-      align-items: center;
-      background: #f9fbff;
-      padding: 10px;
-      border-radius: 16px;
-      border: 1px solid #edf2f7;
-    }
-    .poi-thumb {
-      width: 65px;
-      height: 65px;
-      border-radius: 12px;
-      object-fit: cover;
-      margin-right: 12px;
-      flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      background-color: var(--costa-blue);
-    }
-    .poi-info { flex: 1; padding-right: 8px; }
-    .poi-name { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--text-main); }
-    .poi-sub { font-size: 12px; color: var(--text-muted); line-height: 1.3; margin-bottom: 6px; }
-    
-    .poi-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .meta-tag {
-      font-size: 10px;
-      font-weight: 600;
-      background: #e9ecef;
-      color: #495057;
-      padding: 3px 6px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .meta-tag i { font-size: 10px; }
+  .day-hero {
+    position: relative;
+    height: 75vh;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .day-hero-slider {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    transition: transform 0.7s ease;
+  }
+  .day-hero-slide {
+    flex: 0 0 100%;
+    background-size: cover;
+    background-position: center;
+  }
+  .day-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,26,46,0.92) 0%, rgba(26,26,46,0.2) 60%, transparent 100%);
+    z-index: 1;
+  }
+  .day-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 2.5rem 2rem 2rem;
+  }
+  .day-number {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 0.4rem;
+  }
+  .day-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .day-hours {
+    display: inline-block;
+    background: var(--glass);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 30px;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+  }
+  .day-tag {
+    display: inline-block;
+    background: var(--coral);
+    border-radius: 30px;
+    padding: 0.3rem 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+  .day-tag.green { background: #27ae60; }
+  .day-tag.blue { background: var(--sky); }
 
-    .poi-actions { display: flex; flex-direction: column; gap: 6px; }
-    .action-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .btn-map { background: #e3f2fd; color: #2196f3; }
-    .btn-info { background: #fff8e1; color: #ffb300; }
-    .action-btn:active { transform: scale(0.95); }
+  /* THUMBNAILS */
+  .photo-thumbs {
+    position: absolute;
+    bottom: 5.5rem;
+    right: 1.5rem;
+    z-index: 3;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .thumb {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.4);
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    transition: border-color 0.3s, transform 0.2s;
+    flex-shrink: 0;
+  }
+  .thumb.active { border-color: var(--gold); transform: scale(1.1); }
+  .thumb:hover { border-color: white; }
 
-    /* --- NOTES & ALERTS --- */
-    .alert-box {
-      background: #ffebee;
-      border-left: 4px solid var(--danger);
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      color: #c62828;
-      font-weight: 600;
-      margin-top: 16px;
-      display: flex;
-      gap: 8px;
-    }
-    textarea.notes {
-      width: 100%;
-      background: #f4f6f9;
-      border: 1px solid #e0e0e0;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 14px;
-      font-family: inherit;
-      margin-top: 16px;
-      resize: none;
-      height: 60px;
-      color: var(--text-main);
-    }
-    textarea.notes::placeholder { color: #a1a1a6; }
+  /* CONTENT CARD */
+  .day-card {
+    background: #111827;
+    padding: 2rem 1.5rem 2.5rem;
+  }
+  .day-card-inner { max-width: 750px; margin: 0 auto; }
+  .day-desc {
+    font-size: 1rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
 
-    /* --- BOTTOM SHEET MODAL (Stile iOS) CON GALLERIA --- */
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .overlay.active { opacity: 1; pointer-events: auto; }
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    padding-left: 1.8rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.55rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--sky), var(--coral));
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 1.4rem 1rem;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -1.25rem;
+    top: 0.35rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--sky);
+    border: 2px solid var(--dark);
+  }
+  .tl-time {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 1px;
+    margin-bottom: 0.2rem;
+  }
+  .tl-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+  .tl-text strong { color: white; opacity: 1; }
+  .tl-text .tip {
+    display: inline-block;
+    background: rgba(30,136,229,0.15);
+    border-left: 3px solid var(--sky);
+    padding: 0.3rem 0.7rem;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    border-radius: 0 6px 6px 0;
+  }
+  .tl-text .warn {
+    display: inline-block;
+    background: rgba(232,67,147,0.12);
+    border-left: 3px solid var(--coral);
+    padding: 0.3rem 0.7rem;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    border-radius: 0 6px 6px 0;
+  }
 
-    .bottom-sheet {
-      position: fixed;
-      bottom: -100%;
-      left: 0;
-      right: 0;
-      background: var(--card-bg);
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
-      padding: 24px 20px 30px;
-      z-index: 101;
-      max-height: 85vh;
-      overflow-y: auto;
-      transition: bottom 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
-    }
-    .bottom-sheet.active { bottom: 0; }
-    .sheet-handle {
-      width: 40px;
-      height: 5px;
-      background: #d1d1d6;
-      border-radius: 5px;
-      margin: 0 auto 20px;
-    }
+  /* LIGHTBOX */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 95vw;
+    max-height: 88vh;
+    border-radius: 12px;
+    object-fit: contain;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    color: white;
+  }
+  .lightbox-close:hover { opacity: 1; }
+  .lightbox-caption {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.6;
+    text-align: center;
+  }
 
-    /* Stili per la galleria fotografica a scorrimento */
-    .modal-gallery {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      gap: 12px;
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .modal-gallery::-webkit-scrollbar {
-      display: none;
-    }
-    .modal-gallery img {
-      flex: 0 0 88%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 16px;
-      scroll-snap-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      background-color: #eee;
-    }
-    .gallery-hint {
-      font-size: 11px;
-      color: #999;
-      text-align: center;
-      margin-bottom: 16px;
-      font-weight: 500;
-    }
+  /* NAV BOTTOM */
+  .footer {
+    background: #0a3d62;
+    text-align: center;
+    padding: 2.5rem 1rem;
+  }
+  .footer h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--gold);
+  }
+  .footer p { opacity: 0.65; font-size: 0.9rem; }
 
-    #modalTitle { font-size: 24px; font-weight: 800; margin: 0 0 10px; color: var(--costa-blue); letter-spacing: -0.5px; }
-    
-    .modal-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      background: #f4f6f9;
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-    }
-    .modal-stat-item {
-      font-size: 13px;
-      font-weight: 600;
-      color: #333;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .modal-stat-item i { color: var(--costa-blue); width: 16px; text-align: center; }
+  /* NAVIGATION SECTION DOTS */
+  .section-nav {
+    position: fixed;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .section-nav a {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.5);
+    display: block;
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+  }
+  .section-nav a:hover { background: var(--gold); transform: scale(1.3); }
 
-    #modalDesc { font-size: 15px; color: #444; line-height: 1.5; margin: 0 0 24px; white-space: pre-line; }
-    .btn-close {
-      width: 100%;
-      background: var(--costa-blue);
-      color: white;
-      border: none;
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-close:active { background: #003a6c; }
-
-    /* Utilità nascoste */
-    .hidden-section { display: none; padding: 16px; background: white; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-    .hidden-section.active { display: block; }
-  </style>
+  /* NAVIGATION DAY */
+  @media (max-width: 600px) {
+    .photo-thumbs { display: none; }
+    .day-hero { height: 60vh; min-height: 380px; }
+  }
+</style>
 </head>
 <body>
 
-<header>
-  <div class="header-text">
-    <h1>Costa Fortuna</h1>
-    <p>Agenda Canarie & Madeira per te e Cris ❤️</p>
+<!-- SECTION NAV DOTS -->
+<nav class="section-nav" aria-label="Sezioni">
+  <a href="#hero" title="Copertina"></a>
+  <a href="#voli" title="Voli"></a>
+  <a href="#d1" title="Giorno 1 - Tenerife"></a>
+  <a href="#d2" title="Giorno 2 - La Palma"></a>
+  <a href="#d3" title="Giorno 3 - La Gomera"></a>
+  <a href="#d4" title="Giorno 4 - Lanzarote"></a>
+  <a href="#d5" title="Giorno 5 - Gran Canaria"></a>
+  <a href="#d6" title="Giorno 6 - Navigazione"></a>
+  <a href="#d7" title="Giorno 7 - Madeira"></a>
+  <a href="#d8" title="Sbarco"></a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-ship">🚢</div>
+    <h1>Costa Fortuna<br><span>Canarie & Madeira</span></h1>
+    <p class="hero-sub">La nostra avventura insieme</p>
+    <div class="hero-dates">
+      <span>✈️ 23 Marzo 2026</span>
+      <span>•</span>
+      <span>30 Marzo 2026 ✈️</span>
+    </div>
   </div>
-  <div class="ship-icon">
-    <i class="fa-solid fa-ship"></i>
+  <div class="scroll-hint">↓ scopri l'itinerario</div>
+</section>
+
+<!-- VOLI & REGOLE -->
+<section class="info-band" id="voli">
+  <h2>✈️ Voli Charter Neos (Costa)</h2>
+  <div class="flights-grid">
+    <div class="flight-card">
+      <div class="label">Andata • 23 Marzo 2026</div>
+      <div class="flight-route">
+        <span>MXP 11:30</span>
+        <span class="arrow">→</span>
+        <span>TFS 15:00</span>
+      </div>
+      <div class="flight-time">Neos NO1670 • Milano Malpensa T1</div>
+    </div>
+    <div class="flight-card">
+      <div class="label">Ritorno • 30 Marzo 2026</div>
+      <div class="flight-route">
+        <span>TFS 14:05</span>
+        <span class="arrow">→</span>
+        <span>MXP 19:00</span>
+      </div>
+      <div class="flight-time">Neos NO1671 • Tenerife Sud • Transfer Costa incluso</div>
+    </div>
   </div>
-</header>
-
-<main>
-
-  <!-- Pulsanti Rapidi -->
-  <div class="widget-container">
-    <button class="widget-btn" onclick="toggleWidget('voli')">
-      <i class="fa-solid fa-plane"></i> Voli & Transfer
-    </button>
-    <button class="widget-btn" onclick="toggleWidget('itinerario')">
-      <i class="fa-regular fa-calendar-days"></i> Orari Nave
-    </button>
-    <button class="widget-btn" onclick="toggleWidget('costi')">
-      <i class="fa-solid fa-wallet"></i> Costi & Info
-    </button>
+  <div class="rules-box">
+    <div class="rule-pill">⚠️ Rientro nave SEMPRE 1h prima della partenza</div>
+    <div class="rule-pill">🚌 Bus urbani 1,50€–3€ a persona (contactless)</div>
+    <div class="rule-pill">🚕 Taxi tratte brevi 5–15€</div>
   </div>
+</section>
 
-  <!-- Contenuti Rapidi Nascosti -->
-  <div id="voli" class="hidden-section">
-    <h3 style="margin-top:0;">Programma Voli (Charter Costa)</h3>
-    <div style="background: #e3f2fd; padding: 12px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--costa-blue);">
-      <p style="margin: 0 0 5px; font-weight: 700; color: var(--costa-blue); font-size: 14px;"><i class="fa-solid fa-plane-departure"></i> Andata: 23 Mar 2026</p>
-      <p style="margin: 0; font-size: 14px; color: var(--text-main);">Milano MXP <b>11:30</b> <i class="fa-solid fa-arrow-right" style="margin:0 5px; color:#999; font-size:12px;"></i> Tenerife TFS <b>15:00</b></p>
-    </div>
-    <div style="background: #fff0f0; padding: 12px; border-radius: 12px; border-left: 4px solid var(--danger);">
-      <p style="margin: 0 0 5px; font-weight: 700; color: var(--danger); font-size: 14px;"><i class="fa-solid fa-plane-arrival"></i> Ritorno: 30 Mar 2026</p>
-      <p style="margin: 0; font-size: 14px; color: var(--text-main);">Tenerife TFS <b>14:05</b> <i class="fa-solid fa-arrow-right" style="margin:0 5px; color:#999; font-size:12px;"></i> Milano MXP <b>19:00</b></p>
-    </div>
-    <p style="font-size:13px; color:var(--text-muted); margin:12px 0 0; line-height:1.4;"><i class="fa-solid fa-bus"></i> I trasferimenti in bus tra l'aeroporto di Tenerife (TFS) e la nave sono inclusi da Costa Crociere.</p>
+<!-- ITINERARY STRIP -->
+<section class="itinerary-strip">
+  <h2>🗺️ Programma di Navigazione</h2>
+  <div class="strip-row">
+    <div class="strip-item"><div class="strip-day">23 Mar</div><div class="strip-emoji">🛬</div><div class="strip-name">Tenerife</div><div class="strip-time">Imbarco • Nav.21:30</div></div>
+    <div class="strip-item"><div class="strip-day">24 Mar</div><div class="strip-emoji">🌴</div><div class="strip-name">La Palma</div><div class="strip-time">08:00 – 20:00</div></div>
+    <div class="strip-item"><div class="strip-day">25 Mar</div><div class="strip-emoji">⛵</div><div class="strip-name">La Gomera</div><div class="strip-time">08:00 – 18:00</div></div>
+    <div class="strip-item"><div class="strip-day">26 Mar</div><div class="strip-emoji">🌋</div><div class="strip-name">Lanzarote</div><div class="strip-time">08:00 – 18:00</div></div>
+    <div class="strip-item"><div class="strip-day">27 Mar</div><div class="strip-emoji">🏖️</div><div class="strip-name">Gran Canaria</div><div class="strip-time">05:00 – 21:00</div></div>
+    <div class="strip-item"><div class="strip-day">28 Mar</div><div class="strip-emoji">🌊</div><div class="strip-name">Navigazione</div><div class="strip-time">In alto mare</div></div>
+    <div class="strip-item"><div class="strip-day">29 Mar</div><div class="strip-emoji">🌸</div><div class="strip-name">Madeira</div><div class="strip-time">07:00 – 17:00</div></div>
+    <div class="strip-item"><div class="strip-day">30 Mar</div><div class="strip-emoji">🏠</div><div class="strip-name">Tenerife</div><div class="strip-time">Sbarco • Volo 14:05</div></div>
   </div>
+</section>
 
-  <div id="itinerario" class="hidden-section">
-    <h3 style="margin-top:0;">Programma di Navigazione</h3>
-    <p style="font-size:13px; color:#666;">Controllate sempre a bordo eventuali variazioni sul Diario di Bordo.</p>
-    <ul style="font-size:14px; padding-left:20px; line-height:1.6;">
-      <li><b>23/03:</b> Tenerife (Imbarco, Partenza 21:30)</li>
-      <li><b>24/03:</b> La Palma (08:00 - 20:00)</li>
-      <li><b>25/03:</b> La Gomera (08:00 - 18:00)</li>
-      <li><b>26/03:</b> Lanzarote (08:00 - 18:00)</li>
-      <li><b>27/03:</b> Gran Canaria (05:00 - 21:00)</li>
-      <li><b>28/03:</b> Navigazione 🌊</li>
-      <li><b>29/03:</b> Madeira (07:00 - 17:00)</li>
-      <li><b>30/03:</b> Tenerife (Sbarco, Volo 14:05)</li>
-    </ul>
+<!-- GIORNO 1: TENERIFE -->
+<section class="day-section" id="d1">
+  <div class="day-hero" onclick="openLightbox('tenerife',0)">
+    <div class="day-hero-slider" id="slider-tenerife">
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=1600&q=85')"></div>
+    </div>
+    <div class="day-hero-overlay"></div>
+    <div class="photo-thumbs">
+      <div class="thumb active" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=70')" onclick="event.stopPropagation();changeSlide('tenerife',0)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?w=200&q=70')" onclick="event.stopPropagation();changeSlide('tenerife',1)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=1600&q=85')" onclick="event.stopPropagation();changeSlide('tenerife',2)"></div>
+    </div>
+    <div class="day-hero-content">
+      <div class="day-number">Giorno 1 • 23 Marzo</div>
+      <div class="day-title">🛬 Tenerife<br>Imbarco</div>
+      <span class="day-hours">Atterraggio 15:00 • Nave 21:30</span>
+    </div>
   </div>
-
-  <div id="costi" class="hidden-section">
-    <h3 style="margin-top:0;">Info Trasporti & Regole</h3>
-    <ul style="font-size:14px; padding-left:20px; line-height:1.6; margin-bottom:15px;">
-      <li><b>Regola d'oro:</b> Rientro in nave SEMPRE 1 ora prima della partenza.</li>
-      <li><b>Bus Urbani:</b> Circa 1,50€-3€ a persona. Pagamento spesso contactless a bordo.</li>
-      <li><b>Taxi (Tratte brevi):</b> Da 5 a 15€. Ideali se volete massimizzare il tempo in spiaggia senza aspettare le coincidenze dei bus.</li>
-    </ul>
+  <div class="day-card">
+    <div class="day-card-inner">
+      <p class="day-desc">Siete appena arrivati alle Canarie! Transfer Costa incluso dall'aeroporto al porto. Poco tempo prima dell'imbarco: godetevi il porto e i primi aperitivi di viaggio.</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">15:00</div><div class="tl-text"><strong>Atterraggio Tenerife Sud (TFS)</strong> — Costa organizza il bus verso il porto. Rilassatevi!</div></div>
+        <div class="tl-item"><div class="tl-time">16:30–19:30</div><div class="tl-text"><strong>Imbarco Costa Fortuna</strong> — Sistemate le cabine, scoprite la nave, aperitivo sul ponte. <span class="tip">💡 Controllate subito il Diario di Bordo per confermare gli orari delle tappe successive.</span></div></div>
+        <div class="tl-item"><div class="tl-time">21:30</div><div class="tl-text"><strong>Partenza</strong> — Si salpa! Cena a bordo e benvenuti in crociera 🥂</div></div>
+      </div>
+    </div>
   </div>
+</section>
 
-  <!-- ==========================================
-       GIORNO 1: TENERIFE 
-       ========================================== -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g1_hero">
-      <div class="hero-content day-badge">Giorno 1 • 23 Marzo</div>
-      <div class="hero-content">
-        <h2>Tenerife</h2>
-        <div class="time-badge"><i class="fa-solid fa-plane-arrival"></i> Atterraggio 15:00 • Nave 21:30</div>
-      </div>
+<!-- GIORNO 2: LA PALMA -->
+<section class="day-section" id="d2">
+  <div class="day-hero" onclick="openLightbox('lapalma',0)">
+    <div class="day-hero-slider" id="slider-lapalma">
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1609949279531-cf48d64ebe89?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1573770012830-de6f1e61c7b8?w=1600&q=85')"></div>
     </div>
-    
-    <div class="card-body">
-      <div class="phase-title first"><i class="fa-solid fa-suitcase-rolling"></i> Arrivo e Imbarco</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g1_nave" class="poi-thumb" alt="Costa Fortuna Checkin">
-          <div class="poi-info">
-            <p class="poi-name">Transfer & Check-in</p>
-            <p class="poi-sub">Dall'aeroporto TFS alla vostra cabina.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2.5h tot.</span>
-              <span class="meta-tag"><i class="fa-solid fa-bus"></i> Bus Costa: 50 min</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('L\'arrivo sulla Nave', '📌 PERCHÉ: È il momento zero, l\'inizio della magia!\n\nAtterrando alle 15:00, tra il ritiro bagagli e circa un\'ora di comodo pullman fornito da Costa, arriverete al porto di Santa Cruz verso le 16:30. Il tempo di fare il check-in e sarete ufficialmente in cabina verso le 17:30. Riposatevi dal volo e godetevi il primissimo brindisi di inizio vacanza sul ponte della Costa Fortuna!', 'g1_nave', 'Circa 2.5 ore dallo sbarco aereo', 'Bus Costa incluso nel pacchetto')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase-title"><i class="fa-solid fa-moon"></i> Passeggiata di Benvenuto</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g1_plaza" class="poi-thumb" alt="Plaza Espana">
-          <div class="poi-info">
-            <p class="poi-name">Plaza de España & Marina</p>
-            <p class="poi-sub">Il centro a due passi dal molo nave.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 1h / 1.5h</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 5 min a piedi</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Passeggiata Senza Stress', '📌 PERCHÉ L\'ABBIAMO INSERITA: Perché sarete stanchi dal volo, ma avrete tantissima voglia di sentire l\'aria delle Canarie!\n\nLa nave è attraccata praticamente in centro. Scendete a piedi dal molo senza fatica, attraversate la strada principale e vi ritroverete nell\'enorme e spettacolare Plaza de España con il suo grande lago artificiale. È il posto perfetto, a \u0022chilometro zero\u0022, per fare la primissima foto serale e brindare in un baretto prima di tornare a bordo per cena.', 'g1_plaza_gal', '1 - 1.5 ore max', 'A piedi dalla nave (circa 5-10 minuti)')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+Tenerife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert-box">
-        <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i>
-        <span>Tutti a bordo tassativamente entro le 20:30 (Partenza 21:30).</span>
-      </div>
+    <div class="day-hero-overlay"></div>
+    <div class="photo-thumbs">
+      <div class="thumb active" style="background-image:url('https://images.unsplash.com/photo-1609949279531-cf48d64ebe89?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lapalma',0)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lapalma',1)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1573770012830-de6f1e61c7b8?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lapalma',2)"></div>
     </div>
-  </article>
-
-  <!-- ==========================================
-       GIORNO 2: LA PALMA
-       ========================================== -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g2_hero">
-      <div class="hero-content day-badge">Giorno 2 • 24 Marzo</div>
-      <div class="hero-content">
-        <h2>La Palma</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 20:00 (Sosta Lunga)</div>
-      </div>
+    <div class="day-hero-content">
+      <div class="day-number">Giorno 2 • 24 Marzo</div>
+      <div class="day-title">🌴 La Palma<br>La Isla Bonita</div>
+      <span class="day-hours">08:00 – 20:00</span><span class="day-tag green">Sosta Lunga</span>
     </div>
-    
-    <div class="card-body">
-      <div class="phase-title first"><i class="fa-solid fa-shoe-prints"></i> Mattina Storica</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g2_balconi" class="poi-thumb" alt="Balconi">
-          <div class="poi-info">
-            <p class="poi-name">Calle O'Daly & Balconi Canari</p>
-            <p class="poi-sub">Le celebri case coloniali affacciate sul mare.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 10 min a piedi</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('I Balconi Storici e Calle O\'Daly', '📌 PERCHÉ ANDARCI: Per fare un tuffo nel passato coloniale spagnolo e scattare foto pazzesche!\n\nIl centro di Santa Cruz de La Palma è una chicca assoluta. Usciti dal porto a piedi, camminate sull\'Avenida Marítima per ammirare i famosi \u0022Balconi Canari\u0022: antiche verande in legno finemente intagliato, oggi stracolme di fiori. Poi inoltratevi in Calle O\'Daly, la via pedonale acciottolata super elegante e ricca di piccoli negozi artigianali. Rilassante e romantica.', 'g2_balconi_gal', 'Circa 2 ore passeggiando calmi', 'A piedi. Il porto è attaccato alla città.')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Calle+O'Daly+Santa+Cruz+de+La+Palma" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase-title"><i class="fa-solid fa-water"></i> Pomeriggio Rilassante</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g2_playa" class="poi-thumb" alt="Playa La Palma">
-          <div class="poi-info">
-            <p class="poi-name">Playa de Santa Cruz</p>
-            <p class="poi-sub">La nuova immensa spiaggia nera vulcanica.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 3+ ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 5 min a piedi</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Playa de Santa Cruz de La Palma', '📌 PERCHÉ L\'ABBIAMO SCELTA: Zero stress e acqua fantastica!\n\nInaugurata da pochissimo, questa immensa spiaggia di finissima sabbia nera vulcanica è incredibilmente scenografica e pulita. Ma il suo vero superpotere è che si trova letteralmente attaccata al centro storico e al molo. Potrete nuotare, prendere il sole e rilassarvi sapendo che la vostra nave è lì a due passi, eliminando completamente l\'ansia di dover prendere taxi per rientrare in tempo.', 'g2_playa_gal', 'Tutto il pomeriggio', '5 minuti a piedi, vicinissima al molo.')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+Santa+Cruz+de+La+Palma" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
-
-  <!-- ==========================================
-       GIORNO 3: LA GOMERA
-       ========================================== -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g3_hero">
-      <div class="hero-content day-badge">Giorno 3 • 25 Marzo</div>
-      <div class="hero-content">
-        <h2>La Gomera</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 18:00</div>
-      </div>
-    </div>
-    
-    <div class="card-body">
-      <div class="phase-title first"><i class="fa-solid fa-tree"></i> Sulle orme di Colombo</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g3_torre" class="poi-thumb" alt="Torre Conde">
-          <div class="poi-info">
-            <p class="poi-name">San Sebastián & Torre del Conde</p>
-            <p class="poi-sub">Il tranquillo porticciolo e il borgo storico.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 1.5 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 10 min a piedi</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('San Sebastián de La Gomera', '📌 PERCHÉ ANDARCI: Per calpestare lo stesso suolo di Cristoforo Colombo!\n\nLa Gomera è un\'isola minuscola, selvaggia e stupenda in cui il tempo sembra essersi fermato. La cittadina è stata l\'ultimissimo porto in cui Colombo ha fatto rifornimento prima di attraversare l\'oceano nel 1492! Visitate la \u0022Casa di Colombo\u0022 e passeggiate nel piccolo parco per ammirare la \u0022Torre del Conde\u0022, una fortezza medievale perfettamente conservata.', 'g3_torre_gal', '1.5 - 2 ore massimo', 'A piedi. Il molo si innesta direttamente nel paese.')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=San+Sebasti%C3%A1n+de+La+Gomera" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase-title"><i class="fa-solid fa-sun"></i> Relax Pomeridiano</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g3_cueva" class="poi-thumb" alt="Playa Cueva">
-          <div class="poi-info">
-            <p class="poi-name">Playa de la Cueva</p>
-            <p class="poi-sub">Caletta nera protetta dalle scogliere.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2-3 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 5 min a piedi</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-             <button class="action-btn btn-info" onclick="openInfo('Playa de la Cueva', '📌 PERCHÉ L\'ABBIAMO SCELTA: È un piccolo angolo segreto super pittoresco!\n\nInvece della spiaggia principale, vi consiglio questa vera gemma nascosta: incamminatevi per appena 5 minuti dietro il porticciolo, attraversate un breve e caratteristico tunnel scavato nella roccia vulcanica e vi si aprirà davanti questa caletta di sabbia nera e ciottoli. È incastonata tra alte falesie scure, c\'è un ristorantino tipico sopra e offre una vista mozzafiato sul vulcano Teide di Tenerife in lontananza!', 'g3_cueva_gal', 'Mezza giornata', '5 minuti a piedi dal centro.')"><i class="fa-solid fa-info"></i></button>
-             <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+la+Cueva+San+Sebasti%C3%A1n" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
-
-  <!-- ==========================================
-       GIORNO 4: LANZAROTE
-       ========================================== -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g4_hero">
-      <div class="hero-content day-badge">Giorno 4 • 26 Marzo</div>
-      <div class="hero-content">
-        <h2>Lanzarote (Arrecife)</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 18:00</div>
-      </div>
-    </div>
-    
-    <div class="card-body">
-      <div class="phase-title first"><i class="fa-solid fa-camera"></i> Arte e Venezia Canariense</div>
-      <div class="poi-list">
-
-        <!-- NUOVO POI: Castillo de San Jose -->
-        <div class="poi-item">
-          <img data-src-key="g4_castello" class="poi-thumb" alt="Castillo San Jose">
-          <div class="poi-info">
-            <p class="poi-name">Castillo de San José (MIAC)</p>
-            <p class="poi-sub">Fortezza storica e museo firmato César Manrique.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 1 ora</span>
-              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 5 min dal molo</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Castillo de San José (MIAC)', '📌 PERCHÉ ANDARCI: Per godersi un caffè con una vista mozzafiato a strapiombo sul mare!\n\nÈ un\'antica fortezza del 1700 salvata dalla rovina dal celebre artista César Manrique. Anche se non siete fan dell\'arte contemporanea, l\'interno è una meraviglia architettonica. Il ristorante ha un\'immensa vetrata panoramica curva inserita nella roccia vulcanica che affaccia sull\'oceano. Trovandosi esattamente a metà strada tra la nave e il centro città, è la prima tappa strategica perfetta della giornata.', 'g4_castello_gal', 'Circa 1 ora', 'Taxi dal molo (5 min) o 15-20 min a piedi dal porto Mármoles.')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Castillo+de+San+Jose+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-
-        <div class="poi-item">
-          <img data-src-key="g4_charco" class="poi-thumb" alt="Charco San Gines">
-          <div class="poi-info">
-            <p class="poi-name">Charco de San Ginés</p>
-            <p class="poi-sub">Laguna salata, barchette e ottime tapas.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 5 min</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Charco de San Ginés', '📌 PERCHÉ L\'ABBIAMO INSERITO: È l\'angolo più pittoresco di tutta Lanzarote, impossibile non innamorarsene!\n\nChiamata la \u0022Venezia dell\'Atlantico\u0022, è una laguna naturale di mare che entra nel centro città. Le vecchie barchette di legno dei pescatori galleggiano tranquille, circondate da passeggiate pedonali e candide casette bianche con porte blu e verdi. Fermatevi assolutamente qui a metà mattina per gustare delle tapas fantastiche all\'aperto.', 'g4_charco_gal', 'Circa 2 ore', 'Dal Castello si raggiunge con una passeggiata pedonale di 15-20 minuti.')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Charco+de+San+Gines+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase-title"><i class="fa-solid fa-water"></i> Pomeriggio: Mare o Piano B?</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g4_reducto" class="poi-thumb" alt="Playa Reducto">
-          <div class="poi-info">
-            <p class="poi-name">Playa del Reducto</p>
-            <p class="poi-sub">Sabbia finissima e mare quasi sempre calmo.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 3 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 15 min dal Charco</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-             <button class="action-btn btn-info" onclick="openInfo('Playa del Reducto', '📌 PERCHÉ L\'ABBIAMO SCELTA: È comodissima ed è un paradiso protetto dalle onde forti!\n\nLa spiaggia di riferimento di Arrecife. È una conca immensa di oltre mezzo chilometro con sabbia dorata. La cosa meravigliosa è che è protetta dalle correnti oceaniche da scogliere naturali coralline al largo: per questo l\'acqua è sempre piatta e trasparente, l\'ideale se volete farvi una bella nuotata rilassante. È ornata da enormi palme da cocco caraibiche.', 'g4_reducto_gal', 'Fino alle 16:30', '15 minuti a piedi dal Charco de San Ginés.')"><i class="fa-solid fa-info"></i></button>
-             <a href="https://www.google.com/maps/search/?api=1&query=Playa+del+Reducto+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-
-        <!-- OPZIONE PIANO B: Jameos del Agua -->
-        <div class="poi-item" style="background: #fff8e1; border-color: #ffe082;">
-          <img data-src-key="g4_jameos" class="poi-thumb" alt="Jameos del Agua">
-          <div class="poi-info">
-            <p class="poi-name">Piano B: Jameos del Agua</p>
-            <p class="poi-sub">Tunnel vulcanico e lago sotterraneo.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2-3 ore tot.</span>
-              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 35-40 min</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Piano B: Jameos del Agua', '📌 PERCHÉ ANDARCI: Per sentirsi come in un film di fantascienza!\n\nSe il tempo è nuvoloso, fate questa escursione. È un\'opera d\'arte surrealista creata dentro un colossale tubo vulcanico crollato. Scenderete in un lago sotterraneo abitato da rarissimi granchietti albini e ciechi, vedrete una piscina bianca abbagliante incastonata nella lava nera e un auditorium naturale. \n\n🚗 COME ANDARCI: Si trova a nord, fuori Arrecife. Prevedete un Taxi (35-40 min). Il trucco vincente per i crocieristi è accordarsi col tassista per farsi aspettare durante l\'ora scarsa di visita, così vi riporterà direttamente alla nave!', 'g4_jameos_gal', 'Circa 2.5 ore (spostamenti inclusi)', 'Taxi (35-40 min a tratta)')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Jameos+del+Agua+Lanzarote" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert-box">
-        <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i>
-        <span>Prendete il taxi o bus per il ritorno verso le 16:30 per non avere ansie (Partenza nave ore 18:00).</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- ==========================================
-       GIORNO 5: GRAN CANARIA
-       ========================================== -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g5_hero">
-      <div class="hero-content day-badge">Giorno 5 • 27 Marzo</div>
-      <div class="hero-content">
-        <h2>Gran Canaria</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 05:00 - 21:00 (Sosta Lunga)</div>
-      </div>
-    </div>
-    
-    <div class="card-body">
-      <div class="phase-title first"><i class="fa-solid fa-building-columns"></i> Cuore Storico</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g5_vegueta" class="poi-thumb" alt="Vegueta">
-          <div class="poi-info">
-            <p class="poi-name">Quartiere Vegueta e Triana</p>
-            <p class="poi-sub">Piazze pittoresche e Cattedrale di Santa Ana.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2.5 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 10 min</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Vegueta & Triana', '📌 PERCHÉ L\'ABBIAMO INSERITA: Perché vi sembrerà di passeggiare nel Sud America coloniale!\n\nLas Palmas è una vera metropoli moderna, ma il suo cuore fondato nel 1478 è Vegueta. Qui passeggerete tra palazzi signorili, cortili alberati in stile \u0022Pirati dei Caraibi\u0022 e potrete ammirare le statue dei cani di bronzo davanti alla favolosa Cattedrale di Santa Ana in pietra vulcanica scura. Fermatevi anche in Calle Triana, una lunga via pedonale stupenda, perfetta per un po\' di shopping.', 'g5_vegueta_gal', 'Circa 2-3 ore', 'Bus (es. Linea 12) o un veloce Taxi (circa 10€) dal porto.')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Vegueta+Las+Palmas" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase-title"><i class="fa-solid fa-martini-glass-citrus"></i> Tramonto sull'Oceano</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g5_canteras" class="poi-thumb" alt="Las Canteras">
-          <div class="poi-info">
-            <p class="poi-name">Playa de Las Canteras</p>
-            <p class="poi-sub">3 km di lungomare con barriera corallina naturale.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 4 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 15 min a piedi dal molo nave</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-             <button class="action-btn btn-info" onclick="openInfo('Playa de Las Canteras', '📌 PERCHÉ ANDARCI: Per vivervi il tramonto più iconico e festaiolo delle Canarie!\n\nÈ ritenuta una delle spiagge urbane migliori e più \u0022vive\u0022 d\'Europa. Il lunghissimo lungomare brulica di gente, artisti, surfisti e ristorantini. In mare c\'è una barriera corallina naturale (visibile a occhio nudo) che protegge i bagnanti. Trovatevi un bel chiringuito, ordinate una birra locale e le \u0022papas arrugadas con mojo\u0022 e aspettate il tramonto. Tanto la nave riparte tardissimo, la serata è vostra!', 'g5_canteras_gal', 'Pomeriggio + Aperitivo/Cena', 'Da Vegueta tornate col bus verso la nave. Dal terminal crociere, dista solo 15 minuti a piedi.')"><i class="fa-solid fa-info"></i></button>
-             <a href="https://www.google.com/maps/search/?api=1&query=Playa+de+Las+Canteras+Las+Palmas" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-      
-      <div class="alert-box" style="background: #e8f5e9; border-color: #2e7d32; color: #1b5e20;">
-        <i class="fa-solid fa-circle-check" style="margin-top:2px;"></i>
-        <span>Sosta lunghissima oggi (21:00). Rientro tranquillo in nave verso le 19:30/20:00.</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- ==========================================
-       GIORNO 7: MADEIRA
-       ========================================== -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g7_hero">
-      <div class="hero-content day-badge">Giorno 7 • 29 Marzo</div>
-      <div class="hero-content">
-        <h2>Madeira (Funchal)</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 07:00 - 17:00</div>
-      </div>
-    </div>
-    
-    <div class="card-body">
-      <div class="phase-title first"><i class="fa-solid fa-basket-shopping"></i> La Città Vecchia</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g7_mercado" class="poi-thumb" alt="Mercado Funchal">
-          <div class="poi-info">
-            <p class="poi-name">Mercado dos Lavradores & Zona Velha</p>
-            <p class="poi-sub">Colori esotici, porte dipinte e vino Madeira.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 20 min dal porto</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Mercado dos Lavradores & Rua de Santa Maria', '📌 PERCHÉ L\'ABBIAMO INSERITA: Per immergersi letteralmente nell\'esotismo del Portogallo, perfetto per le vostre foto!\n\nUna comoda passeggiata vi porterà al \u0022Mercado dos Lavradores\u0022: vi accoglieranno venditrici in abiti folcloristici che vendono fiori spettacolari e banchi carichi di frutti che non avete mai visto (es. frutto della passione al sapore di banana!). Appena usciti entrerete nella \u0022Zona Velha\u0022: esplorate \u0022Rua de Santa Maria\u0022, un dedalo in cui ogni singola porta delle case antiche è stata dipinta e trasformata in un\'opera d\'arte da artisti locali.', 'g7_mercado_gal', 'Mattinata esplorativa, 2-3 ore', 'Passeggiata in piano di circa 20 min dal terminal crociere.')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Mercado+dos+Lavradores+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase-title"><i class="fa-solid fa-camera"></i> Vista Panoramica</div>
-      <div class="poi-list">
-        
-        <!-- Fermata del Bus -->
-        <div class="poi-item">
-          <img data-src-key="g7_bus" class="poi-thumb" alt="Fermata Bus">
-          <div class="poi-info">
-            <p class="poi-name">Fermata Bus (Linee 9 o 12)</p>
-            <p class="poi-sub">Prendete il bus giallo dal lungomare per salire.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-ticket"></i> 1.95€ a bordo</span>
-              <span class="meta-tag"><i class="fa-solid fa-person-walking"></i> 5 min dal Mercato</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Come prendere il Bus per salire', '📌 PERCHÉ CI SERVE: Per salire a vedere il belvedere risparmiando sui taxi e vivendo un po\' la vita dei locali.\n\nDopo il Mercato, vi basta prendere il bus giallo N° 9 o N° 12 (\u0022Horários do Funchal\u0022). La fermata è su Avenida do Mar (tocca la mappa per arrivarci a piedi). \n💡 TIP FONDAMENTALE: Fate cenno all\'autista per fermarlo. I biglietti si fanno a bordo (1.95€): portatevi per forza MONETE o banconote piccole (max 5€) perché gli autisti si rifiutano di dare il resto per tagli grandi!', 'g7_bus_gal', 'Attesa media 10-15 min', 'A piedi dal mercato')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Avenida+do+Mar+Teleferico+bus+stop+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-
-        <div class="poi-item">
-          <img data-src-key="g7_miradouro" class="poi-thumb" alt="Pico dos Barcelos">
-          <div class="poi-info">
-            <p class="poi-name">Miradouro do Pico dos Barcelos</p>
-            <p class="poi-sub">Vista spettacolare a 360° su Funchal e l'Oceano.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 1-1.5 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 10m / <i class="fa-solid fa-bus"></i> Bus: 25m</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Miradouro do Pico dos Barcelos', '📌 PERCHÉ L\'ABBIAMO SCELTO: Funchal è costruita a conca verso l\'alto. Da quassù avrete tutta la città letteralmente ai vostri piedi!\n\nUn belvedere mozzafiato a 355 metri d\'altezza, recentemente rinnovato. Oltre all\'anfiteatro della città e al blu infinito dell\'Oceano, in giornate limpide riuscirete a scorgere anche le sagome delle Isole Desertas. Uno scatto fotografico qui è obbligatorio prima di scendere in spiaggia.', 'g7_miradouro_gal', 'Circa 1 ora e mezza', 'Taxi/Bolt (10-15€) o Bus n. 9 e 12 (1.95€)')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Miradouro+do+Pico+dos+Barcelos+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="phase-title"><i class="fa-solid fa-water-ladder"></i> Pomeriggio: Mare o Piano B?</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g7_lido" class="poi-thumb" alt="Lido Madeira">
-          <div class="poi-info">
-            <p class="poi-name">Lido Balnear / Praia Formosa</p>
-            <p class="poi-sub">Spettacolari piscine nella roccia o spiaggia vulcanica.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 3 ore</span>
-              <span class="meta-tag"><i class="fa-solid fa-taxi"></i> Taxi: 10 min</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-             <button class="action-btn btn-info" onclick="openInfo('Piscine del Lido o Praia Formosa?', '📌 PERCHÉ ANDARCI: A Madeira non ci sono noiose spiagge dorate piatte, l\'oceano si vive in modo scenografico!\n\nPer un pomeriggio esclusivo, andate al \u0022Complexo Balnear do Lido\u0022: gigantesche piscine attrezzate di acqua oceanica scavate direttamente nella scogliera vulcanica. Se invece cercate l\'avventura pura e l\'Oceano selvaggio, la Praia Formosa vi offre un vastissimo litorale di ciottoli neri e sabbia scura schiacciato da immense falesie.', 'g7_lido_gal', 'Dopo pranzo fino alle 15:30', 'Bus urbano giallo o Taxi (10-12€).')"><i class="fa-solid fa-info"></i></button>
-             <a href="https://www.google.com/maps/search/?api=1&query=Complexo+Balnear+do+Lido+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-
-        <!-- OPZIONE PIANO B: Cabo Girão -->
-        <div class="poi-item" style="background: #fff8e1; border-color: #ffe082;">
-          <img data-src-key="g7_cabogirao" class="poi-thumb" alt="Cabo Girao">
-          <div class="poi-info">
-            <p class="poi-name">Piano B (Nuvoloso): Cabo Girão</p>
-            <p class="poi-sub">Skywalk in vetro a 580m sul mare.</p>
-            <div class="poi-meta">
-              <span class="meta-tag"><i class="fa-solid fa-hourglass-half"></i> 2 ore tot.</span>
-              <span class="meta-tag"><i class="fa-solid fa-car"></i> App Bolt: 25 min</span>
-            </div>
-          </div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Piano B: Cabo Girão Skywalk', '📌 PERCHÉ L\'ABBIAMO INSERITO: Se il sole sparisce e fare il bagno non ha senso, provate l\'adrenalina di camminare sul vuoto!\n\nÈ la scogliera più alta d\'Europa (580m). Camminare sulla piattaforma in vetro con le onde che si infrangono a mezzo chilometro sotto i vostri piedi (ingresso 2€) fa girare la testa ma è stupendo.\n\n🚗 COME ANDARCI (USA BOLT): I bus sono lentissimi. Scaricatevi l\'app \u0022Bolt\u0022 (stile Uber, usatissima qui). Costa pochissimo (circa 10-15€ a tratta, molto meno dei taxi). Vi passeranno a prendere in pochi minuti ovunque voi siate!', 'g7_cabogirao_gal', 'Circa 2 ore (spostamenti inclusi)', 'App Bolt (circa 10-15€ a tratta)')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Cabo+Girao+Skywalk+Madeira" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert-box">
-        <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;"></i>
-        <span>Partenza dalla zona mare max alle 15:30. Arrivo in porto tassativo entro le 16:00! (La nave salpa alle 17)</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- ==========================================
-       GIORNO 8: TENERIFE (SBARCO)
-       ========================================== -->
-  <article class="day-card" style="margin-bottom: 40px;">
-    <div class="card-hero" data-bg-key="g8_hero">
-      <div class="hero-content day-badge" style="background: rgba(255,59,48,0.8); border:none;">Ultimo Giorno</div>
-      <div class="hero-content">
-        <h2>Sbarco Tenerife</h2>
-        <div class="time-badge"><i class="fa-solid fa-plane-departure"></i> Volo Neos ore 14:05</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="poi-list">
-        <div class="poi-item" style="background: #fff0f0; border-color: #ffcdd2;">
-          <div class="poi-info">
-            <p class="poi-name" style="color:var(--danger);">Navetta Costa per Aeroporto</p>
-            <p class="poi-sub">Volo: TFS 14:05 ➔ Milano MXP 19:00.</p>
-          </div>
-          <div class="poi-actions">
-            <a href="https://www.google.com/maps/search/?api=1&query=Aeropuerto+de+Tenerife+Sur+TFS" target="_blank" class="action-btn btn-map" style="background: #ffebee; color: var(--danger);"><i class="fa-solid fa-plane"></i></a>
-          </div>
-        </div>
-      </div>
-      <p style="font-size:14px; margin-top:16px;">Priorità assoluta: sbarco e trasferimento in bus fornito da Costa verso l'aeroporto Tenerife Sud (TFS). Fate colazione abbondante, sbarcate tranquilli e preparatevi al rientro alla base. Buon viaggio! ✈️</p>
-    </div>
-  </article>
-
-</main>
-
-<!-- ==========================================
-     MODALE INFORMATIVO (BOTTOM SHEET)
-     ========================================== -->
-<div class="overlay" id="overlay" onclick="closeInfo()"></div>
-<div class="bottom-sheet" id="infoSheet">
-  <div class="sheet-handle"></div>
-  
-  <div class="gallery-hint" id="galleryHint">👈 scorri le foto 👉</div>
-  <div class="modal-gallery" id="modalGallery"></div>
-  
-  <h3 id="modalTitle">Titolo</h3>
-  
-  <div class="modal-stats">
-    <div class="modal-stat-item" id="modalTime"><i class="fa-solid fa-hourglass-half"></i> <span></span></div>
-    <div class="modal-stat-item" id="modalTransport"><i class="fa-solid fa-route"></i> <span></span></div>
   </div>
+  <div class="day-card">
+    <div class="day-card-inner">
+      <p class="day-desc">La Palma è l'isola più verde e silenziosa delle Canarie. Il centro storico di Santa Cruz è piccolo e bellissimo, tutto a piedi dal porto. 12 ore di sosta: godetevela con calma!</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">08:00 – 09:30</div><div class="tl-text"><strong>Sbarco e colazione</strong> — Scendete senza fretta. Caffè e tostada nelle prime cafe sul lungomare. Il centro è a 5 minuti a piedi dal porto.</div></div>
+        <div class="tl-item"><div class="tl-time">09:30 – 12:00</div><div class="tl-text"><strong>Centro storico a piedi</strong> — Calle Real, balconi canari colorati, Plaza de España, Barco de la Virgen, Castillo de Santa Catalina. <span class="tip">💡 Cercate un tour guidato locale in italiano su GetYourGuide — La Palma Natural offre guide in italiano.</span></div></div>
+        <div class="tl-item"><div class="tl-time">12:30 – 14:30</div><div class="tl-text"><strong>Pranzo</strong> — Ristoranti sul lungomare Avenida Marítima. Provate il pesce locale e le papas arrugadas con mojo.</div></div>
+        <div class="tl-item"><div class="tl-time">15:00 – 18:00</div><div class="tl-text"><strong>Spiaggia o relax</strong> — <strong>Playa de Los Cancajos</strong> (bus o taxi ~10 min, spiaggia di ciottoli scuri, acqua cristallina). In alternativa, passeggiata al tramonto sul lungomare. <span class="tip">💡 Los Cancajos è la spiaggia più comoda per crocieristi, ottima per snorkeling.</span></div></div>
+        <div class="tl-item"><div class="tl-time">19:00</div><div class="tl-text"><strong>Rientro a bordo</strong> — Partenza nave ore 20:00. Siate a bordo entro le 19:00. <span class="warn">⚠️ Non oltre le 19:00!</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <p id="modalDesc">Descrizione del luogo...</p>
-  
-  <button class="btn-close" onclick="closeInfo()">Chiudi</button>
+<!-- GIORNO 3: LA GOMERA -->
+<section class="day-section" id="d3">
+  <div class="day-hero" onclick="openLightbox('lagomera',0)">
+    <div class="day-hero-slider" id="slider-lagomera">
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=1600&q=85')"></div>
+    </div>
+    <div class="day-hero-overlay"></div>
+    <div class="photo-thumbs">
+      <div class="thumb active" style="background-image:url('https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lagomera',0)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1533105079780-92b9be482077?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lagomera',1)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lagomera',2)"></div>
+    </div>
+    <div class="day-hero-content">
+      <div class="day-number">Giorno 3 • 25 Marzo</div>
+      <div class="day-title">⛵ La Gomera<br>Isola Magica</div>
+      <span class="day-hours">08:00 – 18:00</span>
+    </div>
+  </div>
+  <div class="day-card">
+    <div class="day-card-inner">
+      <p class="day-desc">La Gomera è la più autentica delle Canarie minori. San Sebastián è un gioiello coloniale dove Colombo si fermò prima di scoprire l'America. Foresta di Garajonay: Patrimonio UNESCO.</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">08:00 – 10:00</div><div class="tl-text"><strong>San Sebastián de La Gomera</strong> — Tutto raggiungibile a piedi dal porto. Torre del Conde, Iglesia de la Asunción, pozza dove Colombo prelevò acqua dolce. <span class="tip">💡 La piazza centrale e il lungomare bastano per 2h tranquille.</span></div></div>
+        <div class="tl-item"><div class="tl-time">10:30 – 13:30</div><div class="tl-text"><strong>Garajonay o Valle Gran Rey</strong> — Solo se volete avventura: bus o taxi fino alla foresta laurisilva (UNESCO) oppure alle spiagge vulcaniche di Valle Gran Rey. <span class="warn">⚠️ Valle Gran Rey dista ~45 min in taxi: andata+ritorno = 2h di viaggio. Valutate se ne vale la pena con questo orario.</span></div></div>
+        <div class="tl-item"><div class="tl-time">14:00 – 16:00</div><div class="tl-text"><strong>Pranzo e relax</strong> — Ristoranti sul porto, specialità locali con aloe vera e mojo palmero. Spiaggia di San Sebastián a pochi minuti a piedi.</div></div>
+        <div class="tl-item"><div class="tl-time">17:00</div><div class="tl-text"><strong>Rientro a bordo</strong> — Partenza nave ore 18:00. <span class="warn">⚠️ Non oltre le 17:00!</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIORNO 4: LANZAROTE -->
+<section class="day-section" id="d4">
+  <div class="day-hero" onclick="openLightbox('lanzarote',0)">
+    <div class="day-hero-slider" id="slider-lanzarote">
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1604537466158-719b1972feb8?w=1600&q=85')"></div>
+    </div>
+    <div class="day-hero-overlay"></div>
+    <div class="photo-thumbs">
+      <div class="thumb active" style="background-image:url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lanzarote',0)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lanzarote',1)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1604537466158-719b1972feb8?w=200&q=70')" onclick="event.stopPropagation();changeSlide('lanzarote',2)"></div>
+    </div>
+    <div class="day-hero-content">
+      <div class="day-number">Giorno 4 • 26 Marzo</div>
+      <div class="day-title">🌋 Lanzarote<br>Arte & Vulcani</div>
+      <span class="day-hours">08:00 – 18:00</span>
+    </div>
+  </div>
+  <div class="day-card">
+    <div class="day-card-inner">
+      <p class="day-desc">Paesaggi lunari, vulcani neri e il genio artistico di César Manrique. Arrecife è la capitale, ma il meglio di Lanzarote è fuori città: Timanfaya, Jameos del Agua, Playa Papagayo.</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">08:00 – 09:30</div><div class="tl-text"><strong>Arrecife a piedi</strong> — Charco de San Ginés (laguna pittoresca), Castillo de San Gabriel, lungomare. Tutto in 1h.</div></div>
+        <div class="tl-item"><div class="tl-time">09:30 – 14:30</div><div class="tl-text"><strong>Escursione privata Civitatis (in italiano!)</strong> — Tour privato 5h con guida in italiano: Timanfaya, Jameos del Agua, Mirador del Río. Pick-up al porto. <span class="tip">💡 Prenota su: civitatis.com/it/arrecife/escursione-privata-lanzarote/</span></div></div>
+        <div class="tl-item"><div class="tl-time">15:00 – 16:00</div><div class="tl-text"><strong>Spiaggia Playa del Reducto</strong> — Sabbia chiara a 10 min dal porto, facilissima e bella. Ottima per un tuffo veloce!</div></div>
+        <div class="tl-item"><div class="tl-time">16:30</div><div class="tl-text"><strong>Rientro a bordo</strong> — Partenza nave ore 18:00. Prendete taxi/bus entro le 16:30. <span class="warn">⚠️ Non oltre le 17:00!</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIORNO 5: GRAN CANARIA -->
+<section class="day-section" id="d5">
+  <div class="day-hero" onclick="openLightbox('grancanaria',0)">
+    <div class="day-hero-slider" id="slider-grancanaria">
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1600&q=85')"></div>
+    </div>
+    <div class="day-hero-overlay"></div>
+    <div class="photo-thumbs">
+      <div class="thumb active" style="background-image:url('https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?w=200&q=70')" onclick="event.stopPropagation();changeSlide('grancanaria',0)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=200&q=70')" onclick="event.stopPropagation();changeSlide('grancanaria',1)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1519046904884-53103b34b206?w=200&q=70')" onclick="event.stopPropagation();changeSlide('grancanaria',2)"></div>
+    </div>
+    <div class="day-hero-content">
+      <div class="day-number">Giorno 5 • 27 Marzo</div>
+      <div class="day-title">🏖️ Gran Canaria<br>Las Palmas & Maspalomas</div>
+      <span class="day-hours">05:00 – 21:00</span><span class="day-tag green">Sosta Lunga</span>
+    </div>
+  </div>
+  <div class="day-card">
+    <div class="day-card-inner">
+      <p class="day-desc">La tappa più lunga: 16 ore di sosta! Las Palmas è una grande città con il Barrio de Vegueta (centro storico UNESCO), e a sud le famose dune di Maspalomas con la spiaggia di Playa del Inglés.</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">08:00 – 11:00</div><div class="tl-text"><strong>Las Palmas centro</strong> — Barrio de Vegueta, Catedral de Santa Ana, Casa de Colón, mercato locale. <span class="tip">💡 Bus n.30 o taxi dal porto al centro: ~5€ o 1,50€ a persona.</span></div></div>
+        <div class="tl-item"><div class="tl-time">11:30 – 14:00</div><div class="tl-text"><strong>Playa de Las Canteras</strong> — Una delle spiagge urbane più belle d'Europa! Sabbia fine, barriera naturale e acqua calma. Dal centro a piedi. Pranzo sul lungomare.</div></div>
+        <div class="tl-item"><div class="tl-time">15:00 – 18:00</div><div class="tl-text"><strong>Maspalomas (opzionale)</strong> — Bus Global o taxi ~45 min: dune spettacolari e Playa del Inglés. Solo se avete energia! <span class="warn">⚠️ Calcolare il viaggio di rientro: 45 min di viaggio + rientro a bordo entro le 20:00.</span></div></div>
+        <div class="tl-item"><div class="tl-time">20:00</div><div class="tl-text"><strong>Rientro a bordo</strong> — Partenza nave ore 21:00. <span class="warn">⚠️ Non oltre le 20:00!</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIORNO 6: NAVIGAZIONE -->
+<section class="day-section" id="d6">
+  <div class="day-hero" onclick="openLightbox('nav',0)">
+    <div class="day-hero-slider" id="slider-nav">
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1548574505-5e239809ee19?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1563299796-17596ed6b017?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1599640842225-85d111c60e6b?w=1600&q=85')"></div>
+    </div>
+    <div class="day-hero-overlay"></div>
+    <div class="photo-thumbs">
+      <div class="thumb active" style="background-image:url('https://images.unsplash.com/photo-1548574505-5e239809ee19?w=200&q=70')" onclick="event.stopPropagation();changeSlide('nav',0)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1563299796-17596ed6b017?w=200&q=70')" onclick="event.stopPropagation();changeSlide('nav',1)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1599640842225-85d111c60e6b?w=200&q=70')" onclick="event.stopPropagation();changeSlide('nav',2)"></div>
+    </div>
+    <div class="day-hero-content">
+      <div class="day-number">Giorno 6 • 28 Marzo</div>
+      <div class="day-title">🌊 In Alto Mare<br>Giornata di Navigazione</div>
+      <span class="day-hours">Tutto il giorno a bordo</span><span class="day-tag blue">Relax</span>
+    </div>
+  </div>
+  <div class="day-card">
+    <div class="day-card-inner">
+      <p class="day-desc">Giornata libera a bordo! Piscine, spa, spettacoli serali, ristoranti: godetevi Costa Fortuna. È la pausa perfetta prima dell'ultima tappa europea: Madeira.</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">Mattina</div><div class="tl-text"><strong>Piscine e colazione tardiva</strong> — Nessun orario, nessuna fretta. 😎</div></div>
+        <div class="tl-item"><div class="tl-time">Pomeriggio</div><div class="tl-text"><strong>Spa, relax, sport di bordo</strong> — Palestra, mini-golf, shopping duty-free.</div></div>
+        <div class="tl-item"><div class="tl-time">Sera</div><div class="tl-text"><strong>Cena di gala o show serale</strong> — Controlate il Diario di Bordo per i programmi. <span class="tip">💡 Sera ideale per la cena romantica nel ristorante dedicato!</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIORNO 7: MADEIRA -->
+<section class="day-section" id="d7">
+  <div class="day-hero" onclick="openLightbox('madeira',0)">
+    <div class="day-hero-slider" id="slider-madeira">
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1593001874117-c99c800e3a13?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1599222900950-96cf16f38d9d?w=1600&q=85')"></div>
+    </div>
+    <div class="day-hero-overlay"></div>
+    <div class="photo-thumbs">
+      <div class="thumb active" style="background-image:url('https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=200&q=70')" onclick="event.stopPropagation();changeSlide('madeira',0)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1593001874117-c99c800e3a13?w=200&q=70')" onclick="event.stopPropagation();changeSlide('madeira',1)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1599222900950-96cf16f38d9d?w=200&q=70')" onclick="event.stopPropagation();changeSlide('madeira',2)"></div>
+    </div>
+    <div class="day-hero-content">
+      <div class="day-number">Giorno 7 • 29 Marzo</div>
+      <div class="day-title">🌸 Madeira<br>Funchal — Isola Fiorita</div>
+      <span class="day-hours">07:00 – 17:00</span><span class="day-tag" style="background:#e67e22;">Orario stretto</span>
+    </div>
+  </div>
+  <div class="day-card">
+    <div class="day-card-inner">
+      <p class="day-desc">Madeira è forse la tappa più bella dell'intera crociera. Funchal sorprende con la Zona Velha (città vecchia), il mercato dei Lavradores e la funivia per Monte. La sosta è più corta: organizzatevi bene!</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">07:00 – 09:00</div><div class="tl-text"><strong>Sbarco e Zona Velha</strong> — La città vecchia si raggiunge a piedi in 15 min dal porto. Porte decorate dagli artisti, caffè storici, calçada portoghese.</div></div>
+        <div class="tl-item"><div class="tl-time">09:00 – 11:30</div><div class="tl-text"><strong>Mercado dos Lavradores + funivia</strong> — Mercato dei fiori e frutta esotica, poi funivia fino a Monte (16€/pp andata-ritorno). Vista mozzafiato su Funchal. <span class="tip">💡 Carro de cesto (slittino dal Monte) se fate in tempo: divertentissimo!</span></div></div>
+        <div class="tl-item"><div class="tl-time">12:00 – 13:30</div><div class="tl-text"><strong>Pranzo tipico</strong> — Espada (pesce spada nero), poncha e bolo do caco. Ristoranti nella Zona Velha.</div></div>
+        <div class="tl-item"><div class="tl-time">14:00 – 15:30</div><div class="tl-text"><strong>Passeggiata lungomare + Lido</strong> — Zona del Lido a ovest del porto, piscine naturali di acqua di mare. Oppure ultimo giro ai negozi di vino Madeira da portare a casa. <span class="tip">💡 Ottimo souvenir: bottiglia di Madeira wine, €8–15 nei negozi locali.</span></div></div>
+        <div class="tl-item"><div class="tl-time">15:30 – 16:00</div><div class="tl-text"><strong>Rientro a bordo</strong> — La nave salpa alle 17:00! <span class="warn">⚠️ TASSATIVO: a bordo entro le 16:00. Lasciate la zona mare max ore 15:30!</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIORNO 8: SBARCO -->
+<section class="day-section" id="d8">
+  <div class="day-hero" onclick="openLightbox('sbarco',0)">
+    <div class="day-hero-slider" id="slider-sbarco">
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=1600&q=85')"></div>
+      <div class="day-hero-slide" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600&q=85')"></div>
+    </div>
+    <div class="day-hero-overlay"></div>
+    <div class="photo-thumbs">
+      <div class="thumb active" style="background-image:url('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=200&q=70')" onclick="event.stopPropagation();changeSlide('sbarco',0)"></div>
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200&q=70')" onclick="event.stopPropagation();changeSlide('sbarco',1)"></div>
+    </div>
+    <div class="day-hero-content">
+      <div class="day-number">Ultimo Giorno • 30 Marzo</div>
+      <div class="day-title">🏠 Sbarco<br>Tenerife → Milano</div>
+      <span class="day-hours">Volo Neos 14:05</span>
+    </div>
+  </div>
+  <div class="day-card">
+    <div class="day-card-inner">
+      <p class="day-desc">La crociera finisce a Tenerife. Il transfer dall'porto all'aeroporto è incluso da Costa Crociere — riceverete istruzioni dettagliate a bordo il giorno prima. Rilassatevi, ci pensa Costa!</p>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-time">Mattina</div><div class="tl-text"><strong>Sbarco organizzato da Costa</strong> — Seguite le istruzioni del Diario di Bordo ricevuto la sera precedente. I bagagli vengono ritirati fuori dalla cabina la notte prima.</div></div>
+        <div class="tl-item"><div class="tl-time">Transfer</div><div class="tl-text"><strong>Bus Costa → Tenerife Sud (TFS)</strong> — Il transfer è incluso. Costa gestisce tutto. <span class="tip">💡 Portate in cabina solo lo zaino con il necessario per il volo.</span></div></div>
+        <div class="tl-item"><div class="tl-time">14:05</div><div class="tl-text"><strong>Volo Neos NO1671</strong> — TFS → MXP arrivo 19:00. Arrivederci Canarie! 🥹✈️</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <h3>🌊 Buon Viaggio!</h3>
+  <p>Costa Fortuna • Canarie & Madeira • Marzo 2026</p>
+  <p style="margin-top:0.5rem; font-size:0.8rem; opacity:0.45;">Controllate sempre il Diario di Bordo per variazioni orari</p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
 </div>
 
 <script>
+const photos = {
+  tenerife: [
+    {src:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=90', cap:'Tenerife — Teide e la costa'},
+    {src:'https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?w=1920&q=90', cap:'Tenerife — Il porto e la città'},
+    {src:'https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=1920&q=90', cap:'Tenerife — Lungomare'}
+  ],
+  lapalma: [
+    {src:'https://images.unsplash.com/photo-1609949279531-cf48d64ebe89?w=1920&q=90', cap:'La Palma — Paesaggio vulcanico'},
+    {src:'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1920&q=90', cap:'La Palma — Centro storico'},
+    {src:'https://images.unsplash.com/photo-1573770012830-de6f1e61c7b8?w=1920&q=90', cap:'La Palma — Spiaggia'}
+  ],
+  lagomera: [
+    {src:'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=1920&q=90', cap:'La Gomera — Panorama'},
+    {src:'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1920&q=90', cap:'La Gomera — Costa'},
+    {src:'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=1920&q=90', cap:'La Gomera — Foresta laurisilva'}
+  ],
+  lanzarote: [
+    {src:'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1920&q=90', cap:'Lanzarote — Parco di Timanfaya'},
+    {src:'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1920&q=90', cap:'Lanzarote — Paesaggio vulcanico'},
+    {src:'https://images.unsplash.com/photo-1604537466158-719b1972feb8?w=1920&q=90', cap:'Lanzarote — Vigneti'}
+  ],
+  grancanaria: [
+    {src:'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?w=1920&q=90', cap:'Gran Canaria — Dune di Maspalomas'},
+    {src:'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=90', cap:'Gran Canaria — Spiaggia'},
+    {src:'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1920&q=90', cap:'Gran Canaria — Playa del Inglés'}
+  ],
+  nav: [
+    {src:'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=1920&q=90', cap:'In alto mare — Navigazione'},
+    {src:'https://images.unsplash.com/photo-1563299796-17596ed6b017?w=1920&q=90', cap:'Costa Fortuna — Ponte'},
+    {src:'https://images.unsplash.com/photo-1599640842225-85d111c60e6b?w=1920&q=90', cap:'Tramonto in navigazione'}
+  ],
+  madeira: [
+    {src:'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=1920&q=90', cap:'Madeira — Funchal panorama'},
+    {src:'https://images.unsplash.com/photo-1593001874117-c99c800e3a13?w=1920&q=90', cap:'Madeira — Città vecchia'},
+    {src:'https://images.unsplash.com/photo-1599222900950-96cf16f38d9d?w=1920&q=90', cap:'Madeira — Fiori e natura'}
+  ],
+  sbarco: [
+    {src:'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=1920&q=90', cap:'Tenerife — Arrivederci Canarie'},
+    {src:'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1920&q=90', cap:'Volo di ritorno — A presto!'}
+  ]
+};
 
-  // =========================================================================
-  // 🚨 IL TUO PANNELLO DI CONTROLLO FOTO 🚨
-  // Sostituisci i link di "placehold.co" qui sotto con i TUOI LINK delle foto!
-  // Suggerimento: caricale su un sito come https://imgbb.com/ e usa il link.
-  // Puoi mettere più di una foto per la galleria separandole con una virgola.
-  // =========================================================================
-  
-  const LE_MIE_FOTO = {
-    // GIORNO 1: TENERIFE
-    "g1_hero": "https://placehold.co/800x400/004b87/FFF?text=Tenerife",
-    "g1_nave": "https://placehold.co/400x400/e3f2fd/004b87?text=Costa+Fortuna",
-    "g1_plaza": "https://placehold.co/400x400/e3f2fd/004b87?text=Plaza+Espana",
-    "g1_plaza_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Plaza+Espana+1,https://placehold.co/800x600/e3f2fd/004b87?text=Plaza+Espana+2",
+let currentSet = null;
+let currentIdx = 0;
 
-    // GIORNO 2: LA PALMA
-    "g2_hero": "https://placehold.co/800x400/004b87/FFF?text=La+Palma",
-    "g2_balconi": "https://placehold.co/400x400/e3f2fd/004b87?text=Balconi+Canari",
-    "g2_balconi_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Balconi+1,https://placehold.co/800x600/e3f2fd/004b87?text=Balconi+2",
-    "g2_playa": "https://placehold.co/400x400/e3f2fd/004b87?text=Playa+Santa+Cruz",
-    "g2_playa_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Spiaggia+Nera+1",
+function changeSlide(key, idx) {
+  currentSet = key;
+  currentIdx = idx;
+  const slider = document.getElementById('slider-' + key);
+  slider.style.transform = 'translateX(-' + (idx * 100) + '%)';
+  const thumbs = slider.parentElement.querySelectorAll('.thumb');
+  thumbs.forEach((t,i) => t.classList.toggle('active', i === idx));
+}
 
-    // GIORNO 3: LA GOMERA
-    "g3_hero": "https://placehold.co/800x400/004b87/FFF?text=La+Gomera",
-    "g3_torre": "https://placehold.co/400x400/e3f2fd/004b87?text=Torre+del+Conde",
-    "g3_torre_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Torre+1",
-    "g3_cueva": "https://placehold.co/400x400/e3f2fd/004b87?text=Playa+Cueva",
-    "g3_cueva_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Spiaggia+Vulcanica",
+function openLightbox(key, idx) {
+  currentSet = key;
+  currentIdx = idx;
+  const p = photos[key][idx];
+  document.getElementById('lightbox-img').src = p.src;
+  document.getElementById('lightbox-caption').textContent = p.cap;
+  document.getElementById('lightbox').classList.add('open');
+}
 
-    // GIORNO 4: LANZAROTE
-    "g4_hero": "https://placehold.co/800x400/004b87/FFF?text=Lanzarote",
-    "g4_castello": "https://placehold.co/400x400/e3f2fd/004b87?text=Castillo+San+Jose",
-    "g4_castello_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Fortezza+Arte,https://placehold.co/800x600/e3f2fd/004b87?text=Vetrata+Panoramica",
-    "g4_charco": "https://placehold.co/400x400/e3f2fd/004b87?text=Charco+San+Gines",
-    "g4_charco_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Barchette+1,https://placehold.co/800x600/e3f2fd/004b87?text=Tapas+2",
-    "g4_reducto": "https://placehold.co/400x400/e3f2fd/004b87?text=Playa+Reducto",
-    "g4_reducto_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Sabbia+Dorata",
-    "g4_jameos": "https://placehold.co/400x400/e3f2fd/004b87?text=Jameos+del+Agua",
-    "g4_jameos_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Lago+Sotterraneo,https://placehold.co/800x600/e3f2fd/004b87?text=Piscina+Bianca",
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
 
-    // GIORNO 5: GRAN CANARIA
-    "g5_hero": "https://placehold.co/800x400/004b87/FFF?text=Gran+Canaria",
-    "g5_vegueta": "https://placehold.co/400x400/e3f2fd/004b87?text=Vegueta",
-    "g5_vegueta_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Cattedrale,https://placehold.co/800x600/e3f2fd/004b87?text=Piazzetta",
-    "g5_canteras": "https://placehold.co/400x400/e3f2fd/004b87?text=Las+Canteras",
-    "g5_canteras_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Lungomare+1,https://placehold.co/800x600/e3f2fd/004b87?text=Tramonto+2",
-
-    // GIORNO 7: MADEIRA
-    "g7_hero": "https://placehold.co/800x400/004b87/FFF?text=Madeira",
-    "g7_mercado": "https://placehold.co/400x400/e3f2fd/004b87?text=Mercado+Lavradores",
-    "g7_mercado_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Fiori+1,https://placehold.co/800x600/e3f2fd/004b87?text=Porte+Dipinte",
-    "g7_bus": "https://placehold.co/400x400/e3f2fd/004b87?text=Fermata+Bus",
-    "g7_bus_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Bus+Giallo",
-    "g7_miradouro": "https://placehold.co/400x400/e3f2fd/004b87?text=Pico+Barcelos",
-    "g7_miradouro_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Panorama+Funchal,https://placehold.co/800x600/e3f2fd/004b87?text=Vista+Baia",
-    "g7_cabogirao": "https://placehold.co/400x400/e3f2fd/004b87?text=Cabo+Girao",
-    "g7_cabogirao_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Skywalk+Vetro,https://placehold.co/800x600/e3f2fd/004b87?text=Strapiombo",
-    "g7_lido": "https://placehold.co/400x400/e3f2fd/004b87?text=Piscine+Lido",
-    "g7_lido_gal": "https://placehold.co/800x600/e3f2fd/004b87?text=Bagno+Oceanico",
-
-    // GIORNO 8: SBARCO
-    "g8_hero": "https://placehold.co/800x400/ff3b30/FFF?text=Sbarco+Tenerife"
-  };
-
-  // =========================================================================
-  // Fine Pannello di controllo. (Non toccare il codice sotto!)
-  // =========================================================================
-
-  // Inietta in automatico le foto che hai scelto qui sopra in tutta l'app
-  document.addEventListener("DOMContentLoaded", () => {
-    // Foto di copertina
-    document.querySelectorAll('[data-bg-key]').forEach(el => {
-      const key = el.getAttribute('data-bg-key');
-      if (LE_MIE_FOTO[key]) {
-        el.style.backgroundImage = `url('${LE_MIE_FOTO[key]}')`;
-      }
-    });
-
-    // Foto in miniatura (quadrate)
-    document.querySelectorAll('[data-src-key]').forEach(el => {
-      const key = el.getAttribute('data-src-key');
-      if (LE_MIE_FOTO[key]) {
-        el.src = LE_MIE_FOTO[key];
-      }
-    });
-  });
-
-  function toggleWidget(id) {
-    const el = document.getElementById(id);
-    if (el.classList.contains('active')) {
-      el.classList.remove('active');
-    } else {
-      document.querySelectorAll('.hidden-section').forEach(sec => sec.classList.remove('active'));
-      el.classList.add('active');
-    }
+document.addEventListener('keydown', function(e) {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') {
+    const arr = photos[currentSet];
+    currentIdx = (currentIdx + 1) % arr.length;
+    openLightbox(currentSet, currentIdx);
   }
-
-  const overlay = document.getElementById('overlay');
-  const infoSheet = document.getElementById('infoSheet');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalDesc = document.getElementById('modalDesc');
-  const modalGallery = document.getElementById('modalGallery');
-  const galleryHint = document.getElementById('galleryHint');
-  const modalTime = document.getElementById('modalTime');
-  const modalTransport = document.getElementById('modalTransport');
-
-  function openInfo(title, description, imgKey, time, transport) {
-    modalTitle.innerText = title;
-    modalDesc.innerText = description;
-    
-    modalGallery.innerHTML = '';
-    
-    // Recupera la stringa di foto dalla TUA lista in base alla "chiave" (es: g1_plaza_gal)
-    const imgUrlsString = LE_MIE_FOTO[imgKey];
-
-    if (imgUrlsString && imgUrlsString.trim() !== '') {
-      const urls = imgUrlsString.split(',');
-      
-      urls.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url.trim();
-        modalGallery.appendChild(img);
-      });
-
-      modalGallery.style.display = 'flex';
-      
-      if(urls.length > 1) {
-        galleryHint.style.display = 'block';
-        modalGallery.scrollLeft = 0;
-      } else {
-        galleryHint.style.display = 'none';
-        modalGallery.querySelector('img').style.flex = '0 0 100%';
-      }
-
-    } else {
-      modalGallery.style.display = 'none';
-      galleryHint.style.display = 'none';
-    }
-
-    modalTime.innerHTML = `<i class="fa-solid fa-hourglass-half"></i> Tempo previsto: ${time}`;
-    modalTransport.innerHTML = `<i class="fa-solid fa-route"></i> Mezzo: ${transport}`;
-    
-    overlay.classList.add('active');
-    infoSheet.classList.add('active');
+  if (e.key === 'ArrowLeft') {
+    const arr = photos[currentSet];
+    currentIdx = (currentIdx - 1 + arr.length) % arr.length;
+    openLightbox(currentSet, currentIdx);
   }
-
-  function closeInfo() {
-    overlay.classList.remove('active');
-    infoSheet.classList.remove('active');
-  }
-
-  let touchstartY = 0;
-  let touchendY = 0;
-
-  infoSheet.addEventListener('touchstart', e => {
-    if(e.target.tagName.toLowerCase() !== 'img') {
-        touchstartY = e.changedTouches[0].screenY;
-    }
-  }, {passive: true});
-
-  infoSheet.addEventListener('touchend', e => {
-    if(e.target.tagName.toLowerCase() !== 'img') {
-        touchendY = e.changedTouches[0].screenY;
-        if (touchendY > touchstartY + 50) { 
-          closeInfo();
-        }
-    }
-  }, {passive: true});
-
+});
 </script>
 </body>
 </html>
