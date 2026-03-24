@@ -2,685 +2,672 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Costa Fortuna – Canarie & Madeira</title>
+  <title>Costa Fortuna Master Guide – Il Sogno di Cris & Socio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --costa-blue: #004b87;
       --costa-yellow: #ffcc00;
-      --bg-color: #f4f6f9;
-      --text-main: #1d1d1f;
-      --text-muted: #6e6e73;
-      --card-bg: #ffffff;
-      --danger: #ff3b30;
-      --radius: 20px;
+      --ocean-bg: #f0f7ff;
+      --lava-black: #212121;
+      --text-gray: #4a4a4a;
+      --radius: 24px;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      padding-bottom: 40px;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--ocean-bg);
+      color: var(--lava-black);
+      padding-bottom: 80px;
     }
 
+    /* --- HEADER --- */
     header {
-      background: var(--card-bg);
-      padding: 20px 20px 15px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      border-bottom-left-radius: var(--radius);
-      border-bottom-right-radius: var(--radius);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: linear-gradient(135deg, var(--costa-blue) 0%, #003a6c 100%);
+      padding: 40px 20px;
+      color: white;
+      text-align: center;
+      border-bottom-left-radius: 40px;
+      border-bottom-right-radius: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
-    .header-text h1 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--costa-blue);
-      letter-spacing: -0.5px;
+    header h1 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px; }
+    header p { margin: 10px 0 0; font-size: 15px; opacity: 0.8; font-style: italic; }
+
+    main { padding: 20px 16px; max-width: 650px; margin: 0 auto; }
+
+    /* --- DASHBOARD --- */
+    .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 30px; }
+    .dash-btn {
+      background: white;
+      padding: 20px 10px;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+      cursor: pointer;
     }
-    .header-text p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .ship-icon {
+    .dash-btn i { font-size: 24px; color: var(--costa-blue); margin-bottom: 8px; display: block; }
+    .dash-btn span { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-gray); }
+
+    /* --- DAY CARD --- */
+    .day-card { margin-bottom: 40px; }
+    .day-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+    .day-badge {
       background: var(--costa-yellow);
       color: var(--costa-blue);
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.4);
+      width: 50px; height: 50px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 22px; box-shadow: 0 5px 15px rgba(255,204,0,0.4);
     }
+    .day-info h2 { margin: 0; font-size: 24px; color: var(--costa-blue); }
+    .day-info p { margin: 0; font-size: 13px; color: var(--text-gray); font-weight: 600; }
 
-    main {
-      padding: 16px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .widget-container {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .widget-btn {
-      flex: 1;
-      background: var(--card-bg);
-      border: none;
-      padding: 12px 6px;
-      border-radius: 16px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--costa-blue);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      text-align: center;
-    }
-    .widget-btn i { font-size: 18px; color: var(--costa-yellow); }
-
-    .day-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      margin-bottom: 24px;
+    .content-box {
+      background: white;
+      border-radius: 32px;
       overflow: hidden;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.02);
     }
 
-    .card-hero {
-      height: 160px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background-color: var(--costa-blue);
-    }
-    .card-hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
-      z-index: 1;
-    }
-    .hero-content { position: relative; z-index: 2; color: white; }
-    .day-badge {
-      background: rgba(255,255,255,0.25);
-      backdrop-filter: blur(8px);
-      padding: 5px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 800;
-      display: inline-block;
-      margin-bottom: auto;
-      align-self: flex-start;
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-    .card-hero h2 { margin: 0 0 4px; font-size: 26px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .time-badge { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px; color: #f8f9fa; }
-
-    .card-body { padding: 16px; }
-    .phase-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--costa-blue);
-      margin: 18px 0 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .phase-title.first { margin-top: 0; }
-
-    .poi-list { display: flex; flex-direction: column; gap: 12px; }
-    .poi-item {
-      display: flex;
-      align-items: center;
-      background: #f9fbff;
-      padding: 10px;
-      border-radius: 16px;
-      border: 1px solid #edf2f7;
-    }
-    .poi-thumb {
-      width: 70px;
-      height: 70px;
-      border-radius: 12px;
-      object-fit: cover;
-      margin-right: 12px;
-      flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .poi-info { flex: 1; padding-right: 8px; }
-    .poi-name { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--text-main); }
-    .poi-sub { font-size: 12px; color: var(--text-muted); line-height: 1.3; margin-bottom: 6px; }
+    .time-slot { padding: 25px 20px; border-bottom: 1px solid #f0f0f0; }
+    .time-slot:last-child { border-bottom: none; }
     
-    .poi-actions { display: flex; flex-direction: column; gap: 6px; }
-    .action-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    .slot-label {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #bbb;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      display: flex; align-items: center; gap: 10px;
     }
-    .btn-map { background: #e3f2fd; color: #2196f3; }
-    .btn-info { background: #fff8e1; color: #ffb300; }
+    .slot-label i { color: var(--costa-yellow); }
 
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
+    .poi { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 15px; }
+    .poi-icon {
+      width: 45px; height: 45px; background: #f8f9fa;
+      border-radius: 15px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--costa-blue); font-size: 20px; border: 1px solid #eee;
     }
-    .overlay.active { opacity: 1; pointer-events: auto; }
+    .poi-body { flex: 1; }
+    .poi-body h3 { margin: 0; font-size: 18px; font-weight: 800; color: #333; }
+    .poi-body p { margin: 5px 0 15px; font-size: 14px; color: #666; line-height: 1.5; }
 
+    /* --- BUTTONS --- */
+    .btn-row { display: flex; gap: 10px; }
+    .btn {
+      flex: 1; padding: 12px; border-radius: 14px; border: none;
+      font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+      gap: 8px; text-decoration: none; cursor: pointer;
+    }
+    .btn-story { background: #fff8e1; color: #ffa000; }
+    .btn-maps { background: #e3f2fd; color: #1976d2; }
+
+    /* --- MODAL --- */
+    .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 100; display: none; }
     .bottom-sheet {
-      position: fixed;
-      bottom: -100%;
-      left: 0;
-      right: 0;
-      background: var(--card-bg);
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
-      padding: 24px 20px 30px;
-      z-index: 101;
-      max-height: 85vh;
-      overflow-y: auto;
-      transition: bottom 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+      position: fixed; bottom: -100%; left: 0; right: 0;
+      background: white; border-top-left-radius: 40px; border-top-right-radius: 40px;
+      padding: 40px 25px; z-index: 101; max-height: 85vh; overflow-y: auto;
+      transition: bottom 0.5s cubic-bezier(0.1, 1, 0.3, 1);
     }
-    .bottom-sheet.active { bottom: 0; }
-    .sheet-handle {
-      width: 40px;
-      height: 5px;
-      background: #d1d1d6;
-      border-radius: 5px;
-      margin: 0 auto 20px;
-    }
+    .active-sheet .overlay { display: block; }
+    .active-sheet .bottom-sheet { bottom: 0; }
 
-    .modal-gallery {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      gap: 12px;
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .modal-gallery img {
-      flex: 0 0 90%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 16px;
-      scroll-snap-align: center;
-      background-color: #eee;
-    }
+    .modal-head { border-bottom: 2px solid var(--costa-yellow); padding-bottom: 15px; margin-bottom: 20px; }
+    .modal-head h2 { margin: 0; font-size: 24px; color: var(--costa-blue); }
+    .modal-text { font-size: 16px; line-height: 1.8; color: #333; white-space: pre-line; }
+    .close-btn { width: 100%; background: var(--costa-blue); color: white; padding: 20px; border-radius: 20px; border: none; font-size: 16px; font-weight: 800; margin-top: 30px; }
 
-    #modalTitle { font-size: 24px; font-weight: 800; margin: 0 0 10px; color: var(--costa-blue); }
-    #modalDesc { font-size: 14.5px; color: #444; line-height: 1.6; margin: 0 0 24px; white-space: pre-line; }
-    
-    .btn-close {
-      width: 100%;
-      background: var(--costa-blue);
-      color: white;
-      border: none;
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .hidden-section { display: none; padding: 16px; background: white; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-    .hidden-section.active { display: block; }
-    
-    .piano-b { background: #fff8e1 !important; border-color: #ffe082 !important; }
-    .alert-box {
-      background: #ffebee;
-      border-left: 4px solid var(--danger);
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      color: #c62828;
-      font-weight: 600;
-      margin-top: 16px;
-      display: flex;
-      gap: 8px;
-    }
+    .hidden { display: none; }
+    .show-block { display: block !important; }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="header-text">
-    <h1>Costa Fortuna</h1>
-    <p>Agente Specializzato Canarie ❤️ Te & Cris</p>
-  </div>
-  <div class="ship-icon"><i class="fa-solid fa-ship"></i></div>
+  <h1>Costa Fortuna</h1>
+  <p>L'Eccellenza del Viaggio: La Guida di Cris & Socio</p>
 </header>
 
 <main>
-  <div class="widget-container">
-    <button class="widget-btn" onclick="toggleWidget('voli')"><i class="fa-solid fa-plane"></i> Voli Neos</button>
-    <button class="widget-btn" onclick="toggleWidget('itinerario')"><i class="fa-regular fa-calendar-days"></i> Orari Nave</button>
-    <button class="widget-btn" onclick="toggleWidget('costi')"><i class="fa-solid fa-wallet"></i> Segreti Agent</button>
+  <div class="dashboard">
+    <div class="dash-btn" onclick="toggleDashboard('v-info')"><i class="fa-solid fa-plane"></i><span>Voli</span></div>
+    <div class="dash-btn" onclick="toggleDashboard('s-info')"><i class="fa-solid fa-anchor"></i><span>Soste</span></div>
+    <div class="dash-btn" onclick="toggleDashboard('t-info')"><i class="fa-solid fa-user-tie"></i><span>Agent Tips</span></div>
   </div>
 
-  <!-- Widgets Nascosti -->
-  <div id="voli" class="hidden-section">
-    <h3>Dettaglio Voli</h3>
-    <div style="background:#e3f2fd; padding:12px; border-radius:12px; margin-bottom:10px; border-left:4px solid var(--costa-blue);">
-      <p style="margin:0; font-size:13px;"><b>Andata 23/03:</b> Milano MXP (11:30) ➔ Tenerife Sud TFS (15:00).</p>
-    </div>
-    <div style="background:#fff0f0; padding:12px; border-radius:12px; border-left:4px solid var(--danger);">
-      <p style="margin:0; font-size:13px;"><b>Ritorno 30/03:</b> Tenerife Sud TFS (14:05) ➔ Milano MXP (19:00).</p>
-    </div>
+  <div id="v-info" class="content-box hidden" style="padding:20px; margin-bottom:20px;">
+    <h3 style="margin-top:0;">Operativo Voli Neos</h3>
+    <p style="font-size:14px; line-height:1.6;">
+      ✈️ <b>ANDATA (23/03):</b> MXP 11:30 ➔ TFS 15:00. <br>
+      ✈️ <b>RITORNO (30/03):</b> TFS 14:05 ➔ MXP 19:00.<br>
+      <i>Navetta Costa inclusa agli arrivi di Tenerife Sud.</i>
+    </p>
   </div>
 
-  <div id="itinerario" class="hidden-section">
-    <h3>Il Diario di Bordo</h3>
-    <ul style="font-size:13px; line-height:1.8; padding-left:20px;">
-      <li><b>23/03:</b> Tenerife (Partenza 21:30)</li>
-      <li><b>24/03:</b> La Palma (08:00 - 20:00)</li>
-      <li><b>25/03:</b> La Gomera (08:00 - 18:00)</li>
-      <li><b>26/03:</b> Lanzarote (08:00 - 18:00)</li>
-      <li><b>27/03:</b> Gran Canaria (05:00 - 21:00)</li>
-      <li><b>28/03:</b> Navigazione 🌊</li>
-      <li><b>29/03:</b> Madeira (07:00 - 17:00)</li>
+  <div id="s-info" class="content-box hidden" style="padding:20px; margin-bottom:20px;">
+    <h3 style="margin-top:0;">Programma Navigazione</h3>
+    <ul style="font-size:14px; line-height:2;">
+      <li><b>Tenerife:</b> Partenza 21:30</li>
+      <li><b>La Palma:</b> 08:00 - 20:00</li>
+      <li><b>La Gomera:</b> 08:00 - 18:00</li>
+      <li><b>Lanzarote:</b> 08:00 - 18:00</li>
+      <li><b>Gran Canaria:</b> 05:00 - 21:00</li>
+      <li><b>Madeira:</b> 07:00 - 17:00</li>
     </ul>
   </div>
 
-  <div id="costi" class="hidden-section">
-    <h3>Consigli dell'Esperto</h3>
-    <p style="font-size:13px; line-height:1.5;">
-      💡 <b>Sim:</b> Roaming UE incluso.<br>
-      💶 <b>Bus:</b> Pezzi da 5€ obbligatori.<br>
-      🚕 <b>Bolt:</b> L'app salva-vita per Madeira e Gran Canaria.
+  <div id="t-info" class="content-box hidden" style="padding:20px; margin-bottom:20px;">
+    <h3 style="margin-top:0;">Consigli dell'Agente</h3>
+    <p style="font-size:14px; line-height:1.6;">
+      💶 <b>Bus:</b> Sempre monete o pezzi da 5€.<br>
+      📱 <b>App:</b> Scarica <b>Bolt</b> per Madeira e Gran Canaria.<br>
+      🌊 <b>Regola:</b> Tutti a bordo 1 ora prima della partenza!
     </p>
   </div>
 
   <!-- GIORNO 1: TENERIFE -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g1_hero">
-      <div class="hero-content day-badge">Giorno 1 • 23 Marzo</div>
-      <div class="hero-content">
-        <h2>Tenerife</h2>
-        <div class="time-badge"><i class="fa-solid fa-plane-arrival"></i> Atterraggio 15:00 • Nave 21:30</div>
-      </div>
+  <div class="day-container">
+    <div class="day-header">
+      <div class="day-circle">23</div>
+      <div class="day-info"><h2>Tenerife</h2><p>L'inizio dell'Incanto</p></div>
     </div>
-    <div class="card-body">
-      <div class="phase-title first">Pomeriggio: Welcome Home</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g1_plaza" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Plaza de España</p><p class="poi-sub">L'abbraccio monumentale del porto.</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Plaza de España', 'g1_info_wau', 'g1_plaza')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Plaza+de+Espa%C3%B1a+Santa+Cruz+de+Tenerife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
+    <div class="content-box">
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-moon"></i> Sera</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-fountain"></i></div>
+          <div class="poi-body">
+            <h3>Plaza de España</h3>
+            <p>Il cuore monumentale che galleggia sul mare.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g1_wau')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Plaza+de+Espana+Santa+Cruz+de+Tenerife" target="_blank" class="btn btn-maps"><i class="fa-solid fa-location-arrow"></i> Maps</a>
+            </div>
           </div>
         </div>
       </div>
-      <div class="phase-title">Pomeriggio: Piano B (Pioggia)</div>
-      <div class="poi-list">
-        <div class="poi-item piano-b">
-          <img data-src-key="g1_market" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Mercado de Nuestra Señora de África</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Mercado de Africa', 'g1_info_b', 'g1_market')"><i class="fa-solid fa-info"></i></button>
+      <div class="time-slot" style="background:#fffef5;">
+        <div class="slot-label"><i class="fa-solid fa-cloud-sun"></i> Pomeriggio Piano B (Pioggia)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-basket-shopping"></i></div>
+          <div class="poi-body">
+            <h3>Mercado de Nuestra Señora de África</h3>
+            <p>Il tempio coperto dei sapori coloniali.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g1_b')">Dettagli</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Mercado+de+Nuestra+Señora+de+África" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </article>
+  </div>
 
   <!-- GIORNO 2: LA PALMA -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g2_hero">
-      <div class="hero-content day-badge">Giorno 2 • 24 Marzo</div>
-      <div class="hero-content">
-        <h2>La Palma</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 20:00</div>
+  <div class="day-container">
+    <div class="day-header">
+      <div class="day-circle">24</div>
+      <div class="day-info"><h2>La Palma</h2><p>L'Isola Bonita</p></div>
+    </div>
+    <div class="content-box">
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-sun"></i> Mattina (Cultura)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-house-chimney-window"></i></div>
+          <div class="poi-body">
+            <h3>Balcones de la Avenida</h3>
+            <p>L'eleganza coloniale fiorita sul mare.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g2_wau')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Avenida+Maritima+Santa+Cruz+de+La+Palma" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-umbrella-beach"></i> Pomeriggio (Spiaggia)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-water"></i></div>
+          <div class="poi-body">
+            <h3>Playa de Santa Cruz</h3>
+            <p>Sabbia nera e relax totale vista Costa Fortuna.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g2_mare')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Playa+de+Santa+Cruz+de+La+Palma" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot" style="background:#fffef5;">
+        <div class="slot-label"><i class="fa-solid fa-cloud-sun"></i> Pomeriggio Piano B (Vista Panoramica)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-mountain"></i></div>
+          <div class="poi-body">
+            <h3>Mirador de la Concepción</h3>
+            <p>Vista a volo d'aquila sulla nave e l'oceano.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g2_b')">Bus & Storia</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Mirador+de+la+Concepcion+La+Palma" target="_blank" class="btn btn-maps">Mappa Belvedere</a>
+            </div>
+            <div style="margin-top:10px;">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=Intercambiador+Santa+Cruz+de+La+Palma" target="_blank" style="font-size:11px; color:var(--costa-blue); text-decoration:underline;">📍 Mappa Fermata Bus in Centro</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="phase-title first">Mattina: Storia Coloniale</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g2_balconi" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Balcones de la Avenida</p><p class="poi-sub">Il capolavoro del legno canario.</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('I Balconi Storici', 'g2_info_wau', 'g2_balconi')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Avenida+Maritima+Santa+Cruz+de+La+Palma" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="phase-title">Pomeriggio: Mare o Piano B?</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g2_playa" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Playa de Santa Cruz</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Playa de Santa Cruz', 'g2_info_mare', 'g2_playa')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-        <div class="poi-item piano-b">
-          <img data-src-key="g2_museo" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Piano B: Museo Insular (Convento)</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Museo Insular', 'g2_info_b', 'g2_museo')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
+  </div>
 
   <!-- GIORNO 3: LA GOMERA -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g3_hero">
-      <div class="hero-content day-badge">Giorno 3 • 25 Marzo</div>
-      <div class="hero-content">
-        <h2>La Gomera</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 18:00</div>
+  <div class="day-container">
+    <div class="day-header">
+      <div class="day-circle">25</div>
+      <div class="day-info"><h2>La Gomera</h2><p>L'Ultima Frontiera</p></div>
+    </div>
+    <div class="content-box">
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-sun"></i> Mattina (Cultura)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-fort-awesome"></i></div>
+          <div class="poi-body">
+            <h3>Torre del Conde & Ermita</h3>
+            <p>La fortezza medievale e l'Eremo del Santo.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g3_wau')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Torre+del+Conde+La+Gomera" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-umbrella-beach"></i> Pomeriggio (Spiaggia)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-mountain-sun"></i></div>
+          <div class="poi-body">
+            <h3>Playa de la Cueva</h3>
+            <p>Caletta nera segreta attraverso un tunnel di roccia.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g3_mare')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Playa+de+la+Cueva+La+Gomera" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot" style="background:#fffef5;">
+        <div class="slot-label"><i class="fa-solid fa-cloud-sun"></i> Pomeriggio Piano B (Pioggia)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-compass"></i></div>
+          <div class="poi-body">
+            <h3>Casa de Colón</h3>
+            <p>Il museo dove Colombo sognò il Nuovo Mondo.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g3_b')">Dettagli</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Casa+de+Colon+San+Sebastian+La+Gomera" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="phase-title first">Mattina: Storia e Devozione</div>
-      <div class="poi-list">
-        <!-- Torre del Conde -->
-        <div class="poi-item">
-          <img data-src-key="g3_torre" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Torre del Conde</p><p class="poi-sub">L'ultima fortezza medievale.</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Torre del Conde', 'g3_info_wau', 'g3_torre')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Torre+del+Conde+La+Gomera" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-        <!-- Ermita de San Sebastian -->
-        <div class="poi-item">
-          <img data-src-key="g3_ermita" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Ermita de San Sebastián</p><p class="poi-sub">L'eremo del Santo Patrono.</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Ermita de San Sebastián', 'g3_info_ermita', 'g3_ermita')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Ermita+de+San+Sebastian+La+Gomera" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="phase-title">Pomeriggio: Relax o Piano B?</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g3_cueva" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Playa de la Cueva</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Playa de la Cueva', 'g3_info_mare', 'g3_cueva')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-        <div class="poi-item piano-b">
-          <img data-src-key="g3_museo" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Piano B: Casa de Colón</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Casa de Colón', 'g3_info_b', 'g3_museo')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
+  </div>
 
   <!-- GIORNO 4: LANZAROTE -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g4_hero">
-      <div class="hero-content day-badge">Giorno 4 • 26 Marzo</div>
-      <div class="hero-content">
-        <h2>Lanzarote</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 08:00 - 18:00</div>
+  <div class="day-container">
+    <div class="day-header">
+      <div class="day-circle">26</div>
+      <div class="day-info"><h2>Lanzarote</h2><p>L'Isola del Fuoco e dell'Arte</p></div>
+    </div>
+    <div class="content-box">
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-palette"></i> Mattina (Cultura)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-fort-awesome"></i></div>
+          <div class="poi-body">
+            <h3>Castillo & Charco San Ginés</h3>
+            <p>La "Venezia" di lava dei pescatori di Arrecife.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g4_wau')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Charco+de+San+Gines+Arrecife" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-umbrella-beach"></i> Pomeriggio (Spiaggia)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-sun"></i></div>
+          <div class="poi-body">
+            <h3>Playa del Reducto</h3>
+            <p>Acqua piatta come un olio e palme caraibiche.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g4_mare')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Playa+del+Reducto+Arrecife" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot" style="background:#fffef5;">
+        <div class="slot-label"><i class="fa-solid fa-cloud-sun"></i> Pomeriggio Piano B (Avventura)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-volcano"></i></div>
+          <div class="poi-body">
+            <h3>Parco del Timanfaya</h3>
+            <p>Il viaggio spaziale su Marte: lava e geyser.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g4_b')">Dettagli</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Timanfaya+National+Park" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="phase-title first">Mattina: Il Sogno di Manrique</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g4_charco" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Castillo & Charco San Ginés</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Lanzarote Autentica', 'g4_info_wau', 'g4_charco')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Charco+de+San+Gines+Arrecife" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="phase-title">Pomeriggio: Mare o Piano B?</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g4_reducto" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Playa del Reducto</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Playa del Reducto', 'g4_info_mare', 'g4_reducto')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-        <div class="poi-item piano-b">
-          <img data-src-key="g4_timanfaya" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Piano B: I Vulcani del Timanfaya</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Vulcani del Timanfaya', 'g4_info_b', 'g4_timanfaya')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
+  </div>
 
   <!-- GIORNO 5: GRAN CANARIA -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g5_hero">
-      <div class="hero-content day-badge">Giorno 5 • 27 Marzo</div>
-      <div class="hero-content">
-        <h2>Gran Canaria</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 05:00 - 21:00</div>
+  <div class="day-container">
+    <div class="day-header">
+      <div class="day-circle">27</div>
+      <div class="day-info"><h2>Gran Canaria</h2><p>Il Continente in Miniatura</p></div>
+    </div>
+    <div class="content-box">
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-city"></i> Mattina (Cultura)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-landmark-dome"></i></div>
+          <div class="poi-body">
+            <h3>Vegueta & Triana</h3>
+            <p>L'Avana delle Canarie: dove tutto ebbe inizio.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g5_wau')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Vegueta+Las+Palmas" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-umbrella-beach"></i> Pomeriggio (Spiaggia)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-shrimp"></i></div>
+          <div class="poi-body">
+            <h3>Playa de Las Canteras</h3>
+            <p>3km di barriera corallina e tramonti da urlo.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g5_mare')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Playa+de+Las+Canteras" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot" style="background:#fffef5;">
+        <div class="slot-label"><i class="fa-solid fa-cloud-sun"></i> Pomeriggio Piano B (Abisso)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-fish-fins"></i></div>
+          <div class="poi-body">
+            <h3>Poema del Mar</h3>
+            <p>L'acquario dei record: la vetrata curva più grande al mondo.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g5_b')">Dettagli</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Poema+del+Mar+Aquarium" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="phase-title first">Mattina: L'Avana Europea</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g5_vegueta" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Vegueta & Triana</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('L\'Avana Europea', 'g5_info_wau', 'g5_vegueta')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Vegueta+Las+Palmas" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="phase-title">Pomeriggio: Mare o Piano B?</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g5_canteras" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Playa de Las Canteras</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Playa de Las Canteras', 'g5_info_mare', 'g5_canteras')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-        <div class="poi-item piano-b">
-          <img data-src-key="g5_acquario" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Piano B: Poema del Mar (Acquario)</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Acquario Poema del Mar', 'g5_info_b', 'g5_acquario')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
+  </div>
 
   <!-- GIORNO 7: MADEIRA -->
-  <article class="day-card">
-    <div class="card-hero" data-bg-key="g7_hero">
-      <div class="hero-content day-badge">Giorno 7 • 29 Marzo</div>
-      <div class="hero-content">
-        <h2>Madeira (Funchal)</h2>
-        <div class="time-badge"><i class="fa-regular fa-clock"></i> 07:00 - 17:00</div>
+  <div class="day-container">
+    <div class="day-header">
+      <div class="day-circle">29</div>
+      <div class="day-info"><h2>Madeira</h2><p>Il Giardino Galleggiante</p></div>
+    </div>
+    <div class="content-box">
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-crown"></i> Mattina (Cultura)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-church"></i></div>
+          <div class="poi-body">
+            <h3>Funchal: Cattedrale & Mercato</h3>
+            <p>Tetti in avorio, fortezze e fiori esotici.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g7_wau')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Se+Cathedral+Funchal" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot">
+        <div class="slot-label"><i class="fa-solid fa-water-ladder"></i> Pomeriggio (Mare)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-water"></i></div>
+          <div class="poi-body">
+            <h3>Complexo Balnear do Lido</h3>
+            <p>Piscine oceaniche scavate nella scogliera vulcanica.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g7_mare')">L'Anima</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Complexo+Balnear+do+Lido+Funchal" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="time-slot" style="background:#fffef5;">
+        <div class="slot-label"><i class="fa-solid fa-eye"></i> Pomeriggio Piano B (Adrenalina)</div>
+        <div class="poi">
+          <div class="poi-icon"><i class="fa-solid fa-bolt"></i></div>
+          <div class="poi-body">
+            <h3>Cabo Girão Skywalk</h3>
+            <p>Il balcone di vetro sospeso a 580 metri nel vuoto.</p>
+            <div class="btn-row">
+              <button class="btn btn-story" onclick="openStory('g7_b')">Dettagli</button>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Cabo+Girao+Skywalk" target="_blank" class="btn btn-maps">Maps</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="phase-title first">Mattina: Il Salotto di Funchal</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g7_se" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Cattedrale & Fortezza</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Funchal Nobile', 'g7_info_se', 'g7_se')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-        <div class="poi-item">
-          <img data-src-key="g7_mercado" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Mercado & Città Vecchia</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Mercado & Funchal City', 'g7_info_wau', 'g7_mercado')"><i class="fa-solid fa-info"></i></button>
-            <a href="https://www.google.com/maps/search/?api=1&query=Mercado+dos+Lavradores+Funchal" target="_blank" class="action-btn btn-map"><i class="fa-solid fa-map-location-dot"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="phase-title">Pomeriggio: Relax o Piano B?</div>
-      <div class="poi-list">
-        <div class="poi-item">
-          <img data-src-key="g7_lido" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Piscine del Lido</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Piscine del Lido', 'g7_info_mare', 'g7_lido')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-        <div class="poi-item piano-b">
-          <img data-src-key="g7_cabogirao" class="poi-thumb">
-          <div class="poi-info"><p class="poi-name">Piano B: Cabo Girão Skywalk</p></div>
-          <div class="poi-actions">
-            <button class="action-btn btn-info" onclick="openInfo('Cabo Girão', 'g7_info_b', 'g7_cabogirao')"><i class="fa-solid fa-info"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
+  </div>
 
 </main>
 
-<div class="overlay" id="overlay" onclick="closeInfo()"></div>
-<div class="bottom-sheet" id="infoSheet">
-  <div class="sheet-handle"></div>
-  <div class="modal-gallery" id="modalGallery"></div>
-  <h3 id="modalTitle">Titolo</h3>
-  <div style="height: 1px; background: #eee; margin-bottom: 15px;"></div>
-  <p id="modalDesc"></p>
-  <button class="btn-close" onclick="closeInfo()">Ho capito, andiamoci!</button>
+<!-- NARRATIVE MODAL -->
+<div class="overlay" onclick="closeStory()"></div>
+<div class="bottom-sheet" id="sheet">
+  <div class="modal-head"><h2 id="mTitle"></h2></div>
+  <div class="modal-text" id="mContent"></div>
+  <button class="close-btn" onclick="closeStory()">Grazie, andiamoci!</button>
 </div>
 
 <script>
-  const INFO_WAU = {
-    "g1_info_wau": "🏛 L'ANIMA DI TENERIFE:\nPlaza de España è il cuore pulsante di Santa Cruz, firmata dagli architetti Herzog & de Meuron. È costruita sopra i resti dell'antico castello difensivo che oggi dorme sotto il grande lago artificiale.\n\n✨ EFFETTO WOW PER CRIS:\nIl lago di acqua marina riflette le nuvole e le palme come un immenso specchio. Di sera, con le fontane illuminate e la scritta gigante 'Santa Cruz', è il posto più iconico per la prima foto romantica della vacanza. Respirate l'aria dell'oceano: siete ufficialmente in crociera!\n\n🚗 LOGISTICA E COSTI:\nA piedi dalla nave (5-8 min). Costo: 0€. Perfetta per sgranchirsi le gambe dopo il volo.",
-    "g1_info_b": "🏛 IL PIANO B (SAPORI & STORIA):\nIl Mercado Nuestra Señora de África è un gioiello degli anni '40. Non è un mercato, è un labirinto fiorito in stile coloniale andaluso che vi terrà all'asciutto se piove.\n\n✨ EFFETTO WOW PER CRIS:\nPasseggiare tra i patii pieni di fiori tropicali, profumi di spezie e banchi di pesce mai vista. Cercate il banco del pesce per un aperitivo gourmet veloce. È il posto più autentico e meno turistico della capitale.\n\n🚗 LOGISTICA:\nA piedi dal porto (15 min) o Taxi (circa 5€).",
+  const NARRATIVE = {
+    "g1_wau": `🏛 L'ANIMA DI TENERIFE:
+Plaza de España è molto più di una piazza; è il cuore pulsante di Santa Cruz, firmata da Herzog & de Meuron. È costruita sopra i resti dell'antico bastione che respinse l'Ammiraglio Nelson.
 
-    "g2_info_wau": "🏛 L'ANIMA DI LA PALMA:\nSanta Cruz è una perla del XVIII secolo. I Balconi di Avenida Marítima sono icone mondiali: costruiti in pregiato pino canario, servivano ai ricchi mercanti per godersi l'aria di mare senza esporsi al sole diretto.\n\n✨ EFFETTO WOW PER CRIS:\nÈ come camminare in una cartolina vivente. Le ringhiere scolpite, le buganvillee rampicanti e il profumo di legno antico rendono questa camminata incredibilmente intima. È il posto perfetto per dirsi quanto è bella questa vacanza.\n\n🚗 LOGISTICA E COSTI:\nA piedi dal terminal (10 min). Costo: 0€.",
-    "g2_info_mare": "🏛 POMERIGGIO MARE:\nPlaya de Santa Cruz è un miracolo della natura vulcanica: una distesa di sabbia nera finissima che brilla al sole grazie ai micro-cristalli di basalto.\n\n✨ EFFETTO WOW PER CRIS:\nNuoterete in un'acqua blu cobalto vedendo la Costa Fortuna ormeggiata a pochi metri. È un lusso incredibile: potete rilassarvi fino a mezz'ora prima della partenza sapendo che la vostra cabina è a soli 5 minuti di cammino.\n\n🚗 LOGISTICA:\nA piedi (5 min). Accesso libero e docce disponibili.",
-    "g2_info_b": "🏛 IL PIANO B (STORIA MISTICA):\nIl Museo Insular occupa un convento del 1500. I suoi doppi chiostri in legno sono considerati i più belli dell'arcipelago canario.\n\n✨ EFFETTO WOW PER CRIS:\nUn'oasi di silenzio irreale. Potrete ammirare arte sacra fiamminga e scoprire la storia dei Guanci (gli antichi abitanti delle isole) restando protetti e all'asciutto tra arcate nobiliari.\n\n🚗 LOGISTICA:\nIn pieno centro. Ingresso circa 4€.",
+✨ EFFETTO WOW PER CRIS:
+Il gigantesco lago artificiale di acqua marina riflette le nuvole e le palme come un immenso specchio. Di sera, con le luci soffuse e la brezza oceanica, è il posto perfetto per il primo brindisi di vacanza: camminare sulla superficie dell'acqua mentre la Costa Fortuna svetta illuminata alle vostre spalle è magia pura.
 
-    "g3_info_wau": "🏛 L'ANIMA DELLA GOMERA:\nLa Torre del Conde è l'unica fortezza medievale superstite delle Canarie (1450). Qui Colombo trovò rifugio durante i suoi viaggi verso il Nuovo Mondo.\n\n✨ EFFETTO WOW PER CRIS:\nUn parco verdissimo dove spicca questa torre rossa circondata da palme. È un pezzo di storia incantata dove il tempo sembra essersi fermato. Scattate una foto qui: sembra di essere sbarcati in un'epoca di pirati e navigatori.\n\n🚗 LOGISTICA:\nA piedi dal molo (5-8 min). Ingresso gratuito.",
-    "g3_info_ermita": "🏛 IL SANTUARIO DEL SANTO:\nL'Ermita de San Sebastián è una chiesetta bianca e umile costruita nel 1530. È dedicata al patrono dell'isola ed è uno degli edifici religiosi più antichi di tutto l'arcipelago.\n\n✨ EFFETTO WOW PER CRIS:\nÈ un angolo di pace assoluta, lontana dalla folla. La sua facciata bianca col portale in pietra vulcanica scura è la quintessenza dello stile canario. Qui si respira la devozione dei marinai che per secoli hanno chiesto protezione al Santo prima di affrontare l'oceano.\n\n🚗 LOGISTICA:\nA piedi dal centro/piazza principale (3 min). Costo: 0€.",
-    "g3_info_mare": "🏛 IL MARE SELVAGGIO:\nPlaya de la Cueva è una spiaggia di sabbia nera e ciottoli incastonata sotto alte falesie. Si raggiunge attraverso un suggestivo tunnel pedonale scavato nella roccia.\n\n✨ EFFETTO WOW PER CRIS:\nAttraversare il tunnel e sbucare in questa caletta segreta è pura avventura. Se il cielo è limpido, il panorama sul Vulcano Teide (Tenerife) che emerge dalle acque è da togliere il fiato.\n\n🚗 LOGISTICA:\nA piedi dal porto (10 min).",
-    "g3_info_b": "🏛 IL PIANO B (LA STORIA):\nLa Casa de Colón è il museo dedicato a Cristoforo Colombo. Si dice che il navigatore soggiornò proprio in questa tipica dimora canaria con patii fioriti.\n\n✨ EFFETTO WOW PER CRIS:\nCortili fioriti meravigliosi, mappe antiche e il fascino di chi ha cambiato la storia del mondo. Perfetto se piove per godersi l'architettura interna.\n\n🚗 LOGISTICA:\nIn centro città. Ingresso: circa 4€.",
+🚗 LOGISTICA & COSTI:
+Dalla nave sono 5-8 minuti a piedi in piano. Gratuito. Seguite il percorso pedonale blu dal molo verso la città.`,
 
-    "g4_info_wau": "🏛 L'ANIMA DI LANZAROTE:\nArrecife è dove la lava incontra l'arte. Il Castillo de San José è una fortezza del '700 salvata dal genio di César Manrique, che ne fece il primo museo d'arte moderna delle isole.\n\n✨ EFFETTO WOW PER CRIS:\nIl caffè nel ristorante del Castello è sospeso sull'oceano grazie a una vetrata curva da record. Poi scenderemo al Charco de San Ginés: la 'Venezia' delle Canarie. Barchette bianche, laguna turchese e ristorantini chic per le migliori tapas dell'isola.\n\n🚗 LOGISTICA E COSTI:\nTaxi dal porto al Castello (8€). Poi a piedi tra i siti (15 min).",
-    "g4_info_mare": "🏛 PARADISO CITTADINO:\nPlaya del Reducto è una mezzaluna d'oro protetta da una scogliera naturale chiamata 'La Barra' che trasforma l'oceano in una piscina piatta.\n\n✨ EFFETTO WOW PER CRIS:\nSabbia bianca, palme alte e mare calmo come un olio. È l'angolo caraibico per eccellenza, perfetto per un pomeriggio di coccole e relax totale prima di tornare a bordo.\n\n🚗 LOGISTICA:\nA piedi dal Charco (15 min). Rientro nave in Taxi (8€).",
-    "g4_info_b": "🏛 AVVENTURA MARZIANA:\nIl Parco del Timanfaya è un oceano di lava nato da eruzioni durate 6 anni. La terra scotta ancora a pochi metri di profondità.\n\n✨ EFFETTO WOW PER CRIS:\nVedrete i ranger gettare acqua in buchi nel terreno che esplode in geyser istantanei! Farete il giro tra i crateri sognando di essere su Marte. Un'esperienza primordiale e potente.\n\n🚗 LOGISTICA:\nTaxi dal porto (accordo A/R circa 70€). Distanza 35 min d'auto.",
+    "g1_b": `🏛 IL PIANO B (SAPORI & STORIA):
+Il Mercado Nuestra Señora de África è un gioiello degli anni '40 in stile coloniale. È un labirinto fiorito che vi terrà all'asciutto se piove.
 
-    "g5_info_wau": "🏛 L'ANIMA DI GRAN CANARIA:\nVegueta è dove è nato l'arcipelago nel 1478. Qui soggiornò Cristoforo Colombo prima di salpare per l'America.\n\n✨ EFFETTO WOW PER CRIS:\nSembra di essere a L'Avana vecchia. Cortili coloniali, vie acciottolate e la maestosa Cattedrale vulcanica scura protetta dai leggendari cani di bronzo. È un quartiere solare, elegante e pieno di storia da fotografare.\n\n🚗 LOGISTICA E COSTI:\nDal porto Taxi (10€) o Bus 12 (1.40€). Tempo 15 min.",
-    "g5_info_mare": "🏛 LA SPIAGGIA REGINA:\nLas Canteras è votata tra le migliori 5 spiagge urbane al mondo. La sua barriera naturale crea un acquario dove nuotare sereni.\n\n✨ EFFETTO WOW PER CRIS:\nOltre 3 km di vita pulsante! Surfisti da un lato, snorkeling calmo dall'altro. Sedetevi a bere qualcosa sul 'Paseo' mentre aspettate il tramonto: qui il sole cade direttamente nell'acqua in un'esplosione d'oro.\n\n🚗 LOGISTICA:\nA piedi dal terminal crociere (10 min). Costo: 0€.",
-    "g5_info_b": "🏛 L'ABISSO DEI RECORD:\nPoema del Mar è un acquario di classe mondiale. Ospita la 'Deep Sea', la vetrata curva più grande mai costruita.\n\n✨ EFFETTO WOW PER CRIS:\nVi siederete nel buio davanti a un muro di cristallo di 36 metri, vedendo squali e mante giganti scivolare sopra le vostre teste in un silenzio surreale. È un'esperienza di lusso, immersiva e magica, perfetta se piove.\n\n🚗 LOGISTICA:\n5 min a piedi dal molo Costa. Ingresso: circa 25€.",
+✨ EFFETTO WOW PER CRIS:
+Profumi di spezie canarie, banchi di fiori tropicali che sembrano giardini verticali e patii interni dove degustare le famose 'Papas Arrugadas'. Un'esperienza sensoriale autentica e romantica lontana dalla folla.
 
-    "g7_info_se": "🏛 L'ANIMA NOBILE:\nLa Sé di Funchal (1514) ha un tetto in legno di cedro intarsiato con avorio che è tesoro nazionale. São Lourenço è la fortezza che proteggeva l'oro dei nobili dai pirati.\n\n✨ EFFETTO WOW PER CRIS:\nUn tempio di pace tra i fiori. Camminare sulle mura della fortezza guardando le onde infrangersi sotto i cannoni vi farà sentire i signori dell'Atlantico. Storia e maestosità in un solo colpo d'occhio.\n\n🚗 LOGISTICA:\nPasseggiata dal porto (15 min). Ingresso gratuito.",
-    "g7_info_wau": "🏛 I COLORI DI MADEIRA:\nIl Mercado dos Lavradores è il cuore pulsante dei contadini. Poi saliamo al Pico dos Barcelos per vedere Funchal dall'alto.\n\n✨ EFFETTO WOW PER CRIS:\nAl mercato, signore in costume vendono fiori impossibili e frutti dai sapori esotici (assaggiate il frutto-banana!). Dal belvedere, tutta la città ai vostri piedi sembrerà un presepe bianco tuffato nel blu infinito.\n\n🚗 LOGISTICA:\nMercato a piedi (20 min). Per salire Bus 9/12 (1.95€) o Bolt (8€).",
-    "g7_info_mare": "🏛 IL LUSSO ATLANTICO:\nIl Complexo Balnear do Lido è l'orgoglio di Madeira: faraoniche piscine di acqua salata scavate nelle scogliere vulcaniche.\n\n✨ EFFETTO WOW PER CRIS:\nNiente sabbia, solo il rumore profondo dell'oceano sotto la vostra terrazza al sole. Un pomeriggio di puro benessere e classe, come nei film della vecchia Hollywood.\n\n🚗 LOGISTICA:\nUsate l'app BOLT dal centro (8€). Arrivate in 10 min. Ingresso 5€.",
-    "g7_info_b": "🏛 ADRENALINA PURA:\nCabo Girão Skywalk è la scogliera più alta d'Europa. Una piattaforma in VETRO sospesa a 580 metri d'altezza.\n\n✨ EFFETTO WOW PER CRIS:\nVi sembrerà di volare sopra l'abisso. Vedrete le onde rompersi quasi 600 metri sotto i vostri piedi. Un brivido che toglie il fiato ma regala la vista più potente del viaggio.\n\n🚗 LOGISTICA:\nSOLO Bolt o Taxi (15-20€). Ingresso 2€.",
+🚗 LOGISTICA:
+15 min a piedi dal porto o 5 min di Taxi (circa 5€).`,
+
+    "g2_wau": `🏛 L'ANIMA DI LA PALMA:
+Santa Cruz è la città coloniale più pura delle Canarie. I 'Balcones de la Avenida' sono icone mondiali: costruiti in pregiato pino canario (un legno eterno), servivano ai nobili del 1700 per godersi l'aria senza esporsi al sole diretto.
+
+✨ EFFETTO WOW PER CRIS:
+Camminare per Avenida Marítima è come sfogliare una fiaba del Settecento. Le ringhiere scolpite a mano sono sommerse da buganvillee viola e gerani rosso fuoco. Il profumo del legno antico misto alla salsedine rende questa passeggiata il momento più elegante del viaggio.
+
+🚗 LOGISTICA & COSTI:
+A piedi dal porto (10 min). Costo: 0€. Il terminal è attaccato al centro storico.`,
+
+    "g2_mare": `🏖 IL RELAX VULCANICO:
+Playa de Santa Cruz è un prodigio naturale: una sabbia nera vulcanica vellutata che brilla al sole grazie ai micro-cristalli di ossidiana (vetro vulcanico).
+
+✨ EFFETTO WOW PER CRIS:
+Nuoterete in un'acqua blu cobalto vedendo la vostra nave parcheggiata a soli 200 metri da voi. È un lusso raro: stare in spiaggia fino a mezz'ora prima della partenza sapendo che siete già 'a casa'. Zero ansia da cronometro.
+
+🚗 LOGISTICA:
+Dista 5 minuti a piedi da Calle O'Daly (la via principale). Gratuito, con docce pubbliche.`,
+
+    "g2_b": `🏛 L'ANIMA DEL BELVEDERE:
+Il Mirador de la Concepción è situato sull'orlo di un antico cratere vulcanico sospeso sopra la città. Dalla sua piccola cappella bianca si gode la vista più potente dell'isola.
+
+✨ EFFETTO WOW PER CRIS:
+Da quassù la Costa Fortuna sembrerà una barchetta giocattolo in un mare di zaffiro. Vedrete tutta la sagoma dell'isola vicina (Tenerife) che spunta dalle nuvole e l'anfiteatro di Santa Cruz ai vostri piedi. Un'emozione pura, specialmente quando le nuvole corrono veloci sulla cresta della montagna.
+
+🚗 COME ARRIVARCI (BUS):
+1. Raggiungete la fermata principale dei bus in centro (cliccate il link 📍 nella scheda).
+2. Prendete il bus **Linea 11** o **Linea 20** (Compagnia TILP).
+3. Chiedete all'autista di scendere alla fermata **'Mirador de la Concepción'**.
+4. Il biglietto costa circa 2€ e il tragitto dura 15 minuti.
+5. I bus passano ogni 30-40 minuti circa.`,
+
+    "g3_wau": `🏛 L'ANIMA DELLA GOMERA:
+La Torre del Conde è l'unica fortezza medievale superstite delle Canarie (1450). Qui Colombo trovò rifugio durante i suoi viaggi verso le Americhe. L'Ermita de San Sebastián (1530) è invece la chiesetta dove il navigatore pregò prima di salpare.
+
+✨ EFFETTO WOW PER CRIS:
+Un parco verdissimo dove spicca questa torre rossa circondata da palme secolari. È un pezzo di storia incantata dove il tempo sembra essersi fermato. Scattate una foto qui: sembra di essere sbarcati in un'epoca di pirati e scoperte epiche.
+
+🚗 LOGISTICA:
+A piedi dal molo (5-8 min). Tutto gratuito. È un giro molto rilassante.`,
+
+    "g3_mare": `🏖 IL MARE SELVAGGIO:
+Playa de la Cueva è una spiaggia di sabbia nera incastonata sotto alte falesie. Si raggiunge attraverso un suggestivo tunnel pedonale scavato nella roccia vulcanica.
+
+✨ EFFETTO WOW PER CRIS:
+Attraversare il tunnel buio e sbucare in questa caletta segreta è pura avventura. Se il cielo è limpido, il panorama sul Vulcano Teide (Tenerife) che emerge dalle acque è da togliere il fiato. È la spiaggia più 'selvaggia' e vera del viaggio.
+
+🚗 LOGISTICA:
+A piedi dal porto (10 min). Girate a destra guardando il mare dal terminal.`,
+
+    "g3_b": `🏛 IL PIANO B (COLOMBO):
+La Casa de Colón è una tipica dimora canaria con patii fioriti dove soggiornò Cristoforo Colombo nel 1492.
+
+✨ EFFETTO WOW PER CRIS:
+Mappe antiche, cortili coloniali fioriti e il fascino di chi ha cambiato la storia del mondo. Perfetto se piove per godersi l'architettura interna in pace.
+
+🚗 LOGISTICA:
+In centro città, a 10 min a piedi dal molo. Ingresso circa 4€.`,
+
+    "g4_wau": `🏛 L'ANIMA DI LANZAROTE:
+Il Castillo de San José è una fortezza del '700 trasformata dal geniale César Manrique nel primo museo d'arte moderna delle isole. Il Charco de San Ginés è la laguna blu dove le barche bianche dei pescatori dondolano da secoli.
+
+✨ EFFETTO WOW PER CRIS:
+Berrete il caffè nel ristorante del Castello guardando l'oceano attraverso una vetrata curva sospesa sull'abisso. Al Charco (la 'Venezia' delle Canarie), l'atmosfera di pace assoluta tra casette bianche e porte azzurre vi regalerà lo scatto più 'chic' di tutto il viaggio.
+
+🚗 LOGISTICA & COSTI:
+Taxi dal porto al Castello (8€). Poi passeggiata pianeggiante verso il Charco (15 min).`,
+
+    "g4_mare": `🏖 PARADISO CARAIBICO:
+Playa del Reducto è una mezzaluna di sabbia dorata protetta da una scogliera naturale chiamata 'La Barra' che trasforma l'oceano in una piscina piatta.
+
+✨ EFFETTO WOW PER CRIS:
+Sabbia bianca, palme alte e mare calmo come un olio. È l'angolo caraibico per eccellenza, perfetto per un pomeriggio di relax totale prima di tornare a bordo. L'acqua è sempre limpidissima.
+
+🚗 LOGISTICA:
+A piedi dal Charco (15 min). Rientro nave in Taxi (8€).`,
+
+    "g4_b": `🌋 AVVENTURA MARZIANA:
+Il Parco del Timanfaya è un oceano di lava nato da eruzioni durate 6 anni. La terra scotta ancora a soli 10 metri di profondità!
+
+✨ EFFETTO WOW PER CRIS:
+Vedrete i ranger versare acqua in buchi nel terreno che esplode in geyser istantanei di vapore bollente! Vi sentirete su un altro pianeta tra crateri e fiumi di lava pietrificata.
+
+🚗 LOGISTICA:
+Taxi necessario (accordo A/R circa 70€). Distanza 35 min d'auto. Chiedete al tassista di aspettarvi durante il tour organizzato (incluso nel biglietto).`,
+
+    "g5_wau": `🏛 L'ANIMA DI GRAN CANARIA:
+Vegueta è dove è nato l'arcipelago nel 1478. Qui soggiornò Colombo prima di salpare per l'America. Triana è invece il salotto borghese dell'800.
+
+✨ EFFETTO WOW PER CRIS:
+Sembra di stare a L'Avana vecchia. Vie acciottolate, cortili coloniali e la maestosa Cattedrale protetta dai leggendari cani di bronzo. Triana è il paradiso dello shopping di lusso in palazzi modernisti bellissimi.
+
+🚗 LOGISTICA & COSTI:
+La nave attracca a Santa Catalina. Prendete un Taxi (10€) o il BUS GIALLO Linea 1 o 12 (1.40€). Tempo 15 min.`,
+
+    "g5_mare": `🏖 LA SPIAGGIA REGINA:
+Las Canteras è votata regolarmente tra le migliori 5 spiagge urbane al mondo. La sua barriera naturale crea un acquario dove nuotare sereni.
+
+✨ EFFETTO WOW PER CRIS:
+Oltre 3 km di vita pulsante! Surfisti da un lato, snorkeling calmo dall'altro. Sedetevi per un aperitivo sul lungomare e aspettate che il sole cada dritto nell'oceano: è il tramonto più bello delle Canarie.
+
+🚗 LOGISTICA:
+A piedi dal terminal crociere (10 min). Costo: 0€.`,
+
+    "g5_b": `🏛 L'ABISSO DEI RECORD:
+Poema del Mar è un acquario di classe mondiale. Ospita la 'Deep Sea', la vetrata curva più grande mai costruita.
+
+✨ EFFETTO WOW PER CRIS:
+Sederete nel buio davanti a un muro di cristallo di 36 metri, vedendo squali martello e mante giganti scivolare sopra le vostre teste. Un'esperienza immersiva, lussuosa e magica, perfetta se pioviggina.
+
+🚗 LOGISTICA:
+5 min a piedi dal molo Costa. Ingresso circa 25€.`,
+
+    "g7_wau": `🏛 L'ANIMA NOBILE:
+La Sé di Funchal (1514) ha un tetto in legno di cedro e avorio che è tesoro nazionale. São Lourenço è la fortezza che proteggeva l'oro dei nobili dai pirati inglesi. Il Mercato è un tripudio di colori.
+
+✨ EFFETTO WOW PER CRIS:
+Al mercato assaggiate il 'Frutto-Banana' venduto da signore in costume. Poi saliamo al Pico dos Barcelos per vedere tutta Funchal ai vostri piedi: sembrerà un presepe bianco tuffato nel blu infinito. Foto da copertina assicurata.
+
+🚗 IL PERCORSO:
+Centro a piedi (20 min). Per il belvedere prendete il BUS 9 o 12 (1.95€) o un veloce BOLT (8€).`,
+
+    "g7_mare": `🏖 IL LUSSO ATLANTICO:
+Il Complexo Balnear do Lido è l'orgoglio di Madeira: faraoniche piscine di acqua salata scavate nelle scogliere vulcaniche a picco sull'oceano.
+
+✨ EFFETTO WOW PER CRIS:
+Niente sabbia, solo il rumore profondo delle onde sotto la vostra terrazza al sole. Un pomeriggio di puro benessere e classe, come le dive del cinema in vacanza.
+
+🚗 LOGISTICA:
+Usate l'app BOLT dal centro (8€). Arrivate in 10 min. Ingresso 5€.`,
+
+    "g7_b": `⚡ ADRENALINA PURA:
+Cabo Girão Skywalk è la scogliera più alta d'Europa. Una piattaforma in VETRO sospesa a 580 metri d'altezza.
+
+✨ EFFETTO WOW PER CRIS:
+Vi sembrerà di volare sopra l'abisso. Vedrete le onde rompersi quasi 600 metri sotto i vostri piedi. Un brivido che regala la vista più potente di tutto il viaggio.
+
+🚗 LOGISTICA:
+SOLO Bolt o Taxi (15-20€). I bus sono troppo lenti per i tempi nave. Ingresso 2€.`,
   };
 
-  const LE_MIE_FOTO = {
-    "g1_hero": "https://images.unsplash.com/photo-1557335200-a65f7f032602?w=800",
-    "g1_plaza": "https://images.unsplash.com/photo-1616218086438-fb1604a11c81?w=400",
-    "g1_market": "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=400",
-    "g2_hero": "https://images.unsplash.com/photo-1549880295-8df6225b871c?w=800",
-    "g2_balconi": "https://images.unsplash.com/photo-1601053428173-77be1c213458?w=400",
-    "g2_playa": "https://images.unsplash.com/photo-1635338162810-77a4561b36e5?w=400",
-    "g2_museo": "https://images.unsplash.com/photo-1518998053502-53dd83b9150b?w=400",
-    "g3_hero": "https://images.unsplash.com/photo-1505881502353-a1986add3732?w=800",
-    "g3_torre": "https://images.unsplash.com/photo-1643444458925-c603140be047?w=400",
-    "g3_ermita": "https://images.unsplash.com/photo-1542360561-39745318536b?w=400",
-    "g3_cueva": "https://images.unsplash.com/photo-1538681105587-85640961bf8b?w=400",
-    "g3_museo": "https://images.unsplash.com/photo-1549488497-25679540441e?w=400",
-    "g4_hero": "https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?w=800",
-    "g4_charco": "https://images.unsplash.com/photo-1626359218698-c9233f26ea13?w=400",
-    "g4_reducto": "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=400",
-    "g4_timanfaya": "https://images.unsplash.com/photo-1531640608771-460395726245?w=400",
-    "g5_hero": "https://images.unsplash.com/photo-1550060592-747d6a503525?w=800",
-    "g5_vegueta": "https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?w=400",
-    "g5_canteras": "https://images.unsplash.com/photo-1550060592-747d6a503525?w=400",
-    "g5_acquario": "https://images.unsplash.com/photo-1501443662400-98835f8d9510?w=400",
-    "g7_hero": "https://images.unsplash.com/photo-1588656158097-f58c743e49e0?w=800",
-    "g7_se": "https://images.unsplash.com/photo-1548574505-5e239809ee19?w=400",
-    "g7_mercado": "https://images.unsplash.com/photo-1601620359858-6927a3c3f91d?w=400",
-    "g7_lido": "https://images.unsplash.com/photo-1563200746-13a4eece03e5?w=400",
-    "g7_cabogirao": "https://images.unsplash.com/photo-1559406067-16411ae23b13?w=400",
-    "g8_hero": "https://images.unsplash.com/photo-1436491865332-7a61a109bd05?w=800"
-  };
-
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('[data-bg-key]').forEach(el => {
-      const key = el.getAttribute('data-bg-key');
-      if (LE_MIE_FOTO[key]) el.style.backgroundImage = `url('${LE_MIE_FOTO[key]}')`;
-    });
-    document.querySelectorAll('[data-src-key]').forEach(el => {
-      const key = el.getAttribute('data-src-key');
-      if (LE_MIE_FOTO[key]) el.src = LE_MIE_FOTO[key];
-    });
-  });
-
-  function toggleWidget(id) {
-    document.querySelectorAll('.hidden-section').forEach(sec => {
-      if(sec.id !== id) sec.classList.remove('active');
-    });
-    document.getElementById(id).classList.toggle('active');
+  function toggleDashboard(id) {
+    const el = document.getElementById(id);
+    if(el.classList.contains('show-block')) {
+      el.classList.remove('show-block');
+    } else {
+      document.querySelectorAll('.dashboard + .content-box').forEach(b => b.classList.remove('show-block'));
+      el.classList.add('show-block');
+    }
   }
 
-  function openInfo(title, infoKey, imgKey) {
-    document.getElementById('modalTitle').innerText = title;
-    document.getElementById('modalDesc').innerText = INFO_WAU[infoKey];
-    const gal = document.getElementById('modalGallery');
-    gal.innerHTML = `<img src="${LE_MIE_FOTO[imgKey]}">`;
-    document.getElementById('overlay').classList.add('active');
-    document.getElementById('infoSheet').classList.add('active');
+  function openStory(key) {
+    let type = "L'Anima del Posto";
+    if(key.includes('mare')) type = "Pomeriggio Mare";
+    if(key.includes('_b')) type = "Informazioni Piano B";
+    
+    document.getElementById('mTitle').innerText = type;
+    document.getElementById('mContent').innerText = NARRATIVE[key];
+    document.body.classList.add('active-sheet');
   }
 
-  function closeInfo() {
-    document.getElementById('overlay').classList.remove('active');
-    document.getElementById('infoSheet').classList.remove('active');
+  function closeStory() {
+    document.body.classList.remove('active-sheet');
   }
 </script>
+
 </body>
 </html>
