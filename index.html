@@ -1,89 +1,1229 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Agosto nel Mediterraneo 🌊</title>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.13.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.13.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.13.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.13.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.13.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.13.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.13.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.13.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.13.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.13.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <!-- WhatsApp & Social Media Preview -->
+    <meta property="og:title" content="Agosto nel Mediterraneo 🌊">
+    <meta property="og:description" content="Travel Companion: Norwegian Gem — Moreno & Cris nel Mediterraneo, agosto 2026.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="img/apple-touch-icon.png">
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+    <style>
+        :root {
+            --primary: #0f4c81;       /* Blu Mediterraneo */
+            --secondary: #e07b39;     /* Terracotta / tramonto */
+            --accent: #2e9e6b;        /* Verde ulivo */
+            --beach: #f0c040;         /* Giallo sole */
+            --danger: #c0392b;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --glass: rgba(255,255,255,0.9);
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
         }
-      });
-    </script>
-  </body>
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+
+        /* ---- HEADER ---- */
+        header {
+            position: relative;
+            height: 44vh;
+            min-height: 340px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('img/cruise_hero_banner.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px 20px;
+            color: white;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        header::before {
+            content: '🌊🌊🌊';
+            position: absolute;
+            bottom: 70px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.2;
+            letter-spacing: 4px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            width: fit-content;
+        }
+        .hero-title { font-size: 2.6rem; font-weight: 800; line-height: 1; margin-bottom: 5px; }
+        .hero-subtitle { font-size: 1rem; opacity: 0.85; font-weight: 300; margin-bottom: 20px; }
+
+        .countdown {
+            display: flex;
+            gap: 15px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            width: fit-content;
+        }
+        .cd-item { text-align: center; }
+        .cd-val { display: block; font-size: 1.2rem; font-weight: 800; font-family: 'Outfit'; }
+        .cd-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
+
+        /* ---- NAV ---- */
+        .main-nav {
+            display: flex;
+            background: white;
+            padding: 6px;
+            border-radius: 50px;
+            margin: -28px 20px 20px;
+            position: relative;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        .nav-btn {
+            flex: 1;
+            padding: 10px 4px;
+            text-align: center;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .nav-btn.active { background: var(--primary); color: white; }
+
+        /* ---- DATE RIBBON ---- */
+        .date-ribbon {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px 15px;
+            gap: 12px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .date-ribbon::-webkit-scrollbar { display: none; }
+        .date-chip {
+            flex: 0 0 auto;
+            background: white;
+            padding: 10px 18px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+        .date-chip.active { border-color: var(--secondary); background: #fff5ec; }
+        .date-chip .day-num { display: block; font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+        .date-chip .day-name { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+
+        /* ---- LAYOUT ---- */
+        .container { padding: 0 20px 100px; }
+        .page { display: none; }
+        .page.active { display: block; animation: slideUp 0.4s ease-out forwards; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- TIMELINE ---- */
+        .timeline { position: relative; padding-left: 20px; border-left: 2px dashed #cbd5e1; margin-left: 10px; }
+        .event-card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 0;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .event-card::before {
+            content: '';
+            position: absolute;
+            left: -32px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid var(--bg);
+            z-index: 10;
+        }
+        .event-card.beach-card::before { background: var(--beach); }
+        .event-card.alert-card::before { background: var(--danger); }
+
+        .event-img { width: 100%; height: 160px; object-fit: cover; }
+        .event-body { padding: 18px; }
+        .event-time {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--secondary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .event-time.beach-time { color: #c8960a; }
+        .event-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; line-height: 1.2; }
+        .event-desc { font-size: 0.9rem; color: #475569; margin-bottom: 15px; }
+
+        /* Badge tipo attività */
+        .activity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .badge-culture { background: #eff6ff; color: #1d4ed8; }
+        .badge-beach { background: #fefce8; color: #92400e; }
+        .badge-food { background: #fdf4ff; color: #86198f; }
+        .badge-transport { background: #f0fdf4; color: #166534; }
+        .badge-alert { background: #fef2f2; color: #991b1b; }
+
+        .poi-badge {
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+
+        .btn-maps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px;
+            background: #4285F4;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-maps:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* ---- RISTORANTI ---- */
+        .restaurants-box {
+            background: #fdf2f2;
+            border-radius: 18px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #fee2e2;
+        }
+        .res-alt {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--danger);
+        }
+        .res-alt:last-child { margin-bottom: 0; }
+        .res-name { display: block; font-weight: 700; font-size: 0.95rem; color: #b91c1c; }
+        .res-type { font-size: 0.75rem; color: #7f1d1d; opacity: 0.8; }
+
+        /* ---- TIP ESPERTO ---- */
+        .expert-note {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #92400e;
+            margin-top: 10px;
+        }
+        .expert-note i { margin-right: 5px; }
+
+        /* --- BEACH TIP ---- */
+        .beach-note {
+            background: #fefce8;
+            border-left: 4px solid var(--beach);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #78350f;
+            margin-top: 10px;
+        }
+
+        /* ---- CREW ---- */
+        .crew-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .crew-info h3 { font-size: 1.1rem; color: var(--primary); }
+        .crew-info p { font-size: 0.8rem; color: var(--text-muted); font-style: italic; }
+
+        /* ---- INFO NAVE ---- */
+        .ship-card {
+            background: linear-gradient(135deg, var(--primary), #1a6fa8);
+            border-radius: 22px;
+            padding: 22px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(15,76,129,0.3);
+        }
+        .ship-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
+        .ship-card p { font-size: 0.85rem; opacity: 0.8; }
+        .ship-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .ship-detail-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+        .ship-detail-item .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
+        .ship-detail-item .value { font-size: 1rem; font-weight: 800; margin-top: 2px; }
+
+        /* ---- TRENI ---- */
+        .train-card {
+            background: white;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--accent);
+        }
+        .train-route {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .train-station { font-weight: 700; color: var(--primary); font-size: 1rem; }
+        .train-time { font-size: 1.1rem; font-weight: 800; color: var(--secondary); }
+        .train-arrow { flex: 1; border-top: 2px dashed #cbd5e1; }
+        .train-badge {
+            background: #f0fdf4;
+            color: #166534;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        /* ---- LOGISTICS BAR ---- */
+        .logistics-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 15px 30px rgba(15,76,129,0.4);
+            z-index: 1000;
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        @keyframes bounceIn {
+            0% { transform: translateY(100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .log-text { font-size: 0.85rem; font-weight: 600; }
+        .btn-sos { background: var(--secondary); color: white; border: none; padding: 7px 16px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
+
+        /* ---- MODAL ---- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box {
+            background: white;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 450px;
+            padding: 25px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+        .modal-title { font-size: 1.2rem; font-weight: 800; color: var(--primary); font-family: 'Outfit'; display: flex; align-items: center; gap: 8px; }
+        .modal-close { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
+        .modal-content { font-size: 0.9rem; line-height: 1.6; color: #334155; }
+        .modal-content h4 { font-size: 1rem; font-weight: 700; color: var(--primary); margin-top: 15px; margin-bottom: 5px; }
+
+        /* ---- SEZIONE AGOSTO NOTE ---- */
+        .agosto-banner {
+            background: linear-gradient(135deg, #ff6b35, #f9c74f);
+            border-radius: 20px;
+            padding: 18px 20px;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .agosto-banner .icon { font-size: 2.5rem; }
+        .agosto-banner h3 { font-size: 1rem; font-weight: 800; margin-bottom: 3px; }
+        .agosto-banner p { font-size: 0.8rem; opacity: 0.9; }
+
+        /* ---- BOOKING CARD ---- */
+        .booking-card {
+            background: white;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+        .booking-card .bk-title { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .booking-card .bk-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
+        .booking-card .bk-row:last-child { border-bottom: none; }
+        .booking-card .bk-label { color: var(--text-muted); }
+        .booking-card .bk-value { font-weight: 700; color: var(--text-main); }
+        .booking-card .bk-value.highlight { color: var(--secondary); }
+
+    </style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+    <div class="hero-tag">✈️ Norwegian Gem · Agosto 2026</div>
+    <h1 class="hero-title">Ciao Socio! 🛳️</h1>
+    <p class="hero-subtitle">Moreno & Cris · Mediterraneo · 7 notti</p>
+    <div class="countdown" id="countdown">
+        <div class="cd-item"><span class="cd-val" id="days">00</span><span class="cd-label">Giorni</span></div>
+        <div class="cd-item"><span class="cd-val" id="hours">00</span><span class="cd-label">Ore</span></div>
+        <div class="cd-item"><span class="cd-val" id="minutes">00</span><span class="cd-label">Min</span></div>
+    </div>
+</header>
+
+<!-- ===================== NAV ===================== -->
+<nav class="main-nav">
+    <div class="nav-btn active" onclick="switchPage('itinerary', this)">Itinerario</div>
+    <div class="nav-btn" onclick="switchPage('crew', this)">Crew</div>
+    <div class="nav-btn" onclick="switchPage('docs', this)">Documenti</div>
+    <div class="nav-btn" onclick="switchPage('info', this)">Info Nave</div>
+</nav>
+
+<!-- ===================== ITINERARY PAGE ===================== -->
+<div id="itinerary" class="page active">
+    <div class="date-ribbon" id="dateRibbon"></div>
+    <div class="container" id="dayContent"></div>
+</div>
+
+<!-- ===================== CREW PAGE ===================== -->
+<div id="crew" class="page">
+    <div class="container" style="padding-top: 15px;">
+        <div class="agosto-banner">
+            <div class="icon">💑</div>
+            <div>
+                <h3>Viaggio Romantico</h3>
+                <p>Solo voi due — Mediterraneo, sole, e buona cucina!</p>
+            </div>
+        </div>
+
+        <h2 style="margin-bottom: 20px; color: var(--primary);">La Coppia in Viaggio</h2>
+        <div class="crew-card">
+            <div class="avatar" style="background: var(--primary);">M</div>
+            <div class="crew-info">
+                <h3>Moreno</h3>
+                <p>Capo Spedizione · Latitudes #269104907</p>
+            </div>
+        </div>
+        <div class="crew-card">
+            <div class="avatar" style="background: #ec4899;">C</div>
+            <div class="crew-info">
+                <h3>Cris</h3>
+                <p>Responsabile Sorrisi & Tramontate · Latitudes #280908992</p>
+            </div>
+        </div>
+
+        <div class="expert-note" style="margin-top: 10px;">
+            <i class="fas fa-lightbulb"></i> <b>Agosto tip:</b> In nave attiva la <b>Modalità Aereo</b> e connettiti al Wi-Fi di bordo per evitare costi roaming satellitari anche in alto mare!
+        </div>
+    </div>
+</div>
+
+<!-- ===================== DOCS PAGE ===================== -->
+<div id="docs" class="page">
+    <div class="container" style="padding-top: 15px;">
+        <h2 style="margin-bottom: 20px; color: var(--primary);">Documenti & Link Rapidi</h2>
+
+        <!-- Prenotazione NCL -->
+        <div class="booking-card">
+            <div class="bk-title"><i class="fas fa-anchor" style="color:var(--primary);"></i> Prenotazione NCL</div>
+            <div class="bk-row"><span class="bk-label">Reservation</span><span class="bk-value highlight">65309723</span></div>
+            <div class="bk-row"><span class="bk-label">Nave</span><span class="bk-value">Norwegian Gem</span></div>
+            <div class="bk-row"><span class="bk-label">Cabina</span><span class="bk-value">OB · Stateroom 5008</span></div>
+            <div class="bk-row"><span class="bk-label">Imbarco</span><span class="bk-value">Ravenna · 2 Ago, ore 16:00</span></div>
+            <div class="bk-row"><span class="bk-label">Sbarco</span><span class="bk-value">Civitavecchia · 9 Ago, ore 06:00</span></div>
+            <div class="bk-row"><span class="bk-label">Saldo da pagare</span><span class="bk-value" style="color:var(--danger);">€1.552,27 entro 3 Lug</span></div>
+        </div>
+
+        <!-- Treni -->
+        <h3 style="margin-bottom:15px; color:var(--primary);">🚄 Treni Prenotati</h3>
+
+        <div class="train-card">
+            <div class="train-badge">ANDATA · 2 AGO 2026 · PNR: XZFBG5</div>
+            <div class="train-route">
+                <div>
+                    <div class="train-time">08:30</div>
+                    <div class="train-station">Milano C.le</div>
+                </div>
+                <div class="train-arrow"></div>
+                <div style="text-align:right;">
+                    <div class="train-time">09:34</div>
+                    <div class="train-station">Bologna C.le</div>
+                </div>
+            </div>
+            <small style="color:var(--text-muted);">🚄 Frecciarossa 9613 · Moreno: Car 6, Posto 8D · Cris: Car 6, Posto 9D</small>
+        </div>
+
+        <div class="train-card" style="border-left-color: var(--text-muted);">
+            <div class="train-badge" style="background:#f8fafc; color:#475569;">COINCIDENZA · 2 AGO 2026</div>
+            <div class="train-route">
+                <div>
+                    <div class="train-time">10:05</div>
+                    <div class="train-station">Bologna C.le</div>
+                </div>
+                <div class="train-arrow"></div>
+                <div style="text-align:right;">
+                    <div class="train-time">11:17</div>
+                    <div class="train-station">Ravenna</div>
+                </div>
+            </div>
+            <small style="color:var(--text-muted);">🚂 Regionale 17547 · 2ª classe</small>
+            <div class="expert-note" style="margin-top:10px;">
+                <i class="fas fa-triangle-exclamation"></i> <b>Attenzione:</b> Il biglietto Bologna→Ravenna riporta "NON VALIDO PER VIAGGIARE" — significa che è solo la ricevuta, il titolo di trasporto è il codice digitale. Usa l'app Trenitalia.
+            </div>
+        </div>
+
+        <div class="train-card" style="border-left-color: var(--secondary);">
+            <div class="train-badge" style="background:#fff5ec; color:#92400e;">RITORNO · 9 AGO 2026 · COD: VJ8UHN</div>
+            <div class="train-route">
+                <div>
+                    <div class="train-time">12:10</div>
+                    <div class="train-station">Roma Termini</div>
+                </div>
+                <div class="train-arrow"></div>
+                <div style="text-align:right;">
+                    <div class="train-time">15:04</div>
+                    <div class="train-station">Milano Rogoredo</div>
+                </div>
+            </div>
+            <small style="color:var(--text-muted);">🚄 Italo 9980 Smart · Moreno: Car 10, Posto 3 · Cris: Car 10, Posto 4</small>
+        </div>
+
+        <!-- Check-in online -->
+        <div class="booking-card" style="border-left: 4px solid var(--accent);">
+            <div class="bk-title"><i class="fas fa-circle-check" style="color:var(--accent);"></i> Da Fare Prima della Partenza</div>
+            <p style="font-size:0.85rem; color:#475569; margin-bottom:12px;">
+                ✅ <b>Online Check-In NCL</b>: Completare almeno 21 giorni prima su <a href="https://www.ncl.com" target="_blank" style="color:var(--primary);">ncl.com</a><br><br>
+                ✅ <b>Pagamento saldo</b>: €1.552,27 entro il 3 Luglio 2026<br><br>
+                ✅ <b>Allergie/diete speciali</b>: Segnalare su NCL almeno 45 giorni prima<br><br>
+                ✅ <b>Shore excursions</b>: Prenotare su MyNCL per evitare sold-out
+            </p>
+            <a href="https://www.ncl.com/already-booked/myncl/" target="_blank" class="btn-maps" style="background: var(--primary);">
+                <i class="fas fa-anchor"></i> Apri MyNCL
+            </a>
+        </div>
+
+        <!-- Contatti -->
+        <div class="booking-card">
+            <div class="bk-title"><i class="fas fa-phone" style="color:var(--secondary);"></i> Contatti Utili</div>
+            <div class="bk-row"><span class="bk-label">NCL Assistenza EU</span><span class="bk-value"><a href="tel:+80003102121">00800 03 10 21 21</a></span></div>
+            <div class="bk-row"><span class="bk-label">NCL Emergenze bordo</span><span class="bk-value">Dial 911 (nave)</span></div>
+            <div class="bk-row"><span class="bk-label">Trenitalia Call Center</span><span class="bk-value"><a href="tel:892021">892021</a></span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== INFO NAVE PAGE ===================== -->
+<div id="info" class="page">
+    <div class="container" style="padding-top:15px;">
+        <div class="ship-card">
+            <h3>🚢 Norwegian Gem</h3>
+            <p>Norwegian Cruise Line · Med Occidentale</p>
+            <div class="ship-detail">
+                <div class="ship-detail-item">
+                    <div class="label">Capacità</div>
+                    <div class="value">2.394 ospiti</div>
+                </div>
+                <div class="ship-detail-item">
+                    <div class="label">Equipaggio</div>
+                    <div class="value">1.100 persone</div>
+                </div>
+                <div class="ship-detail-item">
+                    <div class="label">Lunghezza</div>
+                    <div class="value">294 m</div>
+                </div>
+                <div class="ship-detail-item">
+                    <div class="label">Cabina</div>
+                    <div class="value">5008 · OB</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="agosto-banner">
+            <div class="icon">☀️</div>
+            <div>
+                <h3>Filosofia Agosto</h3>
+                <p>Mattina: visita turistica (prima del caldo). Pomeriggio: spiaggia & relax. Sera: aperitivo & cena local.</p>
+            </div>
+        </div>
+
+        <div class="booking-card">
+            <div class="bk-title"><i class="fas fa-utensils" style="color:var(--secondary);"></i> Ristorazione a Bordo</div>
+            <p style="font-size:0.85rem; color:#475569;">
+                Norwegian Gem ha il sistema <b>Freestyle Dining</b> — nessun orario fisso, nessun dress code. Ristoranti principali inclusi: <b>Grand Pacific</b> e <b>Magnum's</b>. Ristoranti a pagamento: Cagney's Steakhouse, La Cucina (italiano), Teppanyaki.<br><br>
+                <b>Consiglio</b>: Prenotate La Cucina almeno una sera — vale il supplemento!
+            </p>
+        </div>
+
+        <div class="booking-card">
+            <div class="bk-title"><i class="fas fa-wifi" style="color:var(--primary);"></i> Wi-Fi & Connettività</div>
+            <p style="font-size:0.85rem; color:#475569;">
+                In porto il telefono aggancia automaticamente la rete locale — tutto normale. <b>Fuori porto, attivate la Modalità Aereo</b> e usate solo il Wi-Fi di bordo per evitare addebiti roaming satellitari da centinaia di euro.
+            </p>
+        </div>
+
+        <div class="booking-card">
+            <div class="bk-title"><i class="fas fa-suitcase" style="color:var(--accent);"></i> Bagagli & Imbarco</div>
+            <p style="font-size:0.85rem; color:#475569;">
+                • <b>Imbarco</b>: Presentarsi al terminal di Ravenna dalle ore 14:00. La nave parte alle <b>16:00</b> — essere a bordo entro le 14:30.<br><br>
+                • Completare il <b>Online Check-In</b> su ncl.com per ricevere il boarding pass digitale ed evitare code.<br><br>
+                • Il bagaglio viene ritirato direttamente al terminal e consegnato in cabina entro sera.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== LOGISTICS BAR ===================== -->
+<div class="logistics-bar" id="status-bar">
+    <div class="log-text" id="status-text">🛳️ Norwegian Gem · Res. 65309723</div>
+    <button class="btn-sos" onclick="alert('NCL Assistenza: 00800 03 10 21 21')">AIUTO</button>
+</div>
+
+<!-- ===================== MODAL AGOSTO ===================== -->
+<div id="augustModal" class="modal-overlay" onclick="closeModal('augustModal')">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-sun"></i> Consigli per Agosto</h3>
+            <button class="modal-close" onclick="closeModal('augustModal')"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="modal-content" id="augustModalContent"></div>
+    </div>
+</div>
+
+<script>
+// ===================== DATI ITINERARIO =====================
+const ITINERARY_DATA = [
+    {
+        id: 0,
+        date: "02", name: "DOM",
+        fullDate: "2 Agosto 2026 · Domenica",
+        title: "Partenza da Milano & Imbarco 🚄",
+        emoji: "🚆",
+        events: [
+            {
+                time: "08:30",
+                badge: "transport",
+                title: "Frecciarossa per Bologna",
+                desc: "Treno 9613 da Milano Centrale. Moreno: Car 6 posto 8D · Cris: Car 6 posto 9D. PNR: XZFBG5. Le porte si chiudono 1 minuto prima!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Milano+Centrale+stazione"
+            },
+            {
+                time: "10:05",
+                badge: "transport",
+                title: "Regionale Bologna → Ravenna",
+                desc: "Treno 17547, 2ª classe. Arrivo a Ravenna alle 11:17. Ricordarsi di fare il check-in digitale sull'app di Trenitalia prima di salire!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Bologna+Centrale+stazione"
+            },
+            {
+                time: "11:30 - 13:00",
+                badge: "food",
+                title: "Pranzo a Ravenna",
+                desc: "Arrivo a Ravenna alle 11:17. Fate una passeggiata in centro e pranzate con piadina e vino romagnolo prima dell'imbarco.",
+                maps: "https://www.google.com/maps/search/?api=1&query=centro+storico+Ravenna",
+                isRestaurant: true,
+                alternatives: [
+                    { name: "Ca' de Vèn", type: "Enoteca storica nel centro. Piadina romagnola e vini locali — l'esperienza più autentica." },
+                    { name: "Osteria del Tempo Perso", type: "Cucina romagnola, ambiente caldo. Ottimi primi fatti a mano." }
+                ]
+            },
+            {
+                time: "13:15",
+                badge: "transport",
+                title: "Trasferimento al Porto (Porto Corsini)",
+                desc: "Prendete un taxi dalla stazione di Ravenna o il bus locale Linea 90 (circa 20-30 min) per raggiungere il Terminal Crociere a Porto Corsini. La nave parte alle 16:00, l'imbarco chiude alle 14:30 tassativo!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Terminal+Crociere+Ravenna"
+            },
+            {
+                time: "14:00",
+                badge: "alert",
+                title: "🚢 Imbarco Norwegian Gem",
+                desc: "Terminal Crociere di Ravenna (Porto Corsini). Presentarsi con documenti, conferma prenotazione (Res. 65309723) e boarding pass digitale.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Terminal+Crociere+Ravenna"
+            },
+            {
+                time: "16:00",
+                badge: "transport",
+                title: "Salpata! ⛵",
+                desc: "La Norwegian Gem lascia Ravenna. Aperitivo sul ponte panoramico e godetevi il tramonto sull'Adriatico. Benvenuti a bordo!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Ravenna+porto+canale+corsini"
+            }
+        ]
+    },
+    {
+        id: 1,
+        date: "03", name: "LUN",
+        fullDate: "3 Agosto 2026 · Lunedì",
+        title: "Dubrovnik 🇭🇷",
+        emoji: "🧱",
+        portInfo: { arrive: "09:00", depart: "23:59", type: "Dock" },
+        events: [
+            {
+                time: "09:00 – 12:30",
+                badge: "culture",
+                title: "☀️ MATTINA: Mura della Città Vecchia",
+                img: "img/dubrovnik_walls.png",
+                desc: "Subito all'apertura, prima che il caldo diventi brutale. Il giro delle mura (quasi 2 km) regala viste mozzafiato sulla città e sul mare. Biglietti online in anticipo!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Dubrovnik+City+Walls",
+                expertTip: "🌡️ Agosto a Dubrovnik: 35°C+ alle 14:00. Le mura le mattina presto, e avrete la città per voi. Crema solare 50+, acqua in borraccia."
+            },
+            {
+                time: "13:00 - 14:30",
+                badge: "food",
+                title: "Pranzo in Nave (Porto di Gruž)",
+                desc: "Prendete un bus locale (linea 1A, 1B o 3) o un taxi veloce per tornare al porto di Gruž e pranzare a bordo della nave, al fresco dell'aria condizionata.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Dubrovnik+Port+Gruz"
+            },
+            {
+                time: "15:00 – 17:30",
+                badge: "beach",
+                title: "🏖️ POMERIGGIO: Bagno a Lapad Beach",
+                desc: "Spiaggia a Lapad (Uvala Lapad) o Copacabana Beach. Molto vicine al porto di Gruž (solo 5-10 min di taxi), comode per un bel bagno di due ore e relax senza sprecare tempo in transito.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Lapad+Beach+Dubrovnik",
+                beachTip: "La spiaggia di Lapad è attrezzata e riparata. Se volete più tranquillità, Copacabana Beach offre una splendida vista sul ponte di Dubrovnik."
+            },
+            {
+                time: "19:30 – 23:00",
+                badge: "food",
+                title: "🌙 SERA: Passeggiata & Cena sul Mare",
+                desc: "Ridiscesi a terra, godetevi la Stradun illuminata e l'atmosfera notturna. Aperitivo al tramonto al Buža Bar, poi cena a base di pesce.",
+                isRestaurant: true,
+                alternatives: [
+                    { name: "Orsan Restaurant", type: "Splendida terrazza sul mare direttamente sulla marina di Gruž (vicinissimo alla nave). Pesce eccellente e atmosfera rilassata." },
+                    { name: "Nautika Restaurant", type: "Fronte mare e vista mozzafiato sulle mura storiche. Cucina gourmet di pesce, ideale per una serata romantica speciale. Prenotare." }
+                ],
+                maps: "https://www.google.com/maps/search/?api=1&query=Buza+Bar+Dubrovnik",
+                expertTip: "💎 Il Buža Bar è letteralmente scavato nella roccia sulle mura, con cocktail al tramonto e vista mare. Da non perdere."
+            }
+        ]
+    },
+    {
+        id: 2,
+        date: "04", name: "MAR",
+        fullDate: "4 Agosto 2026 · Martedì",
+        title: "Kotor 🇲🇪",
+        emoji: "⛰️",
+        portInfo: { arrive: "07:00", depart: "17:00", type: "Tender (barchetta)" },
+        events: [
+            {
+                time: "07:30",
+                badge: "alert",
+                title: "⚠️ Sbarco in Tender",
+                desc: "Kotor è in tender: prendete i ticket per la barchetta appena apre il desk in nave. Prima scendete, meno folla trovate alle fortezze. Scendere entro le 08:00 se possibile.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Kotor+Montenegro+old+town"
+            },
+            {
+                time: "08:00 – 11:30",
+                badge: "culture",
+                title: "☀️ MATTINA: Fortezza di San Giovanni",
+                img: "img/kotor_bay.png",
+                desc: "La salita leggendaria — 1.355 gradini per 260 metri di dislivello. Partire PRESTO (entro le 8:30) prima che il caldo diventi insopportabile. La vista sulla Baia di Kotor è indimenticabile. Al ritorno, passeggiata nell'Old Town dei gatti.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Fortress+of+St+John+Kotor",
+                expertTip: "🥾 Scarpe comode e molta acqua. In cima c'è la cappella di Santa Maria — fate una foto alla baia dall'alto. Discesa più rapida, circa 40 min."
+            },
+            {
+                time: "12:00 – 14:00",
+                badge: "food",
+                title: "Pranzo in Nave",
+                desc: "Prendete il tender di rientro. Il tragitto è di soli 5-10 minuti, ideale per pranzare a bordo e riposarsi al fresco prima del bagno pomeridiano.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Kotor+cruise+terminal"
+            },
+            {
+                time: "14:30 – 16:00",
+                badge: "beach",
+                title: "🏖️ POMERIGGIO: Bagno a Kotor Beach (Dobrota)",
+                desc: "Spiaggia di ciottoli di Kotor Beach (zona Dobrota), situata a 15 minuti a piedi a nord dell'Old Town (o 3 min di taxi). Acqua pulita e splendido scenario tra le montagne della baia.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Kotor+Beach+Montenegro",
+                beachTip: "La spiaggia ha sia aree libere che stabilimenti attrezzati per un paio d'ore di relax prima di risalire."
+            },
+            {
+                time: "16:30",
+                badge: "alert",
+                title: "⚠️ Rientro in Nave",
+                desc: "Partenza alle 17:00 — prendere il tender di rientro entro le 16:30 per non rischiare di perdere la salpata.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Kotor+cruise+terminal"
+            }
+        ]
+    },
+    {
+        id: 3,
+        date: "05", name: "MER",
+        fullDate: "5 Agosto 2026 · Mercoledì",
+        title: "Split 🏛️",
+        emoji: "🏛️",
+        portInfo: { arrive: "07:00", depart: "14:00", type: "Dock" },
+        events: [
+            {
+                time: "08:00 – 10:45",
+                badge: "culture",
+                title: "☀️ MATTINA: Palazzo di Diocleziano",
+                img: "img/split_palace.png",
+                desc: "Splendido palazzo romano nel cuore di Spalato. Esplorate il Peristilio, la Cattedrale di San Doimo e i caratteristici sotterranei.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Diocletian+Palace+Split",
+                expertTip: "🎭 Fate il giro dei sotterranei (Podrumi) per apprezzare la struttura originale del palazzo. Ambiente molto fresco in estate."
+            },
+            {
+                time: "11:00 – 12:30",
+                badge: "beach",
+                title: "🏖️ BAGNO: Spiaggia di Bačvice",
+                desc: "Spiaggia sabbiosa cittadina, situata a soli 10-15 minuti a piedi a est dal porto crociere. Perfetta per un bagno veloce dell'ultimo minuto e per vedere i locali giocare a picigin.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Bacvice+Beach+Split",
+                beachTip: "L'acqua è calda e il fondale è basso e sabbioso, l'ideale per rilassarsi prima di ripartire."
+            },
+            {
+                time: "13:00",
+                badge: "alert",
+                title: "⚠️ Rientro in Nave per Pranzo",
+                desc: "Sosta breve. Rientro a bordo entro le 13:30 per il pranzo. La nave parte alle 14:00 puntuale."
+            }
+        ]
+    },
+    {
+        id: 4,
+        date: "06", name: "GIO",
+        fullDate: "6 Agosto 2026 · Giovedì",
+        title: "Corfù 🇬🇷",
+        emoji: "🫒",
+        portInfo: { arrive: "11:00", depart: "18:00", type: "Dock" },
+        events: [
+            {
+                time: "11:00",
+                badge: "food",
+                title: "Pranzo anticipato in Nave",
+                desc: "Pranzate presto a bordo della nave all'arrivo per scendere subito ed avere tutto il pomeriggio a disposizione.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Corfu+Cruise+Terminal"
+            },
+            {
+                time: "11:30 – 14:00",
+                badge: "culture",
+                title: "☀️ POMERIGGIO 1: Città Vecchia di Corfù",
+                img: "img/corfu_town.png",
+                desc: "Passeggiata tra i vicoli veneziani della Old Town, Liston Promenade e la Fortezza Vecchia (Kastro). Splendido mix architettonico.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Corfu+Old+Town"
+            },
+            {
+                time: "14:00 – 16:30",
+                badge: "beach",
+                title: "🏖️ POMERIGGIO 2: Bagno a Faliraki Beach",
+                desc: "Spiaggia cittadina a Faliraki, proprio sotto le mura della Fortezza Vecchia. Pedane in legno e scalette consentono di tuffarsi in acque limpidissime con vista panoramica sul castello. In alternativa, Royal Baths Mon Repos (5 min di taxi) per un beach club attrezzato.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Faliraki+Beach+Corfu",
+                beachTip: "Evitate Paleokastritsa per questa sosta breve: i 25 km di distanza e il traffico di agosto potrebbero rischiare di farvi perdere la nave."
+            },
+            {
+                time: "17:00",
+                badge: "alert",
+                title: "⚠️ Rientro in Nave",
+                desc: "Partenza alle 18:00. Rientrate al porto (raggiungibile con bus n. 15 o taxi) entro le 17:00."
+            }
+        ]
+    },
+    {
+        id: 5,
+        date: "07", name: "VEN",
+        fullDate: "7 Agosto 2026 · Venerdì",
+        title: "Messina 🇮🇹",
+        emoji: "🔱",
+        portInfo: { arrive: "09:30", depart: "19:30", type: "Dock" },
+        events: [
+            {
+                time: "10:00 – 12:15",
+                badge: "culture",
+                title: "☀️ MATTINA: Duomo e Orologio Astronomico",
+                img: "img/messina_duomo.png",
+                desc: "Visita al Duomo di Messina. Posizionatevi davanti al campanile alle 11:55 per vedere lo spettacolo meccanico dell'orologio astronomico a mezzogiorno (il più grande d'Europa).",
+                maps: "https://www.google.com/maps/search/?api=1&query=Duomo+Messina",
+                expertTip: "⏰ Lo show dell'orologio astronomico dura circa 15 minuti ed è accompagnato dall'Ave Maria di Schubert."
+            },
+            {
+                time: "12:30 – 14:30",
+                badge: "food",
+                title: "Pranzo in Nave",
+                desc: "La nave attracca a pochissimi metri dal centro città. Rientro comodissimo a piedi in nave per pranzare freschi a bordo.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Messina+Cruise+Terminal"
+            },
+            {
+                time: "15:00 – 18:00",
+                badge: "beach",
+                title: "🏖️ POMERIGGIO: Spiaggia di Capo Peloro (Torre Faro)",
+                desc: "Prendete un taxi (circa 20-25 min) per Capo Peloro, all'estremità nord della Sicilia. È il punto in cui si incontrano il mar Tirreno e lo Jonio, con acqua limpidissima e una vista unica sullo Stretto e sulla Calabria.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Capo+Peloro+Torre+Faro",
+                beachTip: "Le correnti nel canale dello Stretto possono essere forti, ma il bagno qui ha un fascino speciale e l'acqua è freschissima."
+            },
+            {
+                time: "18:45",
+                badge: "alert",
+                title: "⚠️ Rientro in Nave",
+                desc: "Partenza programmata alle 19:30. Rientrate a bordo entro le 18:45."
+            }
+        ]
+    },
+    {
+        id: 6,
+        date: "08", name: "SAB",
+        fullDate: "8 Agosto 2026 · Sabato",
+        title: "Costiera Amalfitana 🇮🇹",
+        emoji: "🍋",
+        portInfo: { arrive: "07:00", depart: "18:00", type: "Dock (Salerno)" },
+        events: [
+            {
+                time: "08:00 – 12:00",
+                badge: "culture",
+                title: "☀️ MATTINA: Traghetto Travelmar per Amalfi",
+                img: "img/amalfi_coast.png",
+                desc: "Prendete il traghetto Travelmar da Salerno (Molo Concordia) per Amalfi (35 min di navigazione panoramica). Visitate il centro storico e lo splendido Duomo di Sant'Andrea. Se volete, Ravello (Villa Rufolo) è a 15 min di bus/taxi da Amalfi.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Amalfi+centro",
+                expertTip: "🚢 Evitate assolutamente i bus SITA o i taxi su gomma da Salerno: ad agosto il traffico in costiera è congestionato. Il traghetto è rapido, puntuale e panoramicissimo!"
+            },
+            {
+                time: "12:15",
+                badge: "transport",
+                title: "Traghetto Amalfi → Maiori",
+                desc: "Breve corsa in traghetto (10-15 min) per spostarsi a Maiori, che vanta la spiaggia sabbiosa più spaziosa di tutta la Costiera Amalfitana.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Maiori+porto"
+            },
+            {
+                time: "12:30 – 14:00",
+                badge: "food",
+                title: "Pranzo Campano a Maiori",
+                desc: "Un pranzo a base di frutti di mare o pizza locale a Maiori. Rientrare in nave per pranzo sarebbe proibitivo per via delle distanze.",
+                isRestaurant: true,
+                alternatives: [
+                    { name: "Ristorante Dedalo", type: "Cucina campana tradizionale di mare, a pochi passi dalla spiaggia." },
+                    { name: "Torre Normanna", type: "Per un pranzo memorabile all'interno di un'antica torre di guardia a strapiombo sulla scogliera." }
+                ],
+                maps: "https://www.google.com/maps/search/?api=1&query=Maiori+ristoranti"
+            },
+            {
+                time: "14:00 – 16:00",
+                badge: "beach",
+                title: "🏖️ POMERIGGIO: Bagno a Maiori",
+                desc: "Pomeriggio di relax sulla spiaggia di Maiori. Un paio d'ore di bagni rinfrescanti e sole prima del rientro.",
+                maps: "https://www.google.com/maps/search/?api=1&query=spiaggia+Maiori"
+            },
+            {
+                time: "16:30",
+                badge: "transport",
+                title: "Traghetto Maiori → Salerno (Molo Concordia)",
+                desc: "Prendete il traghetto Travelmar di rientro per Salerno (30 min) e rientrate in nave entro le 17:30. La nave salpa alle 18:00.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Salerno+Molo+Concordia"
+            }
+        ]
+    },
+    {
+        id: 7,
+        date: "09", name: "DOM",
+        fullDate: "9 Agosto 2026 · Domenica",
+        title: "Civitavecchia & Rientro 🏠",
+        emoji: "🚄",
+        portInfo: { arrive: "06:00", depart: "—" },
+        events: [
+            {
+                time: "06:00",
+                badge: "transport",
+                title: "Arrivo a Civitavecchia",
+                desc: "Fine crociera. Lo sbarco avviene in ordine per numero cabina — aspettate il vostro gruppo annunciato dagli altoparlanti. Valigie fuori dalla cabina la sera prima!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Civitavecchia+Cruise+Terminal"
+            },
+            {
+                time: "07:30 – 09:00",
+                badge: "transport",
+                title: "Transfer a Roma Termini",
+                desc: "Da Civitavecchia a Roma Termini: Treno regionale (1h10, ~€5, parte ogni 30 min dalla stazione a 10 min dal porto) oppure taxi/NCC (~€80-100, 1h15 autostrada). Il treno è il modo più comodo.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Civitavecchia+stazione+ferroviaria",
+                expertTip: "🚂 La stazione di Civitavecchia è raggiungibile dalla banchina con una navetta portuale (gratuita o €2). Biglietti del regionale acquistabili in stazione."
+            },
+            {
+                time: "10:00 – 11:30",
+                badge: "culture",
+                title: "Pausa Roma (Opzionale) ☕",
+                desc: "Se avete voglia, Roma Termini è comoda per un caffè e una passeggiata. Piazza Repubblica, Terme di Diocleziano e Santa Maria degli Angeli sono a 2 min a piedi. Colosseo a 15 min di metro.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Roma+Termini"
+            },
+            {
+                time: "12:10",
+                badge: "transport",
+                title: "🚄 Italo 9980 per Milano",
+                desc: "Roma Termini → Milano Rogoredo (15:04). Moreno: Car 10, Posto 3 · Cris: Car 10, Posto 4. Codice biglietto: VJ8UHN. Ambiente Smart.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Roma+Termini+stazione",
+                expertTip: "☕ Sul treno Italo c'è il bar e il servizio al posto in Smart Comfort. Meritato relax dopo 7 notti in crociera!"
+            },
+            {
+                time: "15:04",
+                badge: "transport",
+                title: "🏠 Arrivo a Milano Rogoredo",
+                desc: "Benvenuti a casa! Milano Rogoredo è ben collegata con metro M3 (linea gialla) per tutta la città. Fine di un'avventura indimenticabile nel Mediterraneo.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Milano+Rogoredo+stazione"
+            }
+        ]
+    }
+];
+
+// ===================== STATO APP =====================
+let currentDayIdx = 0;
+
+// ===================== NAVIGAZIONE =====================
+function switchPage(pageId, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo(0, 0);
+    const bar = document.getElementById('status-bar');
+    bar.style.display = (pageId === 'itinerary') ? 'flex' : 'none';
+}
+
+// ===================== DATE RIBBON =====================
+function renderDateRibbon() {
+    const ribbon = document.getElementById('dateRibbon');
+    ribbon.innerHTML = ITINERARY_DATA.map((day, idx) => `
+        <div class="date-chip ${idx === currentDayIdx ? 'active' : ''}" onclick="selectDay(${idx})">
+            <span class="day-num">${day.date}</span>
+            <span class="day-name">${day.name}</span>
+        </div>
+    `).join('');
+}
+
+// ===================== SELEZIONE GIORNO =====================
+function selectDay(idx) {
+    currentDayIdx = idx;
+    renderDateRibbon();
+    renderDayContent();
+    document.getElementById('status-text').innerText = `${ITINERARY_DATA[idx].emoji} ${ITINERARY_DATA[idx].title}`;
+}
+
+// ===================== BADGE HTML =====================
+function getBadgeHtml(badge) {
+    const map = {
+        culture: `<span class="activity-badge badge-culture"><i class="fas fa-landmark"></i> Cultura</span>`,
+        beach:   `<span class="activity-badge badge-beach"><i class="fas fa-umbrella-beach"></i> Spiaggia</span>`,
+        food:    `<span class="activity-badge badge-food"><i class="fas fa-utensils"></i> Cibo</span>`,
+        transport:`<span class="activity-badge badge-transport"><i class="fas fa-route"></i> Trasporti</span>`,
+        alert:   `<span class="activity-badge badge-alert"><i class="fas fa-triangle-exclamation"></i> Attenzione</span>`
+    };
+    return map[badge] || '';
+}
+
+// ===================== CONTENUTO GIORNO =====================
+function renderDayContent() {
+    const day = ITINERARY_DATA[currentDayIdx];
+    const container = document.getElementById('dayContent');
+
+    let portInfoHtml = '';
+    if (day.portInfo) {
+        portInfoHtml = `
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+                ${day.portInfo.arrive ? `<span style="background:#eff6ff;color:#1d4ed8;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;"><i class="fas fa-ship"></i> Arrivo ${day.portInfo.arrive}</span>` : ''}
+                ${day.portInfo.depart && day.portInfo.depart !== '—' ? `<span style="background:#fef2f2;color:#991b1b;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;"><i class="fas fa-ship"></i> Partenza ${day.portInfo.depart}</span>` : ''}
+                ${day.portInfo.type ? `<span style="background:#f0fdf4;color:#166534;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;"><i class="fas fa-anchor"></i> ${day.portInfo.type}</span>` : ''}
+            </div>
+        `;
+    }
+
+    let html = `
+        <div style="margin-bottom:20px;">
+            <span class="poi-badge">${day.fullDate}</span>
+            <h2 style="font-size:1.9rem; color:var(--primary);">${day.title}</h2>
+        </div>
+        ${portInfoHtml}
+        <div class="timeline">
+    `;
+
+    html += day.events.map(ev => `
+        <div class="event-card ${ev.badge === 'beach' ? 'beach-card' : ev.badge === 'alert' ? 'alert-card' : ''}">
+            ${ev.img ? `<img src="${ev.img}" class="event-img" loading="lazy">` : ''}
+            <div class="event-body">
+                <div class="event-time ${ev.badge === 'beach' ? 'beach-time' : ''}">
+                    <i class="far fa-clock"></i> ${ev.time}
+                </div>
+                ${getBadgeHtml(ev.badge)}
+                <div class="event-title">${ev.title}</div>
+                <p class="event-desc">${ev.desc}</p>
+
+                ${ev.isRestaurant ? `
+                    <div class="restaurants-box">
+                        <p style="font-size:0.75rem;font-weight:800;text-transform:uppercase;margin-bottom:10px;color:#b91c1c;">Opzioni Expert:</p>
+                        ${ev.alternatives.map(alt => `
+                            <div class="res-alt">
+                                <span class="res-name">${alt.name}</span>
+                                <span class="res-type">${alt.type}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+
+                ${ev.expertTip ? `
+                    <div class="expert-note"><i class="fas fa-lightbulb"></i> ${ev.expertTip}</div>
+                ` : ''}
+
+                ${ev.beachTip ? `
+                    <div class="beach-note"><i class="fas fa-umbrella-beach"></i> ${ev.beachTip}</div>
+                ` : ''}
+
+                <a href="${ev.maps}" target="_blank" class="btn-maps" style="margin-top:12px;">
+                    <i class="fas fa-location-dot"></i> Apri in Google Maps
+                </a>
+            </div>
+        </div>
+    `).join('');
+
+    html += `</div>`;
+    container.innerHTML = html;
+    window.scrollTo(0, 0);
+}
+
+// ===================== COUNTDOWN =====================
+const targetDate = new Date("August 2, 2026 08:30:00").getTime();
+function updateCountdown() {
+    const now = new Date().getTime();
+    const diff = targetDate - now;
+    if (diff < 0) {
+        document.getElementById('countdown').innerHTML = "<div style='font-weight:800;font-size:1.3rem;'>BUON VIAGGIO! 🌊</div>";
+        return;
+    }
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    document.getElementById('days').innerText = d.toString().padStart(2, '0');
+    document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+    document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+}
+
+// ===================== MODAL =====================
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// ===================== AUTO-SELEZIONE GIORNO CORRENTE =====================
+function autoSelectCurrentDay() {
+    const today = new Date();
+    const todayDate = today.getDate();
+    const todayMonth = today.getMonth(); // 0-based: Agosto = 7
+    if (todayMonth === 7) { // Agosto
+        const found = ITINERARY_DATA.findIndex(d => parseInt(d.date) === todayDate);
+        if (found >= 0) currentDayIdx = found;
+    }
+}
+
+// ===================== INIT =====================
+autoSelectCurrentDay();
+setInterval(updateCountdown, 60000);
+updateCountdown();
+renderDateRibbon();
+renderDayContent();
+
+</script>
+</body>
 </html>
