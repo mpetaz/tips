@@ -1011,45 +1011,53 @@ const ITINERARY_DATA = [
             {
                 time: "08:40",
                 badge: "transport",
-                title: "🚢 Traghetto Salerno → Amalfi (Da Prenotare)",
+                title: "🚢 Traghetto Salerno Manfredi → Amalfi (Da Prenotare)",
                 img: "img/amalfi_coast.png",
-                desc: "Prendete il traghetto Travelmar da Salerno (Molo Concordia) per Amalfi. Partenza consigliata alle 08:40, arrivo alle 09:15. [DA PRENOTARE con il Buono UMHPM5202716 da €54,00].",
-                maps: "https://www.google.com/maps/search/?api=1&query=Molo+Concordia+Salerno",
-                expertTip: "🚢 Il Molo Concordia si trova vicino alla stazione ferroviaria di Salerno. Potete fare colazione vicino al molo prima di imbarcarvi."
+                desc: "Prendete il traghetto Travelmar direttamente dal Molo Manfredi (dove attracca la nave!). Partenza alle 08:40, arrivo ad Amalfi alle 09:15. [DA PRENOTARE con il Buono UMHPM5202716 da €54,00].",
+                maps: "https://www.google.com/maps/search/?api=1&query=Molo+Manfredi+Salerno",
+                expertTip: "🚢 Comodissimo: il Molo Manfredi è lo stesso molo della Stazione Marittima dove scendete dalla crociera. Zero spostamenti la mattina!"
             },
             {
-                time: "13:00",
+                time: "09:15 – 12:00",
+                badge: "culture",
+                title: "🏛️ Mattina ad Amalfi & Duomo",
+                desc: "Visita del borgo storico di Amalfi. Da non perdere il monumentale Duomo di Sant'Andrea con la sua scalinata scenografica e lo splendido Chiostro del Paradiso.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Duomo+di+Amalfi"
+            },
+            {
+                time: "12:00 – 13:45",
+                badge: "food",
+                title: "🍕 Pranzo: Pizza Autentica ad Amalfi",
+                desc: "Pranzo anticipato per goderci una vera pizza campana prima del traghetto. Abbiamo selezionato i posti migliori non turistici.",
+                isRestaurant: true,
+                alternatives: [
+                    { name: "Carlo Fiamma - Pizza e Cantina", type: "Pizza gourmet pluripremiata (Gambero Rosso) con ingredienti a km 0 nel cuore di Amalfi." },
+                    { name: "Pizzeria Da Memé", type: "Pizzeria tradizionale molto intima e caratteristica nascosta nei vicoletti storici." }
+                ],
+                maps: "https://www.google.com/maps/search/?api=1&query=Carlo+Fiamma+Amalfi"
+            },
+            {
+                time: "14:10",
                 badge: "transport",
-                title: "🚢 Traghetto Amalfi → Maiori (Da Prenotare)",
-                desc: "Spostamento in traghetto da Amalfi a Maiori. Partenza consigliata alle 13:00, arrivo alle 13:20. [DA PRENOTARE con il Buono UMHPM5202716]. Avete tutta la mattina per esplorare Amalfi e salire a Ravello!",
+                title: "🚢 Traghetto Amalfi → Salerno Concordia (Da Prenotare)",
+                desc: "Rientro a Salerno (Molo Concordia). Partenza alle 14:10, arrivo alle 14:45. [DA PRENOTARE con il Buono UMHPM5202716]. Godetevi i 35 minuti di splendida navigazione lungo la costiera!",
                 maps: "https://www.google.com/maps/search/?api=1&query=Amalfi+porto"
             },
             {
-                time: "13:30 – 14:30",
-                badge: "food",
-                title: "Pranzo Campano a Maiori",
-                desc: "Pranzo rilassato a Maiori prima del mare. Rientrare in nave per pranzo sarebbe proibitivo per via delle distanze.",
-                isRestaurant: true,
-                alternatives: [
-                    { name: "Ristorante Dedalo", type: "Cucina campana tradizionale di mare, a pochi passi dalla spiaggia." },
-                    { name: "Torre Normanna", type: "Per un pranzo memorabile all'interno di un'antica torre di guardia a strapiombo sulla scogliera." }
-                ],
-                maps: "https://www.google.com/maps/search/?api=1&query=Maiori+ristoranti"
+                time: "14:45 – 17:00",
+                badge: "culture",
+                title: "🍦 Pomeriggio: Centro di Salerno & Gelato",
+                desc: "Sbarco al Molo Concordia alle 14:45. Passeggiata sul Lungomare Trieste verso il centro storico per visitare il bellissimo Duomo di Salerno (San Matteo) e gustare un gelato fantastico.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Duomo+di+Salerno",
+                expertTip: "🍦 Gelateria Nettuno (Lungomare Trieste): Famosissima dal 1975, provate la brioche col tuppo calda ripiena di gelato artigianale (gusto consigliato: Nocciotella!). In alternativa, Gelateria Cioffi nella monumentale Piazza della Libertà (proprio accanto al Molo Manfredi)."
             },
             {
-                time: "14:30 – 15:45",
-                badge: "beach",
-                title: "🏖️ POMERIGGIO: Bagno a Maiori",
-                desc: "Relax sulla spiaggia di Maiori per un po' di sole e bagni prima del traghetto di rientro.",
-                maps: "https://www.google.com/maps/search/?api=1&query=spiaggia+Maiori"
-            },
-            {
-                time: "16:00",
+                time: "17:15",
                 badge: "transport",
-                title: "🚢 Traghetto Maiori → Salerno (Da Prenotare)",
-                desc: "Traghetto di rientro a Salerno Concordia. Partenza consigliata alle 16:00, arrivo alle 16:30. [DA PRENOTARE con il Buono UMHPM5202716].",
-                maps: "https://www.google.com/maps/search/?api=1&query=Salerno+Molo+Concordia",
-                expertTip: "⚠️ NOTA DI SICUREZZA: Con la partenza alle 16:00 arriverete alle 16:30 al Molo Concordia. Avrete così 1 ora intera per fare il tragitto (~1.5 km a piedi o taxi) verso il Molo Manfredi per il Tutti a Bordo (17:30). Molto più sicuro!"
+                title: "🚢 Rientro a Molo Manfredi & Tutti a Bordo",
+                desc: "Raggiungete il Molo Manfredi per l'imbarco. Tutti a bordo entro le 17:30, la nave salpa alle 18:00.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Molo+Manfredi+Salerno",
+                expertTip: "🚶‍♂️ Dal centro di Salerno o dal Duomo sono circa 15-20 minuti a piedi camminando lungo il mare passando per Piazza della Libertà, oppure 5 minuti di taxi."
             }
         ]
     },
