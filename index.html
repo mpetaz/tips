@@ -493,6 +493,7 @@
     <div class="nav-btn" onclick="switchPage('crew', this)">Crew</div>
     <div class="nav-btn" onclick="switchPage('docs', this)">Documenti</div>
     <div class="nav-btn" onclick="switchPage('info', this)">Info Nave</div>
+    <div class="nav-btn" onclick="switchPage('photos', this)">Foto Live</div>
 </nav>
 
 <!-- ===================== ITINERARY PAGE ===================== -->
@@ -684,6 +685,42 @@
                 • Completare il <b>Online Check-In</b> su ncl.com per ricevere il boarding pass digitale ed evitare code.<br><br>
                 • Il bagaglio viene ritirato direttamente al terminal e consegnato in cabina entro sera.
             </p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== PHOTOS PAGE ===================== -->
+<div id="photos" class="page">
+    <div class="container" style="padding-top: 15px;">
+        <h2 style="margin-bottom: 20px; color: var(--primary);">Foto Live & Rullino 📸</h2>
+        
+        <div class="event-card" style="border-left: 4px solid var(--secondary);">
+            <div class="event-body" style="text-align: center; padding: 30px 20px;">
+                <div style="font-size: 3.5rem; margin-bottom: 15px;">🌊</div>
+                <div class="event-title" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">Rullino Condiviso di Gruppo</div>
+                <p class="event-desc" style="margin-bottom: 25px; font-size: 0.9rem;">
+                    Carichiamo qui tutte le nostre foto e video della vacanza! L'album è condiviso tra Moreno e Cris (iOS & Android) ed è organizzato automaticamente per luoghi, date e persone.
+                </p>
+                
+                <!-- Link all'album condiviso -->
+                <a href="#" id="photoAlbumLink" target="_blank" class="btn-maps" style="background: var(--secondary); display: inline-flex; align-items: center; justify-content: center; width: auto; padding: 14px 28px; border-radius: 16px; font-size: 1rem; font-weight: 700; color: white; border: none; cursor: pointer; text-decoration: none; box-shadow: 0 8px 20px rgba(224, 123, 57, 0.3); transition: 0.3s;">
+                    <i class="fas fa-images" style="margin-right: 8px;"></i> APRI ALBUM CONDIVISO
+                </a>
+            </div>
+        </div>
+
+        <div class="event-card" style="margin-top: 20px;">
+            <div class="event-body">
+                <div class="event-title" style="font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <i class="fas fa-circle-question" style="color: var(--primary);"></i> Come caricare le foto?
+                </div>
+                <ul style="margin-left: 20px; font-size: 0.85rem; color: #475569; line-height: 1.6; display: flex; flex-direction: column; gap: 10px;">
+                    <li><b>Crea un album condiviso</b> su Google Foto o Google Drive per la crociera di agosto 2026.</li>
+                    <li>Sostituisci il link del pulsante sopra con l'indirizzo del nuovo album (puoi passarmelo qui e lo farò io al volo!).</li>
+                    <li><b>Toccando il pulsante</b>, aprirai direttamente l'album condiviso per caricare le foto scattate.</li>
+                    <li><b>Condivisione istantanea</b>: sia su iPhone che su Android potrete vedere e scaricare le foto a risoluzione originale senza perdere qualità.</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
