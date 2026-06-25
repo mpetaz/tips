@@ -471,6 +471,37 @@
         .booking-card .bk-value { font-weight: 700; color: var(--text-main); }
         .booking-card .bk-value.highlight { color: var(--secondary); }
 
+        /* ---- O'SHEEHAN'S MENU STYLE ---- */
+        .menu-tab-btn {
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+        }
+        .menu-tab-btn.active {
+            background: white !important;
+            color: #1c7a4d !important;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .menu-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        .menu-item-header {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .menu-item-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
     </style>
 </head>
 <body>
@@ -619,6 +650,22 @@
             </a>
         </div>
 
+        <!-- Menu O'Sheehan's -->
+        <div class="booking-card" style="border-left: 4px solid #1c7a4d;">
+            <div class="bk-title"><i class="fas fa-utensils" style="color:#1c7a4d;"></i> O'Sheehan's Pub (Ponte 8)</div>
+            <p style="font-size:0.85rem; color:#475569; margin-bottom:12px;">
+                Il pub irlandese della nave, aperto <b>24 ore su 24</b> e completamente <b>incluso nel prezzo</b>! Ottimo per colazioni, spuntini pomeridiani o fame notturna. Abbiamo tradotto l'intero menu in italiano per voi.
+            </p>
+            <div style="display: flex; gap: 8px; width: 100%;">
+                <button onclick="openModal('osheehanModal')" class="btn-maps" style="background: #1c7a4d; border: none; flex: 1; font-family: inherit; font-size: 0.8rem; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border-radius: 12px;">
+                    <i class="fas fa-book-open"></i> Leggi in Italiano
+                </button>
+                <a href="Fleet-O-Sheehan_Mobile-Menu_010225.pdf" target="_blank" class="btn-maps" style="background: #475569; border: none; flex: 1; font-family: inherit; font-size: 0.8rem; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border-radius: 12px; text-decoration: none;">
+                    <i class="fas fa-file-pdf"></i> Menu Originale PDF
+                </a>
+            </div>
+        </div>
+
         <!-- Contatti -->
         <div class="booking-card">
             <div class="bk-title"><i class="fas fa-phone" style="color:var(--secondary);"></i> Contatti Utili</div>
@@ -739,6 +786,211 @@
             <button class="modal-close" onclick="closeModal('augustModal')"><i class="fas fa-xmark"></i></button>
         </div>
         <div class="modal-content" id="augustModalContent"></div>
+    </div>
+</div>
+
+<!-- ===================== MODAL O'SHEEHAN'S ===================== -->
+<div id="osheehanModal" class="modal-overlay" onclick="closeModal('osheehanModal')">
+    <div class="modal-box" onclick="event.stopPropagation()" style="max-width: 500px; border-top: 6px solid #1c7a4d;">
+        <div class="modal-header" style="margin-bottom: 10px;">
+            <h3 class="modal-title" style="color: #1c7a4d;"><i class="fas fa-utensils"></i> O'Sheehan's Pub (Ponte 8)</h3>
+            <button class="modal-close" onclick="closeModal('osheehanModal')"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="modal-content">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; text-align: center;">
+                🍀 Pub Irlandese aperto 24 ore su 24 · <b>Sempre Incluso!</b> 🍀
+            </p>
+            
+            <!-- Tabs Menu -->
+            <div style="display: flex; gap: 5px; margin-bottom: 15px; background: #f1f5f9; padding: 4px; border-radius: 12px;">
+                <button class="menu-tab-btn active" onclick="switchMenuTab('menu-breakfast', this)" style="flex: 1; padding: 8px 4px; border: none; background: none; font-size: 0.75rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s;">Colazione</button>
+                <button class="menu-tab-btn" onclick="switchMenuTab('menu-allday', this)" style="flex: 1; padding: 8px 4px; border: none; background: none; font-size: 0.75rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s;">Tutto il Giorno</button>
+                <button class="menu-tab-btn" onclick="switchMenuTab('menu-latenight', this)" style="flex: 1; padding: 8px 4px; border: none; background: none; font-size: 0.75rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s;">Tarda Notte</button>
+            </div>
+
+            <!-- TAB COLAZIONE -->
+            <div id="menu-breakfast" class="menu-tab-content" style="display: block;">
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 10px; font-size: 0.95rem;">Specialità del Mattino</h4>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-style: italic;">
+                    Tutti i piatti con uova sono serviti con patate e scelta di toast (Pane bianco, integrale, Muffin inglese o Bagel).
+                </p>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>American Breakfast</b> (Colazione Americana)</div>
+                    <div class="menu-item-desc">Due uova a piacere, bacon o salsicce, patate.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>English Breakfast</b> (Colazione Inglese)</div>
+                    <div class="menu-item-desc">Due uova a piacere, bacon, salsiccia, fagioli stufati (baked beans), pomodoro grigliato, funghi saltati, patate.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Breakfast Sandwich</b> (Panino Colazione)</div>
+                    <div class="menu-item-desc">Uova strapazzate, prosciutto, formaggio Cheddar su panino brioche soffice.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Corned Beef Hash</b> (Pasticcio di Manzo)</div>
+                    <div class="menu-item-desc">Pasticcio saporito di patate e manzo salmistrato, servito con due uova.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Ham & Cheese Omelet</b> (Omelette Prosciutto e Formaggio)</div>
+                    <div class="menu-item-desc">Prosciutto cotto affumicato e formaggio Cheddar fuso.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Vegetable Omelet</b> (Omelette Ortolana)</div>
+                    <div class="menu-item-desc">Pomodoro fresco, peperoni dolci ed erbe aromatiche.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>French Toast</b></div>
+                    <div class="menu-item-desc">Pane dorato in padella, servito con burro montato e sciroppo d'acero.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Buttermilk Pancakes</b></div>
+                    <div class="menu-item-desc">Frittelle soffici al latticello con burro e sciroppo d'acero.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Hot Oatmeal</b> (Porridge Caldo)</div>
+                    <div class="menu-item-desc">Fiocchi d'avena caldi con uvetta e zucchero alla cannella.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Seasonal Fruit Salad</b> (Macedonia)</div>
+                    <div class="menu-item-desc">Selezione di melone a fette, ananas fresco e spicchi d'arancia.</div>
+                </div>
+            </div>
+
+            <!-- TAB TUTTO IL GIORNO -->
+            <div id="menu-allday" class="menu-tab-content" style="display: none;">
+                <!-- ANTIPASTI -->
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 10px; font-size: 0.95rem;">Antipasti (Appetizers)</h4>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>1/2 Dozen Chicken Wings</b> (Alette di Pollo)</div>
+                    <div class="menu-item-desc">Mezza dozzina di alette croccanti. Scelta tra salse: Buffalo (piccante), Smoked BBQ (affumicata) o Sweet Chili (dolce-piccante).</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Spinach & Artichoke Dip</b></div>
+                    <div class="menu-item-desc">Crema calda di spinaci e carciofi, servita con Tortilla Chips croccanti.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Pretzel Bites</b> (Bocconcini di Pretzel)</div>
+                    <div class="menu-item-desc">Bocconcini caldi di pretzel salati serviti con fonduta di formaggio alla birra.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Grilled Sausage Sliders</b> (Mini Burger di Salsiccia)</div>
+                    <div class="menu-item-desc">Mini panini con salsiccia alla griglia, cipolle brasate alla birra e senape inglese.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Loaded Nachos</b></div>
+                    <div class="menu-item-desc">Nachos ricoperti di chili con carne, salsa al formaggio fuso, guacamole, panna acida e jalapeños.</div>
+                </div>
+
+                <!-- ZUPPE E INSALATE -->
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 20px; font-size: 0.95rem;">Zuppe e Insalate</h4>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Zuppa del Giorno</b> (Soup of the Day)</div>
+                    <div class="menu-item-desc">La creazione dello chef del giorno.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Beef Chili</b></div>
+                    <div class="menu-item-desc">Zuppa densa di chili di manzo, Cheddar grattugiato, panna acida, cipolla rossa e tortilla chips.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Cobb Salad</b></div>
+                    <div class="menu-item-desc">Insalatona con tacchino, prosciutto, bacon, lattuga mista, cetriolo, pomodoro e uovo sodo. Condimenti a scelta: Vinaigrette balsamica, Blue Cheese, Ranch o 1000 Island.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Caesar Salad</b></div>
+                    <div class="menu-item-desc">Lattuga romana, crostini di focaccia, condimento Caesar. (Pollo alla griglia disponibile su richiesta).</div>
+                </div>
+
+                <!-- PANINI -->
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 20px; font-size: 0.95rem;">I Panini (Sandwiches)</h4>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Reuben Sandwich</b> <span style="background: #e07b39; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold;">BESTSELLER!</span></div>
+                    <div class="menu-item-desc">Manzo salmistrato affettato (Corned Beef), formaggio svizzero fuso, crauti e salsa russa su pane di segale grigliato. Servito con patatine fritte e cetriolino.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Chicken Salad Sandwich</b></div>
+                    <div class="menu-item-desc">Insalata di pollo grigliato a dadini, maionese alle erbe e senape di Digione, bacon croccante, lattuga e pomodoro su pane multicereali. Servito con patatine fritte.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Tavern Battered Fish Sandwich</b></div>
+                    <div class="menu-item-desc">Filetto di merluzzo pastellato e fritto, salsa tartara, insalata coleslaw saporita su panino ai semi di sesamo. Servito con patatine fritte.</div>
+                </div>
+
+                <!-- HAMBURGER E HOT DOG -->
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 20px; font-size: 0.95rem;">Hamburger & Hot Dog</h4>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Classic Cheeseburger</b></div>
+                    <div class="menu-item-desc">Hamburger di manzo, formaggio americano, lattuga, pomodoro, cipolla rossa su panino al sesamo con patatine.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>The Wrangler Burger</b></div>
+                    <div class="menu-item-desc">Formaggio Cheddar fuso, cipolle saltate, bacon croccante, salsa BBQ e jalapeños su panino al sesamo con patatine.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Blue Cheese Burger</b></div>
+                    <div class="menu-item-desc">Hamburger di manzo, confettura (chutney) di pomodoro dolce-piccante, formaggio erborinato (Blue Cheese), lattuga, pomodoro e cipolla. Con patatine.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>The Pub Hot Dog</b></div>
+                    <div class="menu-item-desc">Hot dog classico servito con crauti saporiti, bacon e patatine fritte.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Coney Island Hot Dog</b></div>
+                    <div class="menu-item-desc">Hot dog affogato in formaggio fuso, chili di manzo, cipolle a dadini. Servito con patatine fritte.</div>
+                </div>
+
+                <!-- SPECIALITÀ -->
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 20px; font-size: 0.95rem;">Le Specialità (Favorites)</h4>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Fish & Chips</b> <span style="background: #1c7a4d; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; font-weight: bold;">SUPER CONSIGLIATO!</span></div>
+                    <div class="menu-item-desc">Filetti di merluzzo pastellato alla birra dorati e croccanti, serviti con patatine fritte, insalata coleslaw e salsa remoulade. Un classico del pub!</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Lechón Asado</b> (Maiale Arrosto Cubano)</div>
+                    <div class="menu-item-desc">Arrosto di maiale marinato agli agrumi in stile cubano, servito con platano fritto, riso bianco e fagioli neri.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Fettuccine Carbonara</b></div>
+                    <div class="menu-item-desc">Versione pub di oltreoceano con pancetta croccante, piselli dolci e crema al parmigiano.</div>
+                </div>
+
+                <!-- DOLCI -->
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 20px; font-size: 0.95rem;">I Dolci (Desserts)</h4>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Carrot & Walnut Cake</b> (Torta Carote e Noci)</div>
+                    <div class="menu-item-desc">Soffice torta speziata di carote e noci con glassa ricca al formaggio dolce.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Classic Apple Pie</b> (Torta di Mele)</div>
+                    <div class="menu-item-desc">Torta di mele calda, servita con una pallina di gelato cremoso alla vaniglia.</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-header"><b>Brownie-Raspberry Swirl Cheesecake</b></div>
+                    <div class="menu-item-desc">Cheesecake setosa variegata al lampone con inserti di morbido brownie al cioccolato e panna montata.</div>
+                </div>
+            </div>
+
+            <!-- TAB TARDA NOTTE -->
+            <div id="menu-latenight" class="menu-tab-content" style="display: none;">
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 10px; font-size: 0.95rem;">Antipasti Notturni (dalle 23:30 alle 04:00)</h4>
+                <div class="menu-item"><div class="menu-item-header"><b>Pretzel Bites</b> con fonduta calda alla birra.</div></div>
+                <div class="menu-item"><div class="menu-item-header"><b>1/2 Dozen Chicken Wings</b> (Alette Buffalo, BBQ o Sweet Chili).</div></div>
+                <div class="menu-item"><div class="menu-item-header"><b>Beef Chili</b> con Cheddar, panna acida e tortilla chips.</div></div>
+                <div class="menu-item"><div class="menu-item-header"><b>Cobb Salad</b> o <b>Caesar Salad</b> (Insalate notturne).</div></div>
+
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 20px; font-size: 0.95rem;">Panini & Piatti Notturni</h4>
+                <div class="menu-item"><div class="menu-item-header"><b>Reuben Sandwich</b> con patatine fritte.</div></div>
+                <div class="menu-item"><div class="menu-item-header"><b>Classic Cheeseburger</b> con patatine fritte.</div></div>
+                <div class="menu-item"><div class="menu-item-header"><b>The Pub Hot Dog</b> con crauti, bacon e patatine.</div></div>
+                <div class="menu-item"><div class="menu-item-header"><b>Fish & Chips</b> merluzzo fritto con patatine e coleslaw.</div></div>
+
+                <h4 style="color: #1c7a4d; border-bottom: 1px dashed #1c7a4d; padding-bottom: 4px; margin-top: 20px; font-size: 0.95rem;">Dolci Notturni</h4>
+                <div class="menu-item"><div class="menu-item-header"><b>Carrot & Walnut Cake</b> o <b>Apple Pie</b> o <b>Cheesecake</b>.</div></div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 12px; background: #f8fafc; border-radius: 14px; font-size: 0.75rem; color: var(--text-muted); text-align: center; border: 1px solid #e2e8f0;">
+                💡 <b>NCL Info</b>: Il servizio e il cibo sono 100% inclusi. Le bevande alcoliche ed analcoliche gassate seguono le tariffe del vostro pacchetto o carta di bordo. Mance del 20% aggiunte automaticamente agli scontrini delle bevande.
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1280,6 +1532,13 @@ function updateCountdown() {
 // ===================== MODAL =====================
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function switchMenuTab(tabId, btn) {
+    document.querySelectorAll('.menu-tab-content').forEach(c => c.style.display = 'none');
+    document.querySelectorAll('.menu-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).style.display = 'block';
+    btn.classList.add('active');
+}
 
 // ===================== AUTO-SELEZIONE GIORNO CORRENTE =====================
 function autoSelectCurrentDay() {
