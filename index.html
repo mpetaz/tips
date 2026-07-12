@@ -1149,29 +1149,40 @@ const ITINERARY_DATA = [
                 maps: "https://www.google.com/maps/search/?api=1&query=Kotor+cruise+terminal"
             },
             {
-                time: "08:00 – 11:30",
+                time: "08:00 – 10:15",
+                badge: "culture",
+                title: "🐈 Mattina: Kotor Old Town",
+                desc: "Sfruttando le ore mattutine più fresche, passeggiate nell'incantevole centro storico medievale. Esplorate le piazzette storiche, la Cattedrale di San Trifone e fate amicizia con i famosi gatti di Kotor prima che arrivi la calca dei turisti!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Kotor+Old+Town"
+            },
+            {
+                time: "10:15 – 13:00",
                 badge: "culture",
                 title: "🚠 Funivia Kotor-Lovćen & Alpine Coaster",
                 img: "img/kotor_bay.png",
-                desc: "Prendete al volo un taxi fuori dal porto per la stazione inferiore della funivia 'Dub' (10 min, ~4.5 km). Salita mozzafiato in funivia (11 min) fino a quota 1348 metri sul Monte Lovćen, dove proverete l'adrenalinica discesa dell'Alpine Coaster su rotaia affacciati sul fiordo!",
+                desc: "Prendete un taxi all'uscita delle mura per raggiungere la stazione inferiore della funivia 'Dub' (10 min, ~4.5 km). Il Martedì la funivia apre alle 10:30. Salirete in gondola (11 min) fino a quota 1348 metri sul Monte Lovćen per la discesa mozzafiato sul bob dell'Alpine Coaster!",
                 maps: "https://www.google.com/maps/search/?api=1&query=Kotor+Cable+Car+Dub+station",
-                expertTip: "🎢 Evitate le code acquistando online i biglietti della funivia e della coaster. Andare all'apertura (08:30) vi permetterà di godervi la coaster in tranquillità prima dell'arrivo delle grandi escursioni dei pullman crociere!"
+                expertTip: "⚠️ ATTENZIONE ORARIO: Il Martedì funivia e coaster aprono alle 10:30 (per manutenzione settimanale). Arrivare per l'apertura vi consente di salire subito ed evitare le code dei pullman delle escursioni organizzate!"
             },
             {
-                time: "11:45 – 14:00",
-                badge: "culture",
-                title: "🐈 Kotor Old Town & Pranzo",
-                desc: "Rientro in taxi a Kotor. Visita dell'affascinante cittadina medievale fortificata, celebre per i suoi gatti, le piazzette e il labirinto di pietra. Potete pranzare in uno dei suggestivi ristoranti all'aperto del centro o rientrare in nave in 5 minuti di tender per pranzare al fresco.",
-                maps: "https://www.google.com/maps/search/?api=1&query=Kotor+Old+Town",
-                expertTip: "🍽️ Posti consigliati per pranzo nell'Old Town: Konoba Scala Santa (la più antica taverna, favolosi frutti di mare) o Astoria."
+                time: "13:00 – 14:30",
+                badge: "food",
+                title: "🍽️ Pranzo: Old Town o in Nave",
+                desc: "Rientrate in taxi a Kotor. Potete pranzare all'aperto in una taverna del centro storico o riprendere il tender di rientro (5 min) per pranzare al fresco a bordo della nave.",
+                isRestaurant: true,
+                alternatives: [
+                    { name: "Konoba Scala Santa", type: "La più antica taverna di Kotor, ideale per gustare frutti di mare eccezionali in piazza." },
+                    { name: "Astoria Restaurant", type: "Tavoli all'aperto in un cortile storico molto caratteristico con ottima cucina locale." }
+                ],
+                maps: "https://www.google.com/maps/search/?api=1&query=Konoba+Scala+Santa+Kotor"
             },
             {
-                time: "14:15 – 16:00",
+                time: "14:30 – 16:00",
                 badge: "beach",
-                title: "🏖️ Relax o Bagno a Kotor Beach",
-                desc: "Se il caldo si fa sentire, camminate per 15 min a nord lungo il mare fino a Kotor Beach (zona Dobrota) per un bagno rinfrescante nel fiordo. Altrimenti potete fare dello shopping di souvenir o salire i primi gradini delle storiche mura cittadine.",
+                title: "🏖️ Pomeriggio: Relax o Bagno a Kotor Beach",
+                desc: "Se il caldo si fa sentire, camminate per 15 min a nord lungo il mare fino a Kotor Beach (Dobrota) per un bagno rinfrescante nel fiordo. Altrimenti potete finire lo shopping di souvenir nell'Old Town.",
                 maps: "https://www.google.com/maps/search/?api=1&query=Kotor+Beach+Montenegro",
-                beachTip: "La spiaggia ha aree libere di ciottoli e bar per un gelato o una bibita prima di ripartire."
+                beachTip: "La spiaggia ha aree libere di ciottoli e bar per un gelato o una bibita prima di risalire."
             },
             {
                 time: "16:00",
