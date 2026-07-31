@@ -598,7 +598,7 @@
                 • Sorpresa di benvenuto in cabina
             </p>
             <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
-                <a href="Carta d'imbarco.pdf" target="_blank" class="btn-maps" style="background:#0284c7; text-decoration:none; width:100%; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Apri Carte d'Imbarco (PDF)</a>
+                <a href="Boarding Pass.pdf" target="_blank" class="btn-maps" style="background:#0284c7; text-decoration:none; width:100%; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Apri Carte d'Imbarco (PDF)</a>
                 <div style="display:flex; gap:8px;">
                     <a href="totale pagamento NCL.pdf" target="_blank" class="btn-maps" style="background:var(--primary); text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Saldo & Cabina</a>
                     <a href="priority access.pdf" target="_blank" class="btn-maps" style="background:#475569; text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Priority Access</a>
@@ -660,6 +660,10 @@
             <div class="expert-note" style="margin-top:10px;">
                 <i class="fas fa-triangle-exclamation"></i> <b>Attenzione:</b> Il biglietto Bologna→Ravenna riporta "NON VALIDO PER VIAGGIARE" — significa che è solo la ricevuta, il titolo di trasporto è il codice digitale. Usa l'app Trenitalia.
             </div>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+                <a href="trenitalia 1.pdf" target="_blank" class="btn-maps" style="background:#b91c1c; text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Treno Moreno (PDF)</a>
+                <a href="trenitalia 2.pdf" target="_blank" class="btn-maps" style="background:#b91c1c; text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Treno Cris (PDF)</a>
+            </div>
         </div>
 
         <div class="train-card" style="border-left-color: var(--secondary);">
@@ -676,6 +680,9 @@
                 </div>
             </div>
             <small style="color:var(--text-muted);">🚄 Italo 9980 Smart · Moreno: Car 10, Posto 3 · Cris: Car 10, Posto 4</small>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+                <a href="italo.pdf" target="_blank" class="btn-maps" style="background:#8b1328; text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Apri Biglietto Italo (PDF)</a>
+            </div>
         </div>
 
         <!-- Check-in online -->
@@ -1052,14 +1059,22 @@ const ITINERARY_DATA = [
                 badge: "transport",
                 title: "Frecciarossa per Bologna",
                 desc: "Treno 9613 da Milano Centrale. Moreno: Car 6 posto 8D · Cris: Car 6 posto 9D. PNR: XZFBG5. Le porte si chiudono 1 minuto prima!",
-                maps: "https://www.google.com/maps/search/?api=1&query=Milano+Centrale+stazione"
+                maps: "https://www.google.com/maps/search/?api=1&query=Milano+Centrale+stazione",
+                html: `<div style="display:flex; gap:8px; margin-top:8px;">
+                    <a href="trenitalia 1.pdf" target="_blank" class="btn-maps" style="background:#b91c1c; text-decoration:none; flex:1; font-size:0.7rem; text-align:center; padding:6px; border-radius:6px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Treno Moreno</a>
+                    <a href="trenitalia 2.pdf" target="_blank" class="btn-maps" style="background:#b91c1c; text-decoration:none; flex:1; font-size:0.7rem; text-align:center; padding:6px; border-radius:6px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Treno Cris</a>
+                </div>`
             },
             {
                 time: "10:05",
                 badge: "transport",
                 title: "Regionale Bologna → Ravenna",
                 desc: "Treno 17547, 2ª classe. Arrivo a Ravenna alle 11:17. Ricordarsi di fare il check-in digitale sull'app di Trenitalia prima di salire!",
-                maps: "https://www.google.com/maps/search/?api=1&query=Bologna+Centrale+stazione"
+                maps: "https://www.google.com/maps/search/?api=1&query=Bologna+Centrale+stazione",
+                html: `<div style="display:flex; gap:8px; margin-top:8px;">
+                    <a href="trenitalia 1.pdf" target="_blank" class="btn-maps" style="background:#b91c1c; text-decoration:none; flex:1; font-size:0.7rem; text-align:center; padding:6px; border-radius:6px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Biglietto Moreno</a>
+                    <a href="trenitalia 2.pdf" target="_blank" class="btn-maps" style="background:#b91c1c; text-decoration:none; flex:1; font-size:0.7rem; text-align:center; padding:6px; border-radius:6px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Biglietto Cris</a>
+                </div>`
             },
             {
                 time: "11:20 – 11:45",
@@ -1430,7 +1445,8 @@ const ITINERARY_DATA = [
                 title: "🚄 Italo 9980 per Milano",
                 desc: "Roma Termini → Milano Rogoredo (15:04). Moreno: Car 10, Posto 3 · Cris: Car 10, Posto 4. Codice biglietto: VJ8UHN. Ambiente Smart.",
                 maps: "https://www.google.com/maps/search/?api=1&query=Roma+Termini+stazione",
-                expertTip: "☕ Sul treno Italo c'è il bar e il servizio al posto in Smart Comfort. Meritato relax dopo 7 notti in crociera!"
+                expertTip: "☕ Sul treno Italo c'è il bar e il servizio al posto in Smart Comfort. Meritato relax dopo 7 notti in crociera!",
+                html: `<a href="italo.pdf" target="_blank" class="btn-maps" style="background:#8b1328; text-decoration:none; width:100%; font-size:0.7rem; text-align:center; padding:8px; border-radius:8px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; margin-top:8px;"><i class="fas fa-file-pdf"></i> Apri Biglietto Italo (PDF)</a>`
             },
             {
                 time: "15:04",
@@ -1543,6 +1559,8 @@ function renderDayContent() {
                 ${ev.beachTip ? `
                     <div class="beach-note"><i class="fas fa-umbrella-beach"></i> ${ev.beachTip}</div>
                 ` : ''}
+
+                ${ev.html ? ev.html : ''}
 
                 <a href="${ev.maps}" target="_blank" class="btn-maps" style="margin-top:12px;">
                     <i class="fas fa-location-dot"></i> Apri in Google Maps
