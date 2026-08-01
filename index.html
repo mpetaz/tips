@@ -685,6 +685,47 @@
             </div>
         </div>
 
+        <!-- Traghetti & Aliscafi -->
+        <h3 style="margin-bottom:15px; color:var(--primary);">🚢 Traghetti & Aliscafi</h3>
+
+        <div class="train-card" style="border-left-color: var(--secondary);">
+            <div class="train-badge" style="background:#fff5ec; color:#92400e;">MESSINA ➔ REGGIO C. · 7 AGO 2026</div>
+            <div class="train-route">
+                <div>
+                    <div class="train-time">13:00</div>
+                    <div class="train-station">Messina</div>
+                </div>
+                <div class="train-arrow"></div>
+                <div style="text-align:right;">
+                    <div class="train-time">17:20</div>
+                    <div class="train-station">Reggio C. (Ritorno)</div>
+                </div>
+            </div>
+            <small style="color:var(--text-muted);">🚢 Liberty Lines · Andata: 13:00 (RVZ871704/TYE960617) · Ritorno: 17:20 (FXC203676/LQI725662)</small>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+                <a href="aliscafo messina.pdf" target="_blank" class="btn-maps" style="background:#0284c7; text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Apri Biglietti Aliscafo (PDF)</a>
+            </div>
+        </div>
+
+        <div class="train-card" style="border-left-color: var(--secondary);">
+            <div class="train-badge" style="background:#fff5ec; color:#92400e;">SALERNO ➔ AMALFI · 8 AGO 2026</div>
+            <div class="train-route">
+                <div>
+                    <div class="train-time">08:40</div>
+                    <div class="train-station">Salerno (Molo Conc.)</div>
+                </div>
+                <div class="train-arrow"></div>
+                <div style="text-align:right;">
+                    <div class="train-time">14:10</div>
+                    <div class="train-station">Amalfi (Ritorno)</div>
+                </div>
+            </div>
+            <small style="color:var(--text-muted);">🚢 Travelmar · Cod. Prenotazione: TRP2641054</small>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+                <a href="travelmar salerno.pdf" target="_blank" class="btn-maps" style="background:#f59e0b; text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-pdf"></i> Apri Biglietti Traghetto (PDF)</a>
+            </div>
+        </div>
+
         <!-- Check-in online -->
         <div class="booking-card" style="border-left: 4px solid var(--accent);">
             <div class="bk-title"><i class="fas fa-circle-check" style="color:var(--accent);"></i> Da Fare Prima della Partenza</div>
@@ -1312,15 +1353,16 @@ const ITINERARY_DATA = [
                 time: "13:00 – 13:30",
                 badge: "transport",
                 title: "Aliscafo per Reggio Calabria 🚢",
-                desc: "Traversata veloce dello Stretto con l'aliscafo Liberty Lines. Arrivo a Reggio Calabria alle 13:30. Biglietti acquistabili online in anticipo.",
-                maps: "https://www.google.com/maps/search/?api=1&query=Porto+di+Reggio+Calabria"
+                desc: "Traversata veloce dello Stretto con l'aliscafo Liberty Lines. Arrivo a Reggio Calabria alle 13:30. Biglietti confermati (RVZ871704 / TYE960617). Presentarsi all'imbarco 15 minuti prima.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Porto+di+Reggio+Calabria",
+                html: `<a href="aliscafo messina.pdf" target="_blank" class="btn-maps" style="background:#0284c7; text-decoration:none; width:100%; font-size:0.7rem; text-align:center; padding:8px; border-radius:8px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; margin-top:8px;"><i class="fas fa-file-pdf"></i> Apri Biglietti Aliscafo (PDF)</a>`
             },
             {
                 time: "13:45 – 15:45",
                 badge: "culture",
                 title: "🏛️ I Bronzi di Riace al Museo Nazionale",
                 img: "img/bronzi_riace.png",
-                desc: "Raggiungete a piedi il Museo Archeologico Nazionale (circa 10-15 min dal porto). Ammirate i celebri Bronzi di Riace e la splendida collezione della Magna Grecia.",
+                desc: "Raggiungete a piedi il Museo Archeologico Nazionale (circa 10-12 min dal porto). Ammirate i celebri Bronzi di Riace e la splendida collezione della Magna Grecia.",
                 maps: "https://www.google.com/maps/search/?api=1&query=Museo+Archeologico+Nazionale+Reggio+Calabria",
                 expertTip: "🎫 La prenotazione non è obbligatoria per i singoli ma è fortemente raccomandata ad agosto per evitare code in biglietteria. Acquistate i biglietti online!"
             },
@@ -1333,17 +1375,18 @@ const ITINERARY_DATA = [
                 expertTip: "La Gelateria Cesare è un'istituzione nazionale, celebre per il suo gelato d'altissima qualità. Il lungomare è stato definito da D'Annunzio 'il più bel chilometro d'Italia'."
             },
             {
-                time: "17:00 – 17:30",
+                time: "17:20 – 17:55",
                 badge: "transport",
-                title: "Aliscafo di rientro per Messina",
-                desc: "Prendete l'aliscafo Liberty Lines da Reggio Calabria per rientrare a Messina alle 17:30. Ampio margine di sicurezza rispetto alla partenza della nave.",
-                maps: "https://www.google.com/maps/search/?api=1&query=Porto+di+Reggio+Calabria"
+                title: "Aliscafo di rientro per Messina 🚢",
+                desc: "Prendete l'aliscafo Liberty Lines delle 17:20 da Reggio Calabria per rientrare a Messina alle 17:55. Biglietti confermati (FXC203676 / LQI725662). Ampio margine rispetto alla partenza della nave.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Porto+di+Reggio+Calabria",
+                html: `<a href="aliscafo messina.pdf" target="_blank" class="btn-maps" style="background:#0284c7; text-decoration:none; width:100%; font-size:0.7rem; text-align:center; padding:8px; border-radius:8px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; margin-top:8px;"><i class="fas fa-file-pdf"></i> Apri Biglietti Aliscafo (PDF)</a>`
             },
             {
-                time: "17:45",
+                time: "18:10",
                 badge: "alert",
                 title: "⚠️ Rientro in Nave",
-                desc: "Partenza programmata alle 19:30. Rientrate a bordo entro le 19:00 per la chiusura dell'imbarco.",
+                desc: "Rientrate a bordo entro le 19:00 per la chiusura dei controlli. Partenza programmata alle 19:30. Ampio margine di sicurezza.",
                 maps: "https://www.google.com/maps/search/?api=1&query=Messina+Cruise+Terminal"
             }
         ]
