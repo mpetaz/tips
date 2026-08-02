@@ -727,6 +727,26 @@
             </div>
         </div>
 
+        <!-- Funivia & Attrazioni -->
+        <h3 style="margin-bottom:15px; color:var(--primary);">🚡 Funivia & Attrazioni</h3>
+
+        <div class="train-card" style="border-left-color: var(--accent);">
+            <div class="train-badge" style="background:#fef2f2; color:#991b1b;">FUNIVIA KOTOR-LOVĆEN · 4 AGO 2026</div>
+            <p style="font-size:0.85rem; color:#475569; margin:10px 0;">
+                🎫 **Biglietti Funivia (Andata/Ritorno)**:<br>
+                • Moreno: Serial N. 628-22-25020<br>
+                • Cristina: Serial N. 628-22-25021<br><br>
+                🦅 **Biglietti Falcon Fly (Attrazione)**:<br>
+                • Moreno: Serial N. 628-22-25022<br>
+                • Cristina: Serial N. 628-22-25023<br><br>
+                *Codice Ordine: 14583532 · Pagamento: €80.00*
+            </p>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+                <a href="Kotor Cable Car - Ticket Order Confirmation.txt" target="_blank" class="btn-maps" style="background:#0284c7; text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-invoice"></i> Apri Biglietti (TXT)</a>
+                <a href="pagamento funivia kotor cable car.png" target="_blank" class="btn-maps" style="background:#475569; text-decoration:none; flex:1; font-size:0.75rem; text-align:center; padding:10px; border-radius:10px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-receipt"></i> Ricevuta (PNG)</a>
+            </div>
+        </div>
+
         <!-- Check-in online -->
         <div class="booking-card" style="border-left: 4px solid var(--accent);">
             <div class="bk-title"><i class="fas fa-circle-check" style="color:var(--accent);"></i> Da Fare Prima della Partenza</div>
@@ -1215,11 +1235,15 @@ const ITINERARY_DATA = [
             {
                 time: "10:15 – 13:00",
                 badge: "culture",
-                title: "🚠 Funivia Kotor-Lovćen & Alpine Coaster",
+                title: "🚠 Funivia Kotor-Lovćen & Falcon Fly / Coaster",
                 img: "img/kotor_bay.png",
-                desc: "Prendete un taxi all'uscita delle mura per raggiungere la stazione inferiore della funivia 'Dub' (10 min, ~4.5 km). Il Martedì la funivia apre alle 10:30. Salirete in gondola (11 min) fino a quota 1348 metri sul Monte Lovćen per la discesa mozzafiato sul bob dell'Alpine Coaster!",
+                desc: "Prendete un taxi all'uscita delle mura per la stazione 'Dub' (10 min). Il Martedì apre alle 10:30. Salirete in cabinovia (11 min) fino a 1348m sul Monte Lovćen. Biglietti Funivia (A/R) e Falcon Fly già acquistati! Presentate i QR code/seriali all'ingresso.",
                 maps: "https://www.google.com/maps/search/?api=1&query=Kotor+Cable+Car+Dub+station",
-                expertTip: "⚠️ ATTENZIONE ORARIO: Il Martedì funivia e coaster aprono alle 10:30 (per manutenzione settimanale). Arrivare per l'apertura vi consente di salire subito ed evitare le code dei pullman delle escursioni organizzate!"
+                expertTip: "⚠️ ORDINE CABLE CAR: Ordine N. 14583532. Biglietti Funivia (Seriali: 628-22-25020 / 25021) e Falcon Fly (Seriali: 628-22-25022 / 25023) già pronti!",
+                html: `<div style="display:flex; gap:8px; margin-top:8px;">
+                    <a href="Kotor Cable Car - Ticket Order Confirmation.txt" target="_blank" class="btn-maps" style="background:#0284c7; text-decoration:none; flex:1; font-size:0.7rem; text-align:center; padding:8px; border-radius:8px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-file-invoice"></i> Apri Biglietti (TXT)</a>
+                    <a href="pagamento funivia kotor cable car.png" target="_blank" class="btn-maps" style="background:#475569; text-decoration:none; flex:1; font-size:0.7rem; text-align:center; padding:8px; border-radius:8px; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-receipt"></i> Ricevuta (PNG)</a>
+                </div>`
             },
             {
                 time: "13:00 – 14:30",
