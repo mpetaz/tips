@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Costa Smeralda · Mini Crociera Novembre 2026 🛳️</title>
+
+    <!-- Social & Preview -->
+    <meta property="og:title" content="Costa Smeralda · Moreno & Cris 🚢">
+    <meta property="og:description" content="Travel Companion & Agenzia Viaggi Digitale: Costa Smeralda 7-12 Novembre 2026. Savona, Marsiglia, Barcellona, Civitavecchia/Tarquinia.">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon & Icons -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛳️</text></svg>">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #002b49;         /* Blu profondo Costa */
+            --primary-light: #0d4a75;
+            --costa-yellow: #fdb913;    /* Giallo oro Costa Crociere */
+            --secondary: #e25822;       /* Terracotta / tramonto */
+            --accent: #0284c7;          /* Azzurro mediterraneo */
+            --success: #10b981;         /* Verde smeraldo */
+            --danger: #dc2626;          /* Allerta rientro nave */
+            --bg: #f8fafc;              /* Grigio chiaro sfumato */
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow: 0 12px 28px -6px rgba(0, 43, 73, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 35px -5px rgba(0, 43, 73, 0.18);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+
+        h1, h2, h3, h4, .font-heading { font-family: 'Outfit', sans-serif; }
+
+        /* ---- HEADER DINAMICO ---- */
+        header {
+            position: relative;
+            min-height: 380px;
+            background: linear-gradient(175deg, rgba(0, 43, 73, 0.85) 0%, rgba(2, 132, 199, 0.75) 50%, rgba(253, 185, 19, 0.85) 100%),
+                        radial-gradient(circle at 80% 20%, #fdb913 0%, transparent 40%),
+                        #002b49;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px 20px 45px;
+            color: white;
+            border-bottom-left-radius: 36px;
+            border-bottom-right-radius: 36px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .header-decor {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 180px;
+            height: 180px;
+            background: rgba(253, 185, 19, 0.15);
+            border-radius: 50%;
+            filter: blur(25px);
+            pointer-events: none;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .hero-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .hero-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.92;
+            font-weight: 400;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .hero-badge-deal {
+            background: #fdb913;
+            color: #002b49;
+            font-weight: 800;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Countdown Box */
+        .countdown {
+            display: flex;
+            gap: 12px;
+            background: rgba(0, 20, 40, 0.45);
+            backdrop-filter: blur(14px);
+            padding: 12px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            width: fit-content;
+        }
+
+        .cd-item { text-align: center; min-width: 48px; }
+        .cd-val { display: block; font-size: 1.35rem; font-weight: 800; font-family: 'Outfit'; color: #ffffff; }
+        .cd-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.75); font-weight: 600; }
+
+        /* Quick Info Pill */
+        .quick-cabin-pill {
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* ---- NAVIGATION MENU ---- */
+        .nav-wrapper {
+            padding: 0 15px;
+            margin-top: -26px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .main-nav {
+            display: flex;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            scrollbar-width: none;
+            gap: 4px;
+        }
+        .main-nav::-webkit-scrollbar { display: none; }
+
+        .nav-btn {
+            flex: 1 0 auto;
+            padding: 10px 14px;
+            text-align: center;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .nav-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 43, 73, 0.25);
+        }
+
+        /* ---- CONTAINER & PAGES ---- */
+        .container { padding: 20px 18px 40px; max-width: 720px; margin: 0 auto; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeInSlide 0.35s ease-out forwards; }
+
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- DATE RIBBON (ITINERARY) ---- */
+        .date-ribbon {
+            display: flex;
+            overflow-x: auto;
+            padding: 4px 4px 16px;
+            gap: 10px;
+            scrollbar-width: none;
+            margin-bottom: 12px;
+        }
+        .date-ribbon::-webkit-scrollbar { display: none; }
+
+        .date-chip {
+            flex: 0 0 76px;
+            background: #ffffff;
+            padding: 10px 6px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.25s ease;
+        }
+        .date-chip.active {
+            border-color: var(--costa-yellow);
+            background: #fffdf5;
+            box-shadow: 0 6px 14px rgba(253, 185, 19, 0.25);
+            transform: translateY(-2px);
+        }
+        .date-chip .day-num { display: block; font-size: 1.25rem; font-weight: 800; color: var(--primary); line-height: 1.1; font-family: 'Outfit'; }
+        .date-chip .day-name { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-top: 2px; }
+        .date-chip .day-port { font-size: 0.65rem; font-weight: 600; color: var(--accent); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* Day Overview Card */
+        .day-overview {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            border: 1px solid #dbeafe;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .day-overview-title { font-size: 1.4rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
+        .day-overview-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+        .port-times-badge {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 16px;
+            text-align: right;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .port-times-badge .times { font-size: 0.85rem; font-weight: 800; color: var(--primary); }
+        .port-times-badge .all-aboard { font-size: 0.7rem; font-weight: 800; color: var(--danger); text-transform: uppercase; display: block; margin-top: 2px; }
+
+        /* ---- TIMELINE & EVENT CARDS ---- */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px dashed #cbd5e1;
+            margin-left: 10px;
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow);
+            position: relative;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .event-card:hover { transform: translateY(-2px); }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 20px;
+            width: 14px;
+            height: 14px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 0 2px var(--primary);
+            z-index: 10;
+        }
+        .event-card.alert-card::before { background: var(--danger); box-shadow: 0 0 0 2px var(--danger); }
+        .event-card.special-card::before { background: var(--costa-yellow); box-shadow: 0 0 0 2px var(--costa-yellow); }
+        .event-card.relax-card::before { background: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+
+        .event-body { padding: 18px 20px; }
+
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .event-time {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.3px;
+        }
+        .event-time.alert { color: var(--danger); font-size: 0.82rem; }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .badge-tour { background: #fef3c7; color: #92400e; }
+        .badge-culture { background: #e0f2fe; color: #0369a1; }
+        .badge-food { background: #fdf2f8; color: #be185d; }
+        .badge-transport { background: #f0fdf4; color: #15803d; }
+        .badge-ship { background: #eff6ff; color: #1d4ed8; }
+        .badge-alert { background: #fee2e2; color: #b91c1c; }
+
+        .event-title {
+            font-size: 1.18rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+            line-height: 1.25;
+        }
+
+        .event-desc {
+            font-size: 0.88rem;
+            color: #334155;
+            line-height: 1.55;
+            margin-bottom: 14px;
+        }
+
+        .tip-box {
+            background: #f8fafc;
+            border-left: 3px solid var(--costa-yellow);
+            padding: 10px 14px;
+            border-radius: 0 14px 14px 0;
+            font-size: 0.8rem;
+            color: #475569;
+            margin-bottom: 12px;
+            line-height: 1.45;
+        }
+        .tip-box strong { color: var(--primary); }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-map {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1 1 auto;
+            padding: 10px 14px;
+            background: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+        .btn-map:hover { background: #1d4ed8; }
+
+        .btn-file {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1 1 auto;
+            padding: 10px 14px;
+            background: #0284c7;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+        .btn-file:hover { background: #0369a1; }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1 1 auto;
+            padding: 10px 14px;
+            background: #f1f5f9;
+            color: #334155;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* ---- AGENZIA VIAGGI GUIDE PAGE ---- */
+        .agency-hero {
+            background: linear-gradient(135deg, #002b49 0%, #0d5c91 100%);
+            color: white;
+            padding: 22px;
+            border-radius: 26px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .agency-hero h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+        .agency-hero p { font-size: 0.88rem; opacity: 0.9; }
+
+        .port-guide-card {
+            background: white;
+            border-radius: 24px;
+            padding: 22px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+        }
+
+        .port-guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+
+        .port-guide-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .port-guide-tag {
+            background: #e0f2fe;
+            color: #0284c7;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .guide-step {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .guide-step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: 'Outfit';
+        }
+        .guide-step-content h4 { font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+        .guide-step-content p { font-size: 0.84rem; color: #475569; line-height: 1.5; }
+
+        .highlight-box {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 16px;
+            padding: 14px;
+            margin: 16px 0;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+        .highlight-box strong { color: #78350f; }
+
+        /* ---- NAVE PAGE (COSTA SMERALDA) ---- */
+        .ship-specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .spec-item {
+            background: white;
+            padding: 14px;
+            border-radius: 18px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+        }
+        .spec-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+        .spec-val { font-size: 1.1rem; font-weight: 800; color: var(--primary); font-family: 'Outfit'; margin-top: 2px; }
+
+        .ship-attraction-card {
+            background: white;
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .attraction-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: #eff6ff;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .attraction-info h4 { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+        .attraction-info p { font-size: 0.82rem; color: #64748b; line-height: 1.4; }
+        .attraction-deck { font-size: 0.7rem; font-weight: 800; color: var(--costa-yellow); background: #002b49; padding: 2px 8px; border-radius: 8px; display: inline-block; margin-top: 4px; }
+
+        /* ---- DOCUMENTI PAGE ---- */
+        .doc-section-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px; }
+
+        .booking-summary-card {
+            background: white;
+            border-radius: 22px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--costa-yellow);
+        }
+        .b-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.86rem;
+        }
+        .b-row:last-child { border-bottom: none; }
+        .b-label { color: var(--text-muted); }
+        .b-val { font-weight: 700; color: var(--text-main); text-align: right; }
+        .b-val.highlight { color: var(--secondary); font-size: 0.95rem; }
+
+        .file-tile {
+            background: white;
+            border-radius: 18px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+        .file-tile:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+        .file-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+        .file-icon.pdf { background: #fee2e2; color: #dc2626; }
+        .file-icon.img { background: #e0f2fe; color: #0284c7; }
+        .file-icon.qr { background: #fef3c7; color: #d97706; }
+        .file-info { flex-grow: 1; }
+        .file-info h4 { font-size: 0.92rem; font-weight: 700; color: var(--primary); }
+        .file-info p { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* ---- CREW PAGE ---- */
+        .crew-card {
+            background: white;
+            border-radius: 22px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .crew-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            font-family: 'Outfit';
+            flex-shrink: 0;
+        }
+        .crew-details h3 { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 2px; }
+        .crew-details p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+        .club-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-top: 4px;
+        }
+        .club-silver { background: #e2e8f0; color: #334155; }
+        .club-bronze { background: #fed7aa; color: #9a3412; }
+
+        /* ---- NOTES & DIARIO PAGE ---- */
+        .note-input-box {
+            background: white;
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .note-textarea {
+            width: 100%;
+            height: 90px;
+            border: 1px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            resize: none;
+            outline: none;
+            margin-bottom: 10px;
+        }
+        .note-textarea:focus { border-color: var(--accent); }
+        .btn-add-note {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* ---- BOTTOM FLOATING BAR ---- */
+        .floating-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #e2e8f0;
+            padding: 10px 20px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .sos-status { font-size: 0.78rem; color: #475569; }
+        .sos-status strong { color: var(--primary); display: block; font-size: 0.85rem; }
+        .btn-sos {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ---- MODALS ---- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 20, 40, 0.65);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box {
+            background: white;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.25s ease;
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+        .modal-title { font-size: 1.25rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .modal-close {
+            background: #f1f5f9;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .modal-body { font-size: 0.9rem; line-height: 1.6; color: #334155; }
+        .modal-body h4 { font-size: 1rem; font-weight: 700; color: var(--primary); margin: 16px 0 6px; }
+
+        .tel-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+    <div class="header-decor"></div>
+    <div class="hero-tag">
+        <i class="fas fa-ship" style="color:var(--costa-yellow);"></i> Costa Smeralda · Mini Crociera
+    </div>
+    <h1 class="hero-title">Ciao Socio! 🛳️</h1>
+    <div class="hero-subtitle">
+        <span>Moreno & Cristina</span> · <span>7 – 12 Novembre 2026</span>
+        <span class="hero-badge-deal">Super Last Minute €498!</span>
+    </div>
+
+    <!-- Countdown partenza -->
+    <div class="countdown" id="countdown">
+        <div class="cd-item"><span class="cd-val" id="days">00</span><span class="cd-label">Giorni</span></div>
+        <div class="cd-item"><span class="cd-val" id="hours">00</span><span class="cd-label">Ore</span></div>
+        <div class="cd-item"><span class="cd-val" id="minutes">00</span><span class="cd-label">Minuti</span></div>
+        <div class="cd-item"><span class="cd-val" id="seconds">00</span><span class="cd-label">Secondi</span></div>
+    </div>
+
+    <div class="quick-cabin-pill">
+        <i class="fas fa-door-open" style="color:var(--costa-yellow);"></i>
+        <span>Cabina: <b>4324</b> (Vista Mare) · Ponte 4 <i>Palermo</i></span>
+    </div>
+</header>
+
+<!-- ===================== NAVIGATION ===================== -->
+<div class="nav-wrapper">
+    <nav class="main-nav">
+        <div class="nav-btn active" onclick="switchPage('itinerary', this)"><i class="fas fa-calendar-alt"></i> Itinerario</div>
+        <div class="nav-btn" onclick="switchPage('agency', this)"><i class="fas fa-compass"></i> Guida Scali</div>
+        <div class="nav-btn" onclick="switchPage('ship', this)"><i class="fas fa-anchor"></i> Costa Smeralda</div>
+        <div class="nav-btn" onclick="switchPage('docs', this)"><i class="fas fa-ticket-alt"></i> Documenti</div>
+        <div class="nav-btn" onclick="switchPage('crew', this)"><i class="fas fa-users"></i> Crew</div>
+        <div class="nav-btn" onclick="switchPage('notes', this)"><i class="fas fa-pen-to-square"></i> Diario</div>
+    </nav>
+</div>
+
+<!-- ===================== PAGINA 1: ITINERARIO ===================== -->
+<div id="itinerary" class="page active">
+    <div class="container">
+        <!-- Ribbon Date -->
+        <div class="date-ribbon" id="dateRibbon"></div>
+        <!-- Contenuto dinamico del giorno -->
+        <div id="dayContent"></div>
+    </div>
+</div>
+
+<!-- ===================== PAGINA 2: GUIDA SCALI / AGENZIA VIAGGI ===================== -->
+<div id="agency" class="page">
+    <div class="container">
+        <div class="agency-hero">
+            <h2><i class="fas fa-briefcase"></i> La Tua Agenzia di Viaggio Digitale</h2>
+            <p>Piani logistici curati nei minimi dettagli per ogni scalo, come uscire dai porti senza spendere fortune in shuttle Costa e tempi certi di rientro a bordo!</p>
+        </div>
+
+        <!-- FOCUS 1: CIVITAVECCHIA & TARQUINIA -->
+        <div class="port-guide-card" id="guide-tarquinia">
+            <div class="port-guide-header">
+                <div>
+                    <h3 class="port-guide-title"><i class="fas fa-landmark" style="color:#e25822;"></i> Civitavecchia ➔ Tarquinia</h3>
+                    <p style="font-size:0.8rem; color:#64748b;">Mercoledì 11 Novembre · Sosta 08:30 – 19:00 (Tutti a bordo: 18:30)</p>
+                </div>
+                <span class="port-guide-tag" style="background:#fef3c7; color:#92400e;">Gita Consigliata</span>
+            </div>
+
+            <div class="highlight-box">
+                <i class="fas fa-star" style="color:#d97706;"></i> <strong>Perché Tarquinia è la scelta perfetta:</strong>
+                Dista solo 20 km da Civitavecchia (15 minuti di treno!), niente stress del traffico o delle corse a Roma, e custodisce un patrimonio etrusco UNESCO tra i più importanti del pianeta!
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">1</div>
+                <div class="guide-step-content">
+                    <h4>Dal Molo alla Stazione FS Civitavecchia</h4>
+                    <p>Appena sbarcati, prendete la <b>navetta gratuita del porto</b> fino al Cruise Terminal di <i>Largo della Pace</i> (5-7 min). Da lì potete raggiungere la stazione ferroviaria a piedi con una bella passeggiata sul lungomare di circa 15 minuti, oppure con la linea bus urbana CSP (biglietto €1,50 sul bus).</p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">2</div>
+                <div class="guide-step-content">
+                    <h4>Treno Regionale Civitavecchia ➔ Tarquinia (15 min)</h4>
+                    <p>Prendete il treno regionale per Pisa/Grosseto. Il tragitto dura appena <b>14-17 minuti</b> e il biglietto costa solo <b>€ 2,40</b> a tratta a persona. I treni partono con frequenza regolare (consigliati i treni tra le 09:15 e le 10:15).</p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">3</div>
+                <div class="guide-step-content">
+                    <h4>Dalla Stazione di Tarquinia al Centro & Necropoli</h4>
+                    <p>La stazione FS di Tarquinia si trova in pianura a circa 2,5 km dal colle medievale. Nel piazzale della stazione ferma il <b>bus urbano Eusepi</b> (linea Stazione ➔ Barriera San Giusto / Centro, ~€1,10, 8 minuti) che vi porta direttamente alle porte del centro storico e di Palazzo Vitelleschi.</p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">4</div>
+                <div class="guide-step-content">
+                    <h4>Cosa Visitare a Tarquinia</h4>
+                    <p>
+                        • <b>Necropoli Etrusca dei Monterozzi (UNESCO):</b> Oltre 200 tombe a camera scavate nella roccia con affreschi straordinari del VI-II sec. a.C. Da non perdere: <i>Tomba dei Leopardi</i>, <i>delle Leonesse</i> e <i>della Caccia e Pesca</i>.<br>
+                        • <b>Palazzo Vitelleschi (Museo Nazionale Etrusco):</b> Nel centro storico, stupendo palazzo nobiliare che ospita i famosi <b>Cavalli Alati</b> in terracotta, sarcofagi scolpiti e reperti ellenici.<br>
+                        • <b>Borgo Medievale & Torri:</b> Piazza Cavour, la Chiesa romanica di Santa Maria in Castello e i belvedere verso il mare.
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">5</div>
+                <div class="guide-step-content">
+                    <h4>Pranzo Tipico della Tuscia</h4>
+                    <p>Fermatevi in una trattoria tipica per gustare i sapori della Maremma laziale: pappardelle al cinghiale, acquacotta tarquiniese, carciofi alla giudia o formaggi pecorini accompagnati da un bicchiere di Cerveteri o Tarquinia DOC.</p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num" style="background:var(--success);">6</div>
+                <div class="guide-step-content">
+                    <h4>Rientro in Sicurezza alla Nave</h4>
+                    <p>Prendete il treno di ritorno da Tarquinia intorno alle <b>15:30 – 16:30</b>. Sarete alla stazione di Civitavecchia per le 16:45 – 17:00, con quasi <b>2 ore di anticipo</b> sul "Tutti a bordo" delle 18:30. Zero stress, massima tranquillità!</p>
+                </div>
+            </div>
+
+            <div class="action-btns">
+                <a href="https://www.google.com/maps/search/?api=1&query=Necropoli+dei+Monterozzi+Tarquinia" target="_blank" class="btn-map"><i class="fas fa-map-marker-alt"></i> Mappa Necropoli</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Museo+Archeologico+Nazionale+Tarquiniense+Palazzo+Vitelleschi" target="_blank" class="btn-secondary"><i class="fas fa-landmark"></i> Mappa Museo</a>
+                <a href="https://www.trenitalia.com" target="_blank" class="btn-secondary"><i class="fas fa-train"></i> Orari Trenitalia</a>
+            </div>
+        </div>
+
+        <!-- FOCUS 2: BARCELLONA (TOUR BORN & MUSEO DIOCESANO) -->
+        <div class="port-guide-card" id="guide-barcellona">
+            <div class="port-guide-header">
+                <div>
+                    <h3 class="port-guide-title"><i class="fas fa-city" style="color:#0284c7;"></i> Barcellona & Born</h3>
+                    <p style="font-size:0.8rem; color:#64748b;">Lunedì 9 Novembre · Sosta 08:00 – 18:00 (Tutti a bordo: 17:30)</p>
+                </div>
+                <span class="port-guide-tag" style="background:#e0f2fe; color:#0369a1;">Prenotazioni Attive</span>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">1</div>
+                <div class="guide-step-content">
+                    <h4>Portbus T3 dal Molo al Monumento a Colombo</h4>
+                    <p>Costa Smeralda attracca al molo <i>Moll d'Adossat</i>. All'uscita del terminal prendete il bus navetta portuale blu <b>Portbus (T3)</b>: costa solo ~€3 a tratta (o €4,50 A/R) e vi deposita in 10 minuti ai piedi del Monumento a Colombo / Drassanes. Evitate il transfer Costa che costa oltre il triplo!</p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">2</div>
+                <div class="guide-step-content">
+                    <h4>Risalita verso Plaça de Catalunya</h4>
+                    <p>Dalla statua di Colombo avete due opzioni: una piacevole camminata su <b>La Rambla</b> (circa 20-25 minuti a piedi) ammirando la Boqueria e il Liceu, oppure prendere la Metro Linea 3 (Verde) da <i>Drassanes</i> fino a <i>Catalunya</i> (3 fermate, 5 minuti).</p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num" style="background:var(--secondary);">3</div>
+                <div class="guide-step-content">
+                    <h4>Ore 11:30 · Free Tour GuruWalk Born</h4>
+                    <p>
+                        <b>Punto d'incontro:</b> Plaça de Catalunya, 21 (all'uscita, vicino El Corte Inglés).<br>
+                        <b>Tour:</b> <i>"Barcellona Ribelle: segreti, arte e rivoluzioni nel cuore del Born"</i> in lingua Italiana per 2 adulti. Vi porterà a scoprire gli angoli più segreti e autentici della città antica!
+                    </p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">4</div>
+                <div class="guide-step-content">
+                    <h4>Pomeriggio · Museu Diocesà & Barcino (Ref. 110415252)</h4>
+                    <p>Dopo il tour e una sosta tapas nel Born, visita al <b>Museu Diocesà de Barcelona</b> (Pla de la Seu, nella storica Casa de l'Almoina, proprio davanti alla Cattedrale Gotica). Riferimento prenotazione: <b>110415252</b>.</p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num" style="background:var(--danger);">5</div>
+                <div class="guide-step-content">
+                    <h4>Rientro alla Nave entro le 16:45</h4>
+                    <p>Scendete lungo la Rambla verso la statua di Colombo per riprendere il Portbus T3 verso il terminal. Presentarsi al bus entro le 16:45 per essere comodamente a bordo prima del "Tutti a bordo" delle 17:30.</p>
+                </div>
+            </div>
+
+            <div class="action-btns">
+                <a href="freetorubarcellona.png" target="_blank" class="btn-file"><i class="fas fa-image"></i> Voucher Tour Born</a>
+                <a href="basilica barcellona ticket.png" target="_blank" class="btn-file"><i class="fas fa-ticket-alt"></i> Biglietto Museo Diocesà</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Pl.+de+Catalunya,+21,+Barcelona" target="_blank" class="btn-map"><i class="fas fa-map-marker-alt"></i> Meeting Point</a>
+            </div>
+        </div>
+
+        <!-- FOCUS 3: MARSIGLIA (LOGISTICA & OPZIONI FLESSIBILI) -->
+        <div class="port-guide-card" id="guide-marsiglia">
+            <div class="port-guide-header">
+                <div>
+                    <h3 class="port-guide-title"><i class="fas fa-anchor" style="color:#10b981;"></i> Marsiglia</h3>
+                    <p style="font-size:0.8rem; color:#64748b;">Domenica 8 Novembre · Sosta 08:30 – 18:00 (Tutti a bordo: 17:30)</p>
+                </div>
+                <span class="port-guide-tag" style="background:#ecfdf5; color:#047857;">Opzioni Flessibili</span>
+            </div>
+
+            <div class="highlight-box">
+                <i class="fas fa-info-circle"></i> <strong>Logistica Porto di Marsiglia (Môle Léon Gourret - Porte 4):</strong>
+                La nave attracca al terminal MPCT. Per raggiungere il centro senza la costosa navetta Costa:
+                <br>• <b>Navetta Gratuita del Porto:</b> Attiva nei giorni di crociera, collega l'interno del porto all'uscita / Joliette.
+                <br>• <b>Bus RTM 35T:</b> Dalla Porte 4 fino a <i>Place de la Joliette</i> (circa €1,70). Da Joliette metro M2 o tram per il Porto Vecchio.
+                <br>• <b>Taxi / Uber:</b> Diretto al Vieux-Port in 15 minuti (~€20-€25 a corsa totale).
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">A</div>
+                <div class="guide-step-content">
+                    <h4>Opzione 1: Vieux-Port, Quartiere Le Panier & MuCEM</h4>
+                    <p>Passeggiata nel cuore più antico e pittoresco di Marsiglia: i vicoli colorati de <i>Le Panier</i>, le botteghe del vero Sapone di Marsiglia artigianale, la Cattedrale de la Major e la scenografica passerella del MuCEM / Fort Saint-Jean con vista mare.</p>
+                </div>
+            </div>
+
+            <div class="guide-step">
+                <div class="guide-step-num">B</div>
+                <div class="guide-step-content">
+                    <h4>Opzione 2: Salita panoramica a Notre-Dame de la Garde</h4>
+                    <p>Dal Vieux-Port prendete il comodo <b>Petit Train</b> turistico o il bus urbano n. 60 per salire sulla collina della "Bonne Mère". Vista a 360° mozzafiato su tutta la rada di Marsiglia e sul castello d'If!</p>
+                </div>
+            </div>
+
+            <div class="action-btns">
+                <a href="https://www.google.com/maps/search/?api=1&query=Vieux-Port+Marseille" target="_blank" class="btn-map"><i class="fas fa-map-marker-alt"></i> Mappa Vieux-Port</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Le+Panier+Marseille" target="_blank" class="btn-secondary"><i class="fas fa-store"></i> Quartiere Le Panier</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== PAGINA 3: COSTA SMERALDA ===================== -->
+<div id="ship" class="page">
+    <div class="container">
+        <h2 style="color:var(--primary); font-size:1.4rem; font-weight:800; margin-bottom:14px;"><i class="fas fa-ship"></i> L'Ammiraglia Costa Smeralda</h2>
+        
+        <div class="ship-specs-grid">
+            <div class="spec-item">
+                <div class="spec-label">Stazza / Lunghezza</div>
+                <div class="spec-val">185.000 t · 337m</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-label">Alimentazione Green</div>
+                <div class="spec-val">GNL Pulito</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-label">La Vostra Cabina</div>
+                <div class="spec-val" style="color:var(--secondary);">4324 (Ponte 4)</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-label">Ponti Passeggeri</div>
+                <div class="spec-val">20 Ponti d'Italia</div>
+            </div>
+        </div>
+
+        <h3 style="color:var(--primary); font-size:1.1rem; font-weight:800; margin: 20px 0 12px;"><i class="fas fa-compass"></i> I Luoghi Iconici da non perdere</h3>
+
+        <div class="ship-attraction-card">
+            <div class="attraction-icon"><i class="fas fa-theater-masks"></i></div>
+            <div class="attraction-info">
+                <h4>Il Colosseo</h4>
+                <p>Il cuore pulsante su 3 ponti! Schermi digitali ad altissima risoluzione, spettacoli acrobatici dal vivo, musica e l'esclusivo Campari Bar.</p>
+                <span class="attraction-deck">Ponti 6, 7, 8 Centro</span>
+            </div>
+        </div>
+
+        <div class="ship-attraction-card">
+            <div class="attraction-icon"><i class="fas fa-stairs"></i></div>
+            <div class="attraction-info">
+                <h4>Piazza di Spagna & Passerella di Cristallo</h4>
+                <p>Spettacolare gradinata a cielo aperto affacciata sulla scia della nave. In cima, pavimento in vetro trasparente per camminare sospesi sul mare!</p>
+                <span class="attraction-deck">Ponti 8, 9, 10 Poppa</span>
+            </div>
+        </div>
+
+        <div class="ship-attraction-card">
+            <div class="attraction-icon"><i class="fas fa-shoe-prints"></i></div>
+            <div class="attraction-info">
+                <h4>Passeggiata Volare</h4>
+                <p>Il punto più alto della nave a 65 metri sul livello del mare. Panorama a 360 gradi indimenticabile, perfetto all'ora del tramonto.</p>
+                <span class="attraction-deck">Ponte 16 Cielo</span>
+            </div>
+        </div>
+
+        <div class="ship-attraction-card">
+            <div class="attraction-icon"><i class="fas fa-utensils"></i></div>
+            <div class="attraction-info">
+                <h4>Ristoranti Inclusi & Gastronomia</h4>
+                <p>Buffet <i>La Sagra dei Sapori</i>, ristoranti alla carta <i>Il Meneghino</i>, <i>La Colombina</i>, <i>Il Rugantino</i>. E per un peccato di gola: la vera pizza napoletana Pummid'Oro e il Nutella Bar!</p>
+                <span class="attraction-deck">Ponti 5, 6, 7 e 8</span>
+            </div>
+        </div>
+
+        <div class="ship-attraction-card">
+            <div class="attraction-icon"><i class="fas fa-spa"></i></div>
+            <div class="attraction-info">
+                <h4>Solemio Spa & Relax</h4>
+                <p>Piscina per talassoterapia, sauna vista mare, stanza del sale e stanza della neve per ritemprarsi dopo le escursioni a terra.</p>
+                <span class="attraction-deck">Ponte 16</span>
+            </div>
+        </div>
+
+        <div class="highlight-box" style="margin-top:20px;">
+            <i class="fas fa-mobile-alt"></i> <strong>Consiglio Furbizia a Bordo:</strong> Appena la nave si stacca dalla banchina mettete subito lo smartphone in <b>Modalità Aereo</b> per evitare costosi addebiti satellitari marittimi, poi attivate il Wi-Fi per collegarvi alla rete gratuita di bordo con la <i>Costa App</i> (per consultare il diario di bordo e chattare tra voi).
+        </div>
+    </div>
+</div>
+
+<!-- ===================== PAGINA 4: DOCUMENTI & LINK ===================== -->
+<div id="docs" class="page">
+    <div class="container">
+        <h2 style="color:var(--primary); font-size:1.4rem; font-weight:800; margin-bottom:14px;"><i class="fas fa-folder-open"></i> Documenti & Prenotazioni</h2>
+
+        <!-- Dati Prenotazione Costa -->
+        <div class="booking-summary-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="color:var(--primary); font-size:1.1rem; font-weight:800;"><i class="fas fa-anchor"></i> Costa Crociere Smeralda</h3>
+                <span style="background:#ecfdf5; color:#047857; font-weight:800; font-size:0.75rem; padding:3px 10px; border-radius:12px;"><i class="fas fa-check-circle"></i> Confermata</span>
+            </div>
+            <div class="b-row"><span class="b-label">Numero Prenotazione</span><span class="b-val highlight"># 36851158</span></div>
+            <div class="b-row"><span class="b-label">Cabina Assegnata</span><span class="b-val" style="color:var(--primary); font-weight:800;">4324 · Cat. E2 Vista Mare</span></div>
+            <div class="b-row"><span class="b-label">Ponte Cabina</span><span class="b-val">Ponte 04 · Palermo</span></div>
+            <div class="b-row"><span class="b-label">Porto Partenza / Arrivo</span><span class="b-val">Savona (Palacrociere)</span></div>
+            <div class="b-row"><span class="b-label">Durata</span><span class="b-val">6 Giorni · 5 Notti (7-12 Nov)</span></div>
+            <div class="b-row"><span class="b-label">Trattamento</span><span class="b-val">Pensione Completa (All meals included)</span></div>
+            <div class="b-row"><span class="b-label">Totale Pagato Crociera</span><span class="b-val" style="color:#10b981; font-weight:800;">€ 498,00 (Saldo €0,00)</span></div>
+        </div>
+
+        <!-- Dati Treno Trenitalia -->
+        <div class="booking-summary-card" style="border-top-color:#dc2626;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="color:var(--primary); font-size:1.1rem; font-weight:800;"><i class="fas fa-train" style="color:#dc2626;"></i> Trenitalia · Milano Centrale ⇄ Savona</h3>
+                <span style="background:#ecfdf5; color:#047857; font-weight:800; font-size:0.75rem; padding:3px 10px; border-radius:12px;"><i class="fas fa-check-circle"></i> Confermati</span>
+            </div>
+            <div class="b-row"><span class="b-label">Codice PNR</span><span class="b-val highlight" style="color:#dc2626; font-size:1.05rem; letter-spacing:1px;">ZRRYBN</span></div>
+            <div class="b-row"><span class="b-label">Andata (Sab 07/11)</span><span class="b-val"><b>IC 1549</b> · 09:30 ➔ 12:05</span></div>
+            <div class="b-row"><span class="b-label">Posti Andata</span><span class="b-val">Carrozza 8 · Posti 2D, 3D (2ª Cl. Easy)</span></div>
+            <div class="b-row"><span class="b-label">Ritorno (Gio 12/11)</span><span class="b-val"><b>IC 631</b> · 10:33 ➔ 13:00</span></div>
+            <div class="b-row"><span class="b-label">Posti Ritorno</span><span class="b-val">Carrozza 4 · Posti 9A (Moreno) & 10A (Cris)</span></div>
+            <div class="b-row"><span class="b-label">Spesa Totale Treni</span><span class="b-val">€ 72,80 (€33 andata + €39,80 ritorno)</span></div>
+        </div>
+
+        <h3 class="doc-section-title"><i class="fas fa-paperclip"></i> File & Voucher Pronti al Tap</h3>
+
+        <a href="treno mi savona.png" target="_blank" class="file-tile">
+            <div class="file-icon qr"><i class="fas fa-train" style="color:#dc2626;"></i></div>
+            <div class="file-info">
+                <h4>Biglietti Treno Trenitalia (A/R)</h4>
+                <p>PNR: ZRRYBN · Intercity 1549 (07 Nov) & Intercity 631 (12 Nov)</p>
+            </div>
+            <i class="fas fa-arrow-up-right-from-square" style="color:#94a3b8;"></i>
+        </a>
+
+        <a href="documenti viaggio.pdf" target="_blank" class="file-tile">
+            <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
+            <div class="file-info">
+                <h4>Documenti di Viaggio & Etichette Bagaglio</h4>
+                <p>4 Pagine · Dettagli imbarco e etichette per cabina 4324</p>
+            </div>
+            <i class="fas fa-arrow-up-right-from-square" style="color:#94a3b8;"></i>
+        </a>
+
+        <a href="conferma.pdf" target="_blank" class="file-tile">
+            <div class="file-icon pdf"><i class="fas fa-receipt"></i></div>
+            <div class="file-info">
+                <h4>Conferma Prenotazione Costa</h4>
+                <p>Ricevuta pagamento intero con carta di credito</p>
+            </div>
+            <i class="fas fa-arrow-up-right-from-square" style="color:#94a3b8;"></i>
+        </a>
+
+        <a href="programma.pdf" target="_blank" class="file-tile">
+            <div class="file-icon pdf"><i class="fas fa-route"></i></div>
+            <div class="file-info">
+                <h4>Programma Ufficiale di Viaggio</h4>
+                <p>Orari dettagliati di navigazione e condizioni Costa</p>
+            </div>
+            <i class="fas fa-arrow-up-right-from-square" style="color:#94a3b8;"></i>
+        </a>
+
+        <a href="freetorubarcellona.png" target="_blank" class="file-tile">
+            <div class="file-icon qr"><i class="fas fa-walking"></i></div>
+            <div class="file-info">
+                <h4>GuruWalk Tour Born Barcellona</h4>
+                <p>Lunedì 9 Nov ore 11:30 · Plaça de Catalunya 21</p>
+            </div>
+            <i class="fas fa-image" style="color:#94a3b8;"></i>
+        </a>
+
+        <a href="basilica barcellona ticket.png" target="_blank" class="file-tile">
+            <div class="file-icon img"><i class="fas fa-landmark"></i></div>
+            <div class="file-info">
+                <h4>Museu Diocesà Barcellona (Barcino)</h4>
+                <p>Prenotazione Ref. #110415252 · Casa de l'Almoina</p>
+            </div>
+            <i class="fas fa-image" style="color:#94a3b8;"></i>
+        </a>
+
+        <h3 class="doc-section-title"><i class="fas fa-phone-alt"></i> Contatti di Assistenza & Emergenza</h3>
+        <a href="tel:+390198388145" class="tel-link">
+            <span><i class="fas fa-building" style="color:var(--primary); margin-right:8px;"></i> Palacrociere Savona Desk</span>
+            <span>+39 019 8388145</span>
+        </a>
+        <a href="tel:+393351312172" class="tel-link">
+            <span><i class="fas fa-ambulance" style="color:var(--danger); margin-right:8px;"></i> Emergenza Porto Savona (Mobile)</span>
+            <span>+39 335 1312172</span>
+        </a>
+        <a href="tel:800902902" class="tel-link">
+            <span><i class="fas fa-headset" style="color:var(--accent); margin-right:8px;"></i> Numero Verde Costa Crociere</span>
+            <span>800 902 902</span>
+        </a>
+    </div>
+</div>
+
+<!-- ===================== PAGINA 5: CREW ===================== -->
+<div id="crew" class="page">
+    <div class="container">
+        <h2 style="color:var(--primary); font-size:1.4rem; font-weight:800; margin-bottom:14px;"><i class="fas fa-heart" style="color:#e11d48;"></i> La Coppia in Viaggio</h2>
+
+        <div class="crew-card">
+            <div class="crew-avatar" style="background:var(--primary);">M</div>
+            <div class="crew-details">
+                <h3>Mario Moreno Petazzi</h3>
+                <p>Comandante in Capo · C|Club: <b>2324430</b></p>
+                <span class="club-badge club-silver"><i class="fas fa-award"></i> Livello Silver</span>
+            </div>
+        </div>
+
+        <div class="crew-card">
+            <div class="crew-avatar" style="background:#e11d48;">C</div>
+            <div class="crew-details">
+                <h3>Cristina Guaita</h3>
+                <p>Prima Ufficiale & Navigatrice · C|Club: <b>2324428</b></p>
+                <span class="club-badge club-bronze"><i class="fas fa-award"></i> Livello Bronze</span>
+            </div>
+        </div>
+
+        <div class="booking-summary-card" style="margin-top:20px;">
+            <h4 style="color:var(--primary); font-size:1rem; font-weight:800; margin-bottom:8px;"><i class="fas fa-suitcase-rolling"></i> Checklist Prima di Partire</h4>
+            <div class="b-row"><span class="b-label"><i class="fas fa-id-card"></i> Documenti Identità</span><span class="b-val" style="color:#10b981;"><i class="fas fa-check"></i> Carte d'identità valide</span></div>
+            <div class="b-row"><span class="b-label"><i class="fas fa-tags"></i> Etichette Stampate</span><span class="b-val" style="color:var(--secondary);">Applicare alla valigia</span></div>
+            <div class="b-row"><span class="b-label"><i class="fas fa-plug"></i> Caricabatterie & Powerbank</span><span class="b-val">Nel bagaglio a mano</span></div>
+            <div class="b-row"><span class="b-label"><i class="fas fa-pills"></i> Medicinali personali</span><span class="b-val">Nel bagaglio a mano</span></div>
+            <div class="b-row"><span class="b-label"><i class="fas fa-ban"></i> Vietato a bordo</span><span class="b-val" style="color:var(--danger); font-size:0.75rem;">Ferri da stiro, bollitori</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== PAGINA 6: NOTE & DIARIO ===================== -->
+<div id="notes" class="page">
+    <div class="container">
+        <h2 style="color:var(--primary); font-size:1.4rem; font-weight:800; margin-bottom:14px;"><i class="fas fa-pen-nib"></i> Diario di Bordo & Note</h2>
+        
+        <div class="note-input-box">
+            <textarea id="newNoteText" class="note-textarea" placeholder="Scrivi un appunto, una spesa o un ricordo qui..."></textarea>
+            <button class="btn-add-note" onclick="addNote()"><i class="fas fa-plus"></i> Salva Appunto sul Telefono</button>
+        </div>
+
+        <div id="notesList"></div>
+    </div>
+</div>
+
+<!-- ===================== BOTTOM BAR SOS ===================== -->
+<div class="floating-bottom-bar">
+    <div class="sos-status">
+        <span id="floatingTripStatus">Costa Smeralda · Partenza 7 Nov</span>
+        <strong>Cabina 4324 · Savona</strong>
+    </div>
+    <button class="btn-sos" onclick="openModal('modal-sos')">
+        <i class="fas fa-phone"></i> SOS & Porti
+    </button>
+</div>
+
+<!-- ===================== MODAL SOS ===================== -->
+<div class="modal-overlay" id="modal-sos">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-life-ring" style="color:var(--danger);"></i> Numeri Rapidi & Info</h3>
+            <button class="modal-close" onclick="closeModal('modal-sos')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:0.85rem; color:#64748b; margin-bottom:12px;">Accesso immediato a tutti i contatti di assistenza e orari di imbarco:</p>
+            
+            <a href="tel:+390198388145" class="tel-link">
+                <span>🏢 Palacrociere Savona</span>
+                <span>+39 019 8388145</span>
+            </a>
+            <a href="tel:+393351312172" class="tel-link">
+                <span>🚨 Emergenza Savona (Cell.)</span>
+                <span>+39 335 1312172</span>
+            </a>
+            <a href="tel:800902902" class="tel-link">
+                <span>📞 Costa Crociere Clienti</span>
+                <span>800 902 902</span>
+            </a>
+
+            <h4>Regola d'Oro del Crocierista:</h4>
+            <div class="highlight-box">
+                <b>TUTTI A BORDO:</b> Si sale sempre a bordo <b>30 minuti prima</b> dell'orario di partenza indicato! La nave non aspetta i ritardatari.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+// --- DATI ITINERARIO COSTA SMERALDA (7-12 NOVEMBRE 2026) ---
+const ITINERARY = [
+    {
+        id: 0,
+        dayNum: "07",
+        dayName: "SAB",
+        fullDate: "Sabato 7 Novembre 2026",
+        portName: "Savona (Imbarco)",
+        arrive: "–",
+        depart: "17:30",
+        allAboard: "16:30",
+        overview: "Inizio dell'avventura! Treno Intercity da Milano e imbarco su Costa Smeralda a Savona.",
+        events: [
+            {
+                time: "09:00 – 12:05",
+                badge: { text: "Treno Andata", class: "badge-transport" },
+                title: "🚄 Treno Intercity 1549: Milano Centrale ➔ Savona",
+                desc: "Partenza ore <b>09:30</b> da Milano Centrale con arrivo a Savona alle ore <b>12:05</b> (durata 2h 35m).<br>• <b>Carrozza 8 · Posti 2D e 3D</b> (2ª Classe Easy, ME&YOU)<br>• PNR: <b>ZRRYBN</b> · Codice CP: <b>222903</b> · Biglietto: #3002706925",
+                tip: "Presentarsi al gate di Milano Centrale con il biglietto su smartphone. Le porte del treno si chiudono 1 minuto prima (09:29)!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Milano+Centrale",
+                cardClass: "special-card"
+            },
+            {
+                time: "12:05 – 13:00",
+                badge: { text: "Trasferimento", class: "badge-transport" },
+                title: "Arrivo a Savona FS ➔ Palacrociere Terminal",
+                desc: "Dalla stazione di Savona rapido trasferimento al Palacrociere (10 min in taxi o bus urbano TPL). Consegna valigie agli addetti con etichette per Cabina 4324 già applicate!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Palacrociere+Savona"
+            },
+            {
+                time: "13:00 – 15:00",
+                badge: { text: "Nave & Pranzo", class: "badge-ship" },
+                title: "Imbarco, Cabina 4324 & Primo Pranzo a Buffet",
+                desc: "Salite a bordo dell'ammiraglia! Scoprite la vostra cabina Vista Mare (Ponte 4 Palermo) e salite al buffet <i>La Sagra dei Sapori</i> (Ponte 8) per un ricco pranzo vista mare.",
+                tip: "Dalla cabina aprite la Costa App per registrarvi all'esercitazione di emergenza obbligatoria."
+            },
+            {
+                time: "16:30",
+                badge: { text: "Importante", class: "badge-alert" },
+                title: "⚠️ Tutti a Bordo a Savona",
+                desc: "Tutti i passeggeri devono essere regolarmente a bordo. Preparazione alle manovre di salpamento.",
+                cardClass: "alert-card"
+            },
+            {
+                time: "17:30",
+                badge: { text: "Salpamento", class: "badge-ship" },
+                title: "Costa Smeralda salpa verso Marsiglia 🌊",
+                desc: "Godetevi la partenza dalla poppa su Piazza di Spagna ammirando il tramonto sul golfo ligure.",
+                cardClass: "relax-card"
+            },
+            {
+                time: "20:30",
+                badge: { text: "Cena & Show", class: "badge-food" },
+                title: "Cena di Gala e Spettacolo al Colosseo",
+                desc: "Cena servita al ristorante principale e grande spettacolo acrobatico e musicale serale al Colosseo.",
+                tip: "Concludete la prima serata con un drink d'autore al Lounge Campari."
+            }
+        ]
+    },
+    {
+        id: 1,
+        dayNum: "08",
+        dayName: "DOM",
+        fullDate: "Domenica 8 Novembre 2026",
+        portName: "Marsiglia (Francia)",
+        arrive: "08:30",
+        depart: "18:00",
+        allAboard: "17:30",
+        overview: "Fascino provenzale, profumo di sapone e la maestosa basilica di Notre-Dame de la Garde.",
+        events: [
+            {
+                time: "08:30",
+                badge: { text: "Arrivo", class: "badge-ship" },
+                title: "Arrivo in rada e attracco a Marsiglia (Môle Léon Gourret)",
+                desc: "La nave manovra e attracca al terminal MPCT (Porte 4). Colazione panoramica con vista sul porto e le scogliere francesi."
+            },
+            {
+                time: "09:30 – 10:30",
+                badge: { text: "Trasferimento", class: "badge-transport" },
+                title: "Uscita dal Porto: Navetta Gratuita o Bus 35T per Joliette",
+                desc: "Prendete la comoda navetta portuale gratuita fino all'uscita o il bus 35T (€1,70) fino a Place de la Joliette, oppure taxi condiviso direttamente al Porto Vecchio (~€20 in totale).",
+                tip: "Dalla Joliette potete prendere la metro M2 fino a Vieux-Port o fare una bella camminata ammirando la Cattedrale de la Major.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Vieux-Port+Marseille"
+            },
+            {
+                time: "10:30 – 13:00",
+                badge: { text: "Cultura", class: "badge-culture" },
+                title: "Quartiere Le Panier & La Bonne Mère",
+                desc: "Perdetevi tra i vicoli variopinti di Le Panier con le sue storiche fabbriche artigianali di sapone di Marsiglia. In alternativa, prendete il Petit Train dal Vieux-Port per salire a Notre-Dame de la Garde.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Le+Panier+Marseille"
+            },
+            {
+                time: "13:00 – 14:30",
+                badge: { text: "Gusto", class: "badge-food" },
+                title: "Pranzo al Porto Vecchio o Rientro in Nave",
+                desc: "Assaggiate una fresca bouillabaisse, panisse provenzali e frutti di mare in una brasserie sul porto, oppure rientrate per pranzare a bordo.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Quai+du+Port+Marseille"
+            },
+            {
+                time: "14:30 – 16:30",
+                badge: { text: "Relax", class: "badge-tour" },
+                title: "Passeggiata al MuCEM & Fort Saint-Jean",
+                desc: "Ammirate la spettacolare architettura contemporanea in cemento traforato del MuCEM e la passerella sospesa sul mare che porta alla fortezza medievale.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Mucem+Marseille"
+            },
+            {
+                time: "17:00 – 17:30",
+                badge: { text: "Rientro", class: "badge-alert" },
+                title: "⚠️ Tutti a Bordo a Marsiglia (Ore 17:30)",
+                desc: "Rientro al terminal crociere MPCT. La nave salpa alle 18:00 in rotta verso la Catalogna!",
+                cardClass: "alert-card"
+            }
+        ]
+    },
+    {
+        id: 2,
+        dayNum: "09",
+        dayName: "LUN",
+        fullDate: "Lunedì 9 Novembre 2026",
+        portName: "Barcellona (Spagna)",
+        arrive: "08:00",
+        depart: "18:00",
+        allAboard: "17:30",
+        overview: "Giornata speciale con il Free Tour del Born già prenotato e visita culturale al Museo Diocesano!",
+        events: [
+            {
+                time: "08:00 – 09:30",
+                badge: { text: "Arrivo", class: "badge-ship" },
+                title: "Risveglio a Barcellona & Colazione con Vista",
+                desc: "La nave attracca al Palacruceros (Moll d'Adossat). Scesi a terra, prendete il Portbus (T3) blu fino a Plaça de les Drassanes / Monumento a Colombo (€3/4.50).",
+                maps: "https://www.google.com/maps/search/?api=1&query=Mirador+de+Colom+Barcelona"
+            },
+            {
+                time: "09:45 – 11:15",
+                badge: { text: "Passeggiata", class: "badge-tour" },
+                title: "La Rambla & Plaça de Catalunya",
+                desc: "Passeggiate in salita lungo La Rambla attraversando il cuore di Barcellona fino a raggiungere Plaça de Catalunya, punto di ritrovo del tour.",
+                tip: "Potete fare una breve sosta al celebre mercato della Boqueria per una spremuta di frutta fresca.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Pl.+de+Catalunya,+21,+Barcelona"
+            },
+            {
+                time: "11:30 – 13:30",
+                badge: { text: "PRENOTATO", class: "badge-culture" },
+                title: "⭐ GuruWalk Tour: Barcellona Ribelle & Il Born",
+                desc: "Punto di incontro alle 11:30 in Plaça de Catalunya 21. Tour a piedi in Italiano alla scoperta dei segreti, delle rivoluzioni e degli angoli nascosti del quartiere Born per 2 adulti.",
+                tip: "Vedi immagine conferma allegata nei documenti di viaggio.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Pl.+de+Catalunya,+21,+Ciutat+Vella,+08002+Barcelona",
+                cardClass: "special-card"
+            },
+            {
+                time: "13:30 – 15:00",
+                badge: { text: "Tapas", class: "badge-food" },
+                title: "Pranzo Tapas nel Quartiere Born",
+                desc: "Gusta autentiche tapas catalane nei locali caratteristici del Born, come El Xampanyet, la Cervecería Catalana o tra i banchi del Mercat de Santa Caterina.",
+                maps: "https://www.google.com/maps/search/?api=1&query=El+Xampanyet+Barcelona"
+            },
+            {
+                time: "15:00 – 16:15",
+                badge: { text: "PRENOTATO", class: "badge-culture" },
+                title: "🏛️ Museu Diocesà & Barcino Romana (Ref. 110415252)",
+                desc: "Visita al Museo Diocesano nella storica Casa de l'Almoina, proprio davanti alla Cattedrale Gotica. Percorso tra arte sacra e le mura romane di Barcino.",
+                tip: "Riferimento prenotazione: 110415252 inviata per email.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Museu+Diocesa+de+Barcelona"
+            },
+            {
+                time: "16:45 – 17:30",
+                badge: { text: "Rientro", class: "badge-alert" },
+                title: "⚠️ Tutti a Bordo a Barcellona (Ore 17:30)",
+                desc: "Rientro al Monumento a Colombo e Portbus T3 per il molo. La nave salpa alle 18:00. Non arrivate all'ultimo!",
+                cardClass: "alert-card"
+            }
+        ]
+    },
+    {
+        id: 3,
+        dayNum: "10",
+        dayName: "MAR",
+        fullDate: "Martedì 10 Novembre 2026",
+        portName: "In Navigazione 🌊",
+        arrive: "–",
+        depart: "–",
+        allAboard: "–",
+        overview: "Una giornata intera dedicata al relax, al benessere e alle meraviglie di Costa Smeralda.",
+        events: [
+            {
+                time: "09:00 – 11:00",
+                badge: { text: "Relax", class: "badge-ship" },
+                title: "Colazione Lenta & Passeggiata Volare",
+                desc: "Godetevi una ricca colazione con vista sull'orizzonte infinito. Passeggiata sul punto panoramico più alto a 65 metri d'altezza al Ponte 16.",
+                cardClass: "relax-card"
+            },
+            {
+                time: "11:00 – 13:00",
+                badge: { text: "Benessere", class: "badge-culture" },
+                title: "Piscina Coperta Settimo Cielo & Idromassaggi",
+                desc: "Mattinata rilassante al coperto sotto il tetto in cristallo: acqua riscaldata, vasche idromassaggio e lettini prendisole al riparo da ogni brezza d'autunno."
+            },
+            {
+                time: "13:00 – 14:30",
+                badge: { text: "Gusto", class: "badge-food" },
+                title: "Pranzo Gourmet & Gelato Artigianale",
+                desc: "Pranzo al ristorante servito o buffet gastronomico, seguito da una sosta all'Amarillo Gelateria per un autentico gelato artigianale italiano."
+            },
+            {
+                time: "15:30 – 18:00",
+                badge: { text: "SPA", class: "badge-tour" },
+                title: "Pomeriggio Solemio SPA o Torneo a Bordo",
+                desc: "Tempo per farsi coccolare nel centro benessere Solemio: piscina talassoterapica, stanza del sale e idromassaggi rilassanti."
+            },
+            {
+                time: "18:30 – 23:00",
+                badge: { text: "Serata Speciale", class: "badge-ship" },
+                title: "Aperol Spritz al Tramonto & Notte al Casinò",
+                desc: "Aperitivo con vista sulla scia al Sunset Bar o all'Aperol Spritz Bar, cena raffinata e serata di intrattenimento al Colosseo e musica dal vivo."
+            }
+        ]
+    },
+    {
+        id: 4,
+        dayNum: "11",
+        dayName: "MER",
+        fullDate: "Mercoledì 11 Novembre 2026",
+        portName: "Civitavecchia / Tarquinia 🏛️",
+        arrive: "08:30",
+        depart: "19:00",
+        allAboard: "18:30",
+        overview: "Escursione speciale a Tarquinia: Necropoli etrusca UNESCO, Museo Nazionale di Palazzo Vitelleschi e borgo antico!",
+        events: [
+            {
+                time: "08:30 – 09:30",
+                badge: { text: "Sbarco", class: "badge-transport" },
+                title: "Arrivo a Civitavecchia & Navetta Porto",
+                desc: "Sbarco rapido e navetta portuale gratuita fino a Largo della Pace. Da lì passeggiata di 15 min sul lungomare fino alla stazione FS di Civitavecchia.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Stazione+Civitavecchia"
+            },
+            {
+                time: "09:45 – 10:15",
+                badge: { text: "Treno", class: "badge-transport" },
+                title: "Treno Regionale per Tarquinia (15 minuti!)",
+                desc: "Breve e piacevole viaggio in treno regionale lungo la costa tirrenica (soli €2,40 a biglietto). Arrivo alla stazione di Tarquinia.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Stazione+Tarquinia"
+            },
+            {
+                time: "10:30 – 12:45",
+                badge: { text: "UNESCO", class: "badge-culture" },
+                title: "⭐ Necropoli Etrusca dei Monterozzi",
+                desc: "Visita al celebre sito patrimonio UNESCO: tombe etrusche sotterranee scavate nel tufo con affreschi originali incredibili dai colori ancora vivi (Tomba dei Leopardi, delle Leonesse, dei Giocolieri).",
+                tip: "Biglietto combinato disponibile con il Museo Archeologico Nazionale.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Necropoli+dei+Monterozzi+Tarquinia",
+                cardClass: "special-card"
+            },
+            {
+                time: "13:00 – 14:30",
+                badge: { text: "Pranzo Maremmano", class: "badge-food" },
+                title: "Pranzo Tipico nel Borgo Antico di Tarquinia",
+                desc: "Pranzo in una caratteristica osteria tra i vicoli medievali per assaggiare pasta fatta a mano con sugo di cinghiale o l'acquacotta maremmana.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Piazza+Cavour+Tarquinia"
+            },
+            {
+                time: "14:30 – 16:00",
+                badge: { text: "Capolavoro", class: "badge-culture" },
+                title: "Palazzo Vitelleschi & I Cavalli Alati",
+                desc: "Visita al Museo Archeologico Nazionale Etrusco ospitato nel magnifico Palazzo Vitelleschi. Ammirate i leggendari Cavalli Alati in terracotta del tempio dell'Ara della Regina.",
+                maps: "https://www.google.com/maps/search/?api=1&query=Palazzo+Vitelleschi+Tarquinia"
+            },
+            {
+                time: "16:15 – 17:00",
+                badge: { text: "Rientro", class: "badge-transport" },
+                title: "Treno di Ritorno per Civitavecchia",
+                desc: "Bus Eusepi dalla piazza del centro alla stazione e treno di rientro per Civitavecchia. Rientro comodo al porto con largo anticipo!",
+                cardClass: "relax-card"
+            },
+            {
+                time: "18:00 – 18:30",
+                badge: { text: "Rientro", class: "badge-alert" },
+                title: "⚠️ Tutti a Bordo a Civitavecchia (Ore 18:30)",
+                desc: "Ultimo rientro a bordo. La nave salpa alle ore 19:00 per l'ultima tratta verso Savona.",
+                cardClass: "alert-card"
+            }
+        ]
+    },
+    {
+        id: 5,
+        dayNum: "12",
+        dayName: "GIO",
+        fullDate: "Giovedì 12 Novembre 2026",
+        portName: "Savona (Sbarco)",
+        arrive: "08:30",
+        depart: "–",
+        allAboard: "–",
+        overview: "Rientro a Savona, sbarco al Palacrociere e treno Intercity di rientro per Milano.",
+        events: [
+            {
+                time: "07:30 – 08:30",
+                badge: { text: "Colazione", class: "badge-food" },
+                title: "Ultima Colazione Vista Golfo di Savona",
+                desc: "Prima colazione a bordo ammirando l'ingresso nel porto di Savona e la fortezza del Priamar."
+            },
+            {
+                time: "08:30 – 09:45",
+                badge: { text: "Sbarco", class: "badge-transport" },
+                title: "Sbarco al Palacrociere & Ritiro Bagagli",
+                desc: "Sbarco dalla nave e ritiro valigie nel salone del terminal Palacrociere.",
+                cardClass: "special-card"
+            },
+            {
+                time: "09:45 – 10:20",
+                badge: { text: "Tradizione", class: "badge-food" },
+                title: "Verso la Stazione FS di Savona (con Focaccia Calda!)",
+                desc: "Spostamento in taxi o bus verso la Stazione Ferroviaria di Savona. Tempo perfetto per acquistare la celebre focaccia ligure per il viaggio di ritorno!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Stazione+Savona"
+            },
+            {
+                time: "10:33 – 13:00",
+                badge: { text: "Treno Ritorno", class: "badge-transport" },
+                title: "🚄 Treno Intercity 631: Savona ➔ Milano Centrale",
+                desc: "Partenza ore <b>10:33</b> dalla stazione di Savona con arrivo a Milano Centrale alle ore <b>13:00</b> (durata 2h 27m).<br>• <b>Carrozza 4 · Posto 9A (Moreno) e Posto 10A (Cristina)</b><br>• PNR: <b>ZRRYBN</b> · Codici CP: <b>398902 / 398901</b> · Biglietti: #3002706924 e #3002706923",
+                tip: "Arrivo a Milano Centrale alle 13:00. Fine della fantastica minicrociera!",
+                maps: "https://www.google.com/maps/search/?api=1&query=Milano+Centrale",
+                cardClass: "relax-card"
+            }
+        ]
+    }
+];
+
+// --- GESTIONE PAGINE ---
+function switchPage(pageId, btnEl) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    
+    const target = document.getElementById(pageId);
+    if (target) target.classList.add('active');
+    if (btnEl) btnEl.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// --- RENDER ITINERARIO ---
+let currentDayIdx = 0;
+
+function renderDateRibbon() {
+    const ribbon = document.getElementById('dateRibbon');
+    if (!ribbon) return;
+    
+    ribbon.innerHTML = ITINERARY.map((day, idx) => `
+        <div class="date-chip ${idx === currentDayIdx ? 'active' : ''}" onclick="selectDay(${idx})">
+            <span class="day-num">${day.dayNum}</span>
+            <span class="day-name">${day.dayName}</span>
+            <span class="day-port">${day.portName.split(' ')[0]}</span>
+        </div>
+    `).join('');
+}
+
+function selectDay(idx) {
+    currentDayIdx = idx;
+    renderDateRibbon();
+    renderDayContent(idx);
+}
+
+function renderDayContent(idx) {
+    const container = document.getElementById('dayContent');
+    if (!container) return;
+    const day = ITINERARY[idx];
+
+    container.innerHTML = `
+        <div class="day-overview">
+            <div>
+                <h3 class="day-overview-title">${day.portName}</h3>
+                <p class="day-overview-subtitle">${day.fullDate}</p>
+                <p style="font-size:0.8rem; color:#475569; margin-top:6px;">${day.overview}</p>
+            </div>
+            <div class="port-times-badge">
+                <div class="times">
+                    ${day.arrive !== '–' ? `Arr: ${day.arrive}` : 'Partenza'}<br>
+                    ${day.depart !== '–' ? `Part: ${day.depart}` : 'Arrivo'}
+                </div>
+                ${day.allAboard !== '–' ? `<span class="all-aboard"><i class="fas fa-clock"></i> Bordo: ${day.allAboard}</span>` : ''}
+            </div>
+        </div>
+
+        <div class="timeline">
+            ${day.events.map(ev => `
+                <div class="event-card ${ev.cardClass || ''}">
+                    <div class="event-body">
+                        <div class="event-meta">
+                            <span class="event-time ${ev.cardClass === 'alert-card' ? 'alert' : ''}">
+                                <i class="fas fa-clock"></i> ${ev.time}
+                            </span>
+                            <span class="badge ${ev.badge.class}">${ev.badge.text}</span>
+                        </div>
+                        <h4 class="event-title">${ev.title}</h4>
+                        <p class="event-desc">${ev.desc}</p>
+                        ${ev.tip ? `<div class="tip-box"><i class="fas fa-lightbulb" style="color:var(--costa-yellow);"></i> ${ev.tip}</div>` : ''}
+                        ${ev.maps ? `
+                            <div class="action-btns">
+                                <a href="${ev.maps}" target="_blank" class="btn-map">
+                                    <i class="fas fa-location-dot"></i> Apri in Google Maps
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+// --- COUNTDOWN ALLA PARTENZA (7 NOVEMBRE 2026, 17:30) ---
+function initCountdown() {
+    const departureDate = new Date('2026-11-07T17:30:00+01:00').getTime();
+
+    function update() {
+        const now = new Date().getTime();
+        const diff = departureDate - now;
+
+        if (diff <= 0) {
+            document.getElementById('days').innerText = "00";
+            document.getElementById('hours').innerText = "00";
+            document.getElementById('minutes').innerText = "00";
+            document.getElementById('seconds').innerText = "00";
+            document.getElementById('floatingTripStatus').innerText = "Crociera in Corso! 🛳️";
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('days').innerText = String(days).padStart(2, '0');
+        document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+        document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+    }
+
+    update();
+    setInterval(update, 1000);
+}
+
+// --- MODAL UTILS ---
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.classList.add('active');
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.classList.remove('active');
+}
+
+// Chiudi cliccando fuori
+window.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal-overlay')) {
+        e.target.classList.remove('active');
+    }
+});
+
+// --- GESTIONE NOTE & DIARIO LOCALE ---
+function loadNotes() {
+    const list = document.getElementById('notesList');
+    if (!list) return;
+    const notes = JSON.parse(localStorage.getItem('costa_smeralda_notes') || '[]');
+    
+    if (notes.length === 0) {
+        list.innerHTML = `<p style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:20px;">Nessun appunto ancora salvato. Scrivi il tuo primo pensiero di viaggio!</p>`;
+        return;
+    }
+
+    list.innerHTML = notes.map((n, idx) => `
+        <div style="background:white; padding:14px 16px; border-radius:16px; margin-bottom:10px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+                <p style="font-size:0.88rem; color:#1e293b; margin-bottom:4px;">${n.text}</p>
+                <span style="font-size:0.7rem; color:#94a3b8;">${n.date}</span>
+            </div>
+            <button onclick="deleteNote(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:4px 8px; font-size:0.85rem;">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+function addNote() {
+    const txt = document.getElementById('newNoteText');
+    if (!txt || !txt.value.trim()) return;
+
+    const notes = JSON.parse(localStorage.getItem('costa_smeralda_notes') || '[]');
+    const d = new Date();
+    const dateStr = d.toLocaleDateString('it-IT') + ' ' + d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+
+    notes.unshift({ text: txt.value.trim(), date: dateStr });
+    localStorage.setItem('costa_smeralda_notes', JSON.stringify(notes));
+    txt.value = '';
+    loadNotes();
+}
+
+function deleteNote(idx) {
+    const notes = JSON.parse(localStorage.getItem('costa_smeralda_notes') || '[]');
+    notes.splice(idx, 1);
+    localStorage.setItem('costa_smeralda_notes', JSON.stringify(notes));
+    loadNotes();
+}
+
+// Inizializzazione al caricamento
+document.addEventListener('DOMContentLoaded', () => {
+    initCountdown();
+    renderDateRibbon();
+    renderDayContent(0);
+    loadNotes();
+});
+</script>
+
+</body>
+</html>
