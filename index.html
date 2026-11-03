@@ -414,6 +414,29 @@
         }
         .btn-file:hover { background: #0369a1; }
 
+        .btn-drive {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #1fa463 0%, #0f9d58 50%, #4285f4 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 18px;
+            font-size: 1rem;
+            font-weight: 800;
+            box-shadow: 0 10px 25px -5px rgba(15, 157, 88, 0.4);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-drive:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px -5px rgba(15, 157, 88, 0.5);
+        }
+
         .btn-secondary {
             display: inline-flex;
             align-items: center;
@@ -828,6 +851,7 @@
         <div class="nav-btn" onclick="switchPage('ship', this)"><i class="fas fa-anchor"></i> Costa Smeralda</div>
         <div class="nav-btn" onclick="switchPage('docs', this)"><i class="fas fa-ticket-alt"></i> Documenti</div>
         <div class="nav-btn" onclick="switchPage('crew', this)"><i class="fas fa-users"></i> Crew</div>
+        <div class="nav-btn" onclick="switchPage('photos', this)"><i class="fas fa-camera"></i> Foto Live</div>
         <div class="nav-btn" onclick="switchPage('notes', this)"><i class="fas fa-pen-to-square"></i> Diario</div>
     </nav>
 </div>
@@ -1243,7 +1267,60 @@
     </div>
 </div>
 
-<!-- ===================== PAGINA 6: NOTE & DIARIO ===================== -->
+<!-- ===================== PAGINA 6: FOTO LIVE & DRIVE ===================== -->
+<div id="photos" class="page">
+    <div class="container">
+        <div class="booking-summary-card" style="text-align:center; padding:28px 20px; border-top-color:#0f9d58; margin-bottom:22px;">
+            <div style="font-size:3.5rem; line-height:1; margin-bottom:12px;">📸</div>
+            <h2 style="color:var(--primary); font-size:1.4rem; font-weight:800; margin-bottom:6px;">Rullino Condiviso di Viaggio</h2>
+            <p style="font-size:0.88rem; color:#475569; max-width:440px; margin:0 auto 22px; line-height:1.55;">
+                Tutte le foto e i video della crociera in un unico posto! Caricate qui gli scatti di Savona, Marsiglia, Barcellona, Tarquinia e della splendida Costa Smeralda.
+            </p>
+
+            <a href="https://drive.google.com/drive/folders/1LBI49KYAxO0J2bppo8oWJiaLwJ8W9rLh?usp=sharing" id="mainDriveLink" target="_blank" class="btn-drive">
+                <i class="fab fa-google-drive" style="font-size:1.3rem;"></i> APRI CARTELLA CONDIVISA GOOGLE DRIVE
+            </a>
+            
+            <p style="font-size:0.75rem; color:#94a3b8; margin-top:12px;">
+                <i class="fas fa-shield-alt"></i> Accesso sincronizzato per Moreno & Cristina (iOS & Android)
+            </p>
+        </div>
+
+        <div class="port-guide-card" style="margin-bottom:20px;">
+            <h3 style="font-size:1.1rem; font-weight:800; color:var(--primary); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-cloud-arrow-up" style="color:#0284c7;"></i> Come caricare le foto in 3 secondi?
+            </h3>
+            <div class="guide-step" style="margin-bottom:12px;">
+                <div class="guide-step-num">1</div>
+                <div class="guide-step-content">
+                    <h4>Tocca il pulsante verde sopra</h4>
+                    <p>Si apre direttamente l'app <b>Google Drive</b> sul tuo smartphone (oppure la cartella web nel browser).</p>
+                </div>
+            </div>
+            <div class="guide-step" style="margin-bottom:12px;">
+                <div class="guide-step-num">2</div>
+                <div class="guide-step-content">
+                    <h4>Tocca l'icona "+" (Nuovo / Carica)</h4>
+                    <p>Seleziona dalla galleria le foto o i video scattati durante la giornata da aggiungere al rullino di viaggio.</p>
+                </div>
+            </div>
+            <div class="guide-step">
+                <div class="guide-step-num" style="background:var(--success);">3</div>
+                <div class="guide-step-content">
+                    <h4>Massima Risoluzione Originale</h4>
+                    <p>A differenza di WhatsApp, su Google Drive le foto non vengono compresse: restano perfette in altissima definizione!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <i class="fas fa-lightbulb" style="color:var(--costa-yellow);"></i> <strong>Consiglio Connettività:</strong>
+            Potete scattare liberamente durante le escursioni a terra o in nave e avviare il caricamento su Google Drive quando siete sotto copertura 4G/5G nei porti o con il Wi-Fi della nave!
+        </div>
+    </div>
+</div>
+
+<!-- ===================== PAGINA 7: NOTE & DIARIO ===================== -->
 <div id="notes" class="page">
     <div class="container">
         <h2 style="color:var(--primary); font-size:1.4rem; font-weight:800; margin-bottom:14px;"><i class="fas fa-pen-nib"></i> Diario di Bordo & Note</h2>
