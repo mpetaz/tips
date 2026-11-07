@@ -55,16 +55,18 @@
         /* ---- HEADER DINAMICO ---- */
         header {
             position: relative;
-            min-height: 380px;
-            background: linear-gradient(175deg, rgba(0, 43, 73, 0.85) 0%, rgba(2, 132, 199, 0.75) 50%, rgba(253, 185, 19, 0.85) 100%),
+            min-height: 310px;
+            background: linear-gradient(175deg, rgba(0, 43, 73, 0.88) 0%, rgba(2, 132, 199, 0.78) 50%, rgba(253, 185, 19, 0.88) 100%),
                         radial-gradient(circle at 80% 20%, #fdb913 0%, transparent 40%),
                         #002b49;
             background-size: cover;
             background-position: center;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            padding: 30px 20px 45px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 34px 20px 48px;
             color: white;
             border-bottom-left-radius: 36px;
             border-bottom-right-radius: 36px;
@@ -97,68 +99,70 @@
             font-weight: 700;
             letter-spacing: 0.8px;
             text-transform: uppercase;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             width: fit-content;
         }
 
         .hero-title {
-            font-size: 2.4rem;
+            font-size: 2.3rem;
             font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 6px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            margin-bottom: 4px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
 
         .hero-subtitle {
             font-size: 0.95rem;
-            opacity: 0.92;
-            font-weight: 400;
-            margin-bottom: 20px;
+            opacity: 0.95;
+            font-weight: 500;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             flex-wrap: wrap;
         }
 
-        .hero-badge-deal {
-            background: #fdb913;
-            color: #002b49;
+        /* Pulsante Centrato Foto Live Google Drive */
+        .hero-photo-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #0f9d58 0%, #0b8043 100%);
+            color: #ffffff;
+            font-size: 0.95rem;
             font-weight: 800;
-            font-size: 0.7rem;
-            padding: 3px 10px;
-            border-radius: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Countdown Box */
-        .countdown {
-            display: flex;
-            gap: 12px;
-            background: rgba(0, 20, 40, 0.45);
-            backdrop-filter: blur(14px);
-            padding: 12px 18px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 13px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(15, 157, 88, 0.45);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
             width: fit-content;
+            max-width: 95%;
         }
-
-        .cd-item { text-align: center; min-width: 48px; }
-        .cd-val { display: block; font-size: 1.35rem; font-weight: 800; font-family: 'Outfit'; color: #ffffff; }
-        .cd-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.75); font-weight: 600; }
+        .hero-photo-btn:hover, .hero-photo-btn:active {
+            transform: scale(1.03);
+            box-shadow: 0 10px 28px rgba(15, 157, 88, 0.65);
+            color: #ffffff;
+        }
+        .hero-photo-btn i.fa-google-drive {
+            font-size: 1.25rem;
+        }
 
         /* Quick Info Pill */
         .quick-cabin-pill {
-            margin-top: 15px;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.15);
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.18);
             backdrop-filter: blur(8px);
             padding: 6px 14px;
             border-radius: 14px;
-            font-size: 0.8rem;
-            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.78rem;
+            border: 1px solid rgba(255,255,255,0.25);
         }
 
         /* ---- NAVIGATION MENU ---- */
@@ -822,21 +826,19 @@
 <header>
     <div class="header-decor"></div>
     <div class="hero-tag">
-        <i class="fas fa-ship" style="color:var(--costa-yellow);"></i> Costa Smeralda · Mini Crociera
+        <i class="fas fa-ship" style="color:var(--costa-yellow);"></i> Costa Smeralda · 7 – 12 Novembre 2026
     </div>
     <h1 class="hero-title">Ciao Socio! 🛳️</h1>
     <div class="hero-subtitle">
-        <span>Moreno & Cristina</span> · <span>7 – 12 Novembre 2026</span>
-        <span class="hero-badge-deal">Super Last Minute €498!</span>
+        <span>Moreno & Cristina</span>
     </div>
 
-    <!-- Countdown partenza -->
-    <div class="countdown" id="countdown">
-        <div class="cd-item"><span class="cd-val" id="days">00</span><span class="cd-label">Giorni</span></div>
-        <div class="cd-item"><span class="cd-val" id="hours">00</span><span class="cd-label">Ore</span></div>
-        <div class="cd-item"><span class="cd-val" id="minutes">00</span><span class="cd-label">Minuti</span></div>
-        <div class="cd-item"><span class="cd-val" id="seconds">00</span><span class="cd-label">Secondi</span></div>
-    </div>
+    <!-- Pulsante Diretto Foto Condivise (Google Drive) -->
+    <a href="https://drive.google.com/drive/folders/1Xda3OjsqbrqJHtqrKoDtSDjmaJ-vydil?usp=sharing" target="_blank" rel="noopener noreferrer" class="hero-photo-btn">
+        <i class="fab fa-google-drive"></i>
+        <span>📸 Apri Rullino Foto Condiviso</span>
+        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.75rem; opacity:0.85;"></i>
+    </a>
 
     <div class="quick-cabin-pill">
         <i class="fas fa-door-open" style="color:var(--costa-yellow);"></i>
@@ -2134,36 +2136,12 @@ function renderDayContent(idx) {
     `;
 }
 
-// --- COUNTDOWN ALLA PARTENZA (7 NOVEMBRE 2026, 17:30) ---
-function initCountdown() {
-    const departureDate = new Date('2026-11-07T17:30:00+01:00').getTime();
-
-    function update() {
-        const now = new Date().getTime();
-        const diff = departureDate - now;
-
-        if (diff <= 0) {
-            document.getElementById('days').innerText = "00";
-            document.getElementById('hours').innerText = "00";
-            document.getElementById('minutes').innerText = "00";
-            document.getElementById('seconds').innerText = "00";
-            document.getElementById('floatingTripStatus').innerText = "Crociera in Corso! 🛳️";
-            return;
-        }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        document.getElementById('days').innerText = String(days).padStart(2, '0');
-        document.getElementById('hours').innerText = String(hours).padStart(2, '0');
-        document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
-        document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+// --- STATO DEL VIAGGIO ---
+function initTripStatus() {
+    const statusEl = document.getElementById('floatingTripStatus');
+    if (statusEl) {
+        statusEl.innerText = "Oggi si Salpa! 🛳️ 17:30";
     }
-
-    update();
-    setInterval(update, 1000);
 }
 
 // --- MODAL UTILS ---
@@ -2231,7 +2209,7 @@ function deleteNote(idx) {
 
 // Inizializzazione al caricamento
 document.addEventListener('DOMContentLoaded', () => {
-    initCountdown();
+    initTripStatus();
     renderDateRibbon();
     renderDayContent(0);
     loadNotes();
